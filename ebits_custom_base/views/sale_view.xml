@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="name">Approved Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'waiting', 'waiting_higher', 'cancel'))]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Create a Quotation, the first step of a new sale.
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.
+                    You'll be able to invoice it and collect payments.
+                    From the <i>Sales Orders</i> menu, you can track delivery
+                    orders or services.
+                </p>
+            </field>
+        </record>
+        
+        <record id="sale.action_orders_to_invoice" model="ir.actions.act_window">
+            <field name="name">Sales to Invoice</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,calendar,graph,pivot</field>
+            <field name="context">{}</field>
+            <field name="domain">[('invoice_status','=','to invoice')]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p>
+                You will find here all orders that are ready to be invoiced.
+              </p><p>
+                You can select all orders and invoice them in batch, or check
+                every order and invoice them one by one.
+              </p>
+            </field>
+        </record>
+        
+        <record id="sale.action_orders_upselling" model="ir.actions.act_window">
+            <field name="name">Orders to Upsell</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,calendar,graph,pivot</field>
+            <field name="domain">[('invoice_status','=','upselling')]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p>
+                Orders to upsell are orders having products with an invoicing
+                policy based on <i>ordered quantities</i> for which you have
+                delivered more than what have been ordered.
+              </p><p>
+                <i>Example: pre-paid service offers for which the customer have
+                to buy an extra pack of hours, because he used all his support
+                hours.</i>
+              </p>
+            </field>
+        </record>
+        
+        <record id="sale.action_quotations" model="ir.actions.act_window">
+            <field name="name">Draft Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'hide_sale': True}</field>
+            <field name="domain">[('state', 'in', ('draft', 'sent', 'waiting', 'waiting_higher', 'cancel'))]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create a Quotation, the first step of a new sale.
+              </p><p>
+                Your next actions should flow efficiently: confirm the Quotation
+                to a Sale Order, then create the Invoice and collect the Payment.
+              </p><p>
+                Note that once a Quotation becomes a Sale Order, it will be moved
+                from the Quotations list to the Sales Order list.
+              </p>
+            </field>
+        </record>
+        
+        <menuitem id="sale.menu_sale_quotations"
+                action="sale.action_quotations" parent="sale.sale_order_menu"
+                sequence="50" name="Draft Sales Order"/>
+                
+        <menuitem action="sale.action_orders"
+            id="sale.menu_sale_order" parent="sale.sale_order_menu"
+            sequence="70" groups="sales_team.group_sale_manager"/>
+            
+        <menuitem action="product.product_template_action" id="sale.menu_product_template_action"
+                  parent="sale.sale_order_menu" sequence="90" groups="sales_team.group_sale_manager"/>
+        
+        <menuitem id="sale.menu_products" action="product.product_normal_action_sell" parent="sale.sale_order_menu"
+                  groups="sales_team.group_sale_manager" sequence="100"/>
+        
+        <record id="action_quotations_sale_dashboard" model="ir.actions.act_window">
+            <field name="name">Draft Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'hide_sale': True,'search_default_warehouse_id': [active_id],
+                    'default_warehouse_id': active_id}</field>
+            <field name="domain">[('state', 'in', ['draft', 'sent', 'cancel']),('warehouse_id', '=', active_id)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create a Quotation, the first step of a new sale.
+              </p><p>
+                Your next actions should flow efficiently: confirm the Quotation
+                to a Sale Order, then create the Invoice and collect the Payment.
+              </p><p>
+                Note that once a Quotation becomes a Sale Order, it will be moved
+                from the Quotations list to the Sales Order list.
+              </p>
+            </field>
+        </record>
+        
+        <record id="action_quotations_warehouse_ready" model="ir.actions.act_window">
+            <field name="name">Draft Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_warehouse_id': [active_id],
+                    'default_warehouse_id': active_id}</field>
+            <field name="domain">[('state', '=', 'waiting'),('warehouse_id', '=', active_id)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create a Quotation, the first step of a new sale.
+              </p><p>
+                Your next actions should flow efficiently: confirm the Quotation
+                to a Sale Order, then create the Invoice and collect the Payment.
+              </p><p>
+                Note that once a Quotation becomes a Sale Order, it will be moved
+                from the Quotations list to the Sales Order list.
+              </p>
+            </field>
+        </record>
+        
+        <record id="action_quotations_warehouse_h_ready" model="ir.actions.act_window">
+            <field name="name">Draft Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_warehouse_id': [active_id],
+                    'default_warehouse_id': active_id}</field>
+            <field name="domain">[('state', '=', 'waiting_higher'),('warehouse_id', '=', active_id)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create a Quotation, the first step of a new sale.
+              </p><p>
+                Your next actions should flow efficiently: confirm the Quotation
+                to a Sale Order, then create the Invoice and collect the Payment.
+              </p><p>
+                Note that once a Quotation becomes a Sale Order, it will be moved
+                from the Quotations list to the Sales Order list.
+              </p>
+            </field>
+        </record>
+        
+        <record id="action_confirmed_sale_dashboard" model="ir.actions.act_window">
+            <field name="name">Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{'search_default_warehouse_id': [active_id], 'default_warehouse_id': active_id}</field>
+            <field name="domain">[('warehouse_id', '=', active_id)]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Create a Quotation, the first step of a new sale.
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.
+                    You'll be able to invoice it and collect payments.
+                    From the <i>Sales Orders</i> menu, you can track delivery
+                    orders or services.
+                </p>
+            </field>
+        </record>
+        
+        <record id="action_sale_order_to_invoice" model="ir.actions.act_window">
+            <field name="name">Sales to Invoice</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,calendar,graph,pivot</field>
+            <field name="context">{'search_default_warehouse_id': [active_id], 'default_warehouse_id': active_id}</field>
+            <field name="domain">[('invoice_status','=','to invoice')]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p>
+                You will find here all orders that are ready to be invoiced.
+              </p><p>
+                You can select all orders and invoice them in batch, or check
+                every order and invoice them one by one.
+              </p>
+            </field>
+        </record>
+        
+        <record id="action_new_sale_quotation_form" model="ir.actions.act_window">
+            <field name="name">New Draft Sales Order</field>
+            <field name="res_model">sale.order</field>
+            <field name="type">ir.actions.act_window</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="context">{
+                    'search_default_warehouse_id': [active_id],
+                    'default_warehouse_id': active_id,
+            }
+            </field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        </record>
+
+
+</odoo>

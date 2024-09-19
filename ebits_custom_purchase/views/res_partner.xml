@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="act_account_partner_ledger_payable" model="ir.actions.act_window">
+        <field name="name">Partner Ledger: Payable</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_partner_id':[active_id],
+            'search_default_unreconciled':1,
+            'search_default_trade_payable':1}
+        </field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="domain">[('partner_id', '=', False)]</field>
+    </record>
+
+    <record id="act_account_partner_ledger_payable_no_partner" model="ir.actions.act_window">
+        <field name="name">Unknown Partner Ledger</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_unreconciled':1,
+            'search_default_trade_payable':1}
+        </field>
+        <field name="domain">[('partner_id', '=', False)]</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+    </record>
+    <record id="act_account_partner_ledger_receivable" model="ir.actions.act_window">
+        <field name="name">Partner Ledger: Receivable</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_partner_id':[active_id],
+            'search_default_unreconciled':1,
+            'search_default_trade_receivable':1}
+        </field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+    </record>
+
+    <record id="act_account_partner_ledger_receivable_no_partner" model="ir.actions.act_window">
+        <field name="name">Unknown Partner Ledger</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_unreconciled':1,
+            'search_default_trade_receivable':1}
+        </field>
+        <field name="domain">[('partner_id', '=', False)]</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+    </record>
+
+
+     <record id="action_move_line_select" model="ir.actions.act_window">
+        <field name="name">Journal Items</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_account_id': [active_id]}
+        </field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+    </record>
+
+
+     <record id="act_account_invoice_partner_relation" model="ir.actions.act_window">
+        <field name="name">Monthly Turnover</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">graph</field>
+        <field name="context">{'search_default_partner_id':[active_id], 'search_default_month':1,'search_default_user':1,'group_by_no_leaf':1,'group_by':[]}
+        </field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+    </record>
+
+     <record id="portal.partner_wizard_action_create_and_open" model="ir.actions.server">
+            <field name="name"> portal access management</field>
+            <field name="model_id" ref="portal.model_portal_wizard"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_open_wizard()</field>
+        </record>
+
+<!--    <record id="res_partner_form_inherit_" model="ir.ui.view">-->
+<!--        <field name="name">res.partner.form.inherit</field>-->
+<!--        <field name="model">res.partner</field>-->
+<!--        <field name="inherit_id" ref="base.view_partner_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='vat']" position="after">-->
+<!--                 <field name="transaction_currency_id" />-->
+<!--                 <field name="currency_id" />-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+
+
+
+
+</odoo>

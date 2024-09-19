@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_account_move_cancel_wizard_form" model="ir.ui.view">
+            <field name="name">Move Request Cancellation</field>
+            <field name="model">account.move.cancel.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="move_id" options="{'no_open': True}"/>
+                    </group>
+                    <newline/>
+                    <label for="cancel_reason"/>
+                    <field name="cancel_reason"/>
+                    <footer>
+                        <button name="action_cancel" string="Save" type="object" class="btn-primary"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_account_move_cancel_wizard" model="ir.actions.act_window">
+            <field name="name">Move Request Cancellation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.move.cancel.wizard</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_account_move_cancel_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+        
+    
+</odoo>

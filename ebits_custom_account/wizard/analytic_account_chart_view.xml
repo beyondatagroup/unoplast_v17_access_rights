@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_account_analytic_account_coa_view" model="ir.ui.view">
+            <field name="name">account.analytic.account.coa.view</field>
+            <field name="model">account.analytic.account.coa.view</field>
+            <field name="arch" type="xml">
+                <form string="Analytic Account  - Hierarchy">
+                    <group>
+                        <group>
+                            <field name="date_from"/> 
+                            <field name="to_date"/>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Open Charts" name="account_chart_open_window" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_account_analytic_account_coa_view" model="ir.actions.act_window">
+            <field name="name">Analytic Account - Hierarchy</field>
+            <field name="res_model">account.analytic.account.coa.view</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_account_analytic_account_coa_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_account_analytic_account_coa_view" id="menu_action_account_analytic_account_view_tree" parent="account.menu_finance_entries" sequence="29"/>
+    </data>
+</openerp>

@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_partner_registration_details_customer_vendor_tree" model="ir.ui.view">
+            <field name="name">res.partner.registration.details.tree</field>
+            <field name="model">res.partner.registration.details</field>
+            <field name="arch" type="xml">
+                <tree string="Partner Registration">
+                    <field name="name" readonly="state not in ['draft']"/>
+                    <field name="phone" readonly="state not in ['draft']"/>
+                    <field name="email" readonly="state not in ['draft']"/>
+                    <field name="transaction_currency_id" readonly="state not in ['draft']"/>
+                    <field name="delivery_warehouse_id" readonly="state not in ['draft']"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="res_partner_registration_contractor_tree" model="ir.ui.view">
+            <field name="name">res.partner.registration.details.tree</field>
+            <field name="model">res.partner.registration.details</field>
+            <field name="arch" type="xml">
+                <tree string="Contractor Registration">
+                    <field name="name" readonly="state not in ['draft']"/>
+                    <field name="phone" readonly="state not in ['draft']"/>
+                    <field name="email" readonly="state not in ['draft']"/>
+                    <field name="delivery_warehouse_id" readonly="state not in ['draft']"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="res_partner_registration_details_form" model="ir.ui.view">
+            <field name="name">res.partner.registration.details.form</field>
+            <field name="model">res.partner.registration.details</field>
+            <field name="arch" type="xml">
+                <form string="Partner Registration">
+                    <header>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_send_approval"
+                                string="Send for Approval" type="object"/>
+                        <button class="oe_highlight" invisible="state not in ['waiting']" name="action_reedit"
+                                string="Re-edit" type="object"/>
+                        <button class="oe_highlight"
+                                groups="account.group_account_manager,base.group_partner_manager,purchase.group_purchase_manager"
+                                invisible="state not in ['waiting']" name="action_approve" string="Approve"
+                                type="object"/>
+                        <button class="oe_highlight"
+                                groups="account.group_account_manager,base.group_partner_manager,purchase.group_purchase_manager"
+                                invisible="state not in ['waiting']" name="action_cancel" string="Cancel"
+                                type="object"/>
+                        <field name="state" statusbar_visible="draft,waiting,approved,cancelled" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <field class="oe_avatar" name="image"
+                               options='{"preview_image": "image_medium", "size": [90, 90]}' widget="image"/>
+                        <div class="oe_title">
+                            <field invisible="1" name="is_company" readonly="state not in ['draft']"/>
+                            <field class="oe_edit_only" name="company_type" options="{'horizontal': true}"
+                                   widget="radio"/>
+                            <h1>
+                                <field default_focus="1" name="name" placeholder="Name" required="type == 'contact'"
+                                readonly="state not in ['draft']"/>
+                            </h1>
+                            <div class="o_row">
+                                <field context="{'default_is_company': True, 'default_supplier': supplier, 'default_customer': customer}"
+                                       domain="[('is_company', '=', True)]"
+                                       invisible="(is_company == True and parent_id == False) or company_name != False and company_name != ''"
+                                       name="parent_id" options='{"no_open": True, "no_create": True}'
+                                       placeholder="Company" readonly="state not in ['draft']"/>
+                                <field invisible="company_name == False or company_name == '' or is_company == True"
+                                       name="company_name" readonly="state not in ['draft']"/>
+                            </div>
+                        </div>
+                        <group readonly="state != 'draft'">
+                            <group>
+<!--                                groups="base.group_no_one" removed due to error -->
+                                <field invisible="parent_id == False" name="type"/>
+
+                                <label for="street" string="Address"/>
+                                <div class="o_address_format">
+                                    <div class="oe_edit_only">
+                                        <button class="oe_link" invisible="parent_id == False or type != 'contact'"
+                                                name="open_parent" string="(edit)" type="object"/>
+                                    </div>
+                                    <field class="o_address_street" name="street" placeholder="Street..."
+                                           readonly="type == 'contact' and state not in ['draft'] and parent_id != False" />
+                                    <field class="o_address_street" name="street2" placeholder="Street 2..."
+                                           readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_city" name="city" placeholder="City"
+                                           readonly="type == 'contact' and parent_id != False"/>
+                                    <field class="o_address_country" name="area_id" readonly="state not in ['draft']"
+                                           options='{"no_open": True, "no_create": True}' placeholder="Area"/>
+                                    <field class="o_address_country" name="region_id" readonly="state not in ['draft']"
+                                           options='{"no_open": True, "no_create": True}' placeholder="Region"/>
+                                    <field class="o_address_state" context="{'country_id': country_id, 'zip': zip}"
+                                           invisible="1" name="state_id" options='{"no_open": True, "no_create": True}'
+                                           placeholder="State" readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_zip" invisible="1" name="zip" placeholder="ZIP"
+                                           readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_country" name="country_id"
+                                           options='{"no_open": True, "no_create": True}' placeholder="Country"
+                                           readonly="parent_id != False and state not in ['draft']"/>
+<!--                                    type == 'contact' and -->
+                                </div>
+                                <field name="website" placeholder="e.g. www.odoo.com" widget="url"
+                                readonly="state not in ['draft']"/>
+                                <field name="category_id" options='{"no_open": True, "no_create": True}'
+                                       placeholder="Tags..." widget="many2many_tags" readonly="state not in ['draft']"/>
+                            </group>
+                            <group>
+                                <field invisible="is_company == True" name="function"
+                                       placeholder="e.g. Sales Director" readonly="state not in ['draft']"/>
+                                <field name="phone" widget="phone" readonly="state not in ['draft']"/>
+                                <field name="mobile" widget="phone" readonly="state not in ['draft']"/>
+<!--                                <field name="fax" readonly="state not in ['draft']"/>-->
+                                <field name="email" widget="email" readonly="state not in ['draft']"/>
+                                <field name="transaction_currency_id" options="{'no_create': True, 'no_open': True}"
+                                       required="customer == True or supplier == True or contractor == True" readonly="state not in ['draft']"/>
+                                <field name="delivery_warehouse_id" options="{'no_create': True, 'no_open': True}"
+                                       required="customer == True" readonly="state not in ['draft']"/>
+                                <field invisible="is_company == True" name="title" options='{"no_open": True}'
+                                readonly="state not in ['draft']"/>
+                                <label for="related_partner_id" string="Go to"/>
+                                <div invisible="related_partner_id == False">
+                                    <field name="related_partner_id"/>
+                                </div>
+                            </group>
+                            <group groups="base.group_partner_manager" string="Tax Number Details">
+                                <field groups="base.group_partner_manager" name="vat" readonly="state not in ['draft']"/>
+                                <field groups="base.group_partner_manager" name="vrn_no" readonly="state not in ['draft']"/>
+                                <field groups="base.group_partner_manager" name="business_no" readonly="state not in ['draft']"/>
+                            </group>
+                        </group>
+                        <notebook colspan="4">
+                            <page autofocus="autofocus" string="Contacts &amp; Addresses">
+                                <field context="{'default_registration_id': id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_customer': customer}"
+                                       mode="kanban" name="child_ids">
+                                <!-- <field context="{'default_registration_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_customer': customer}"
+                                       mode="kanban" name="child_ids"> -->
+                                    <kanban>
+                                        <field name="color"/>
+                                        <field name="name"/>
+                                        <field name="title"/>
+                                        <field name="type"/>
+                                        <field name="email"/>
+                                        <field name="parent_id"/>
+                                        <field name="is_company"/>
+                                        <field name="function"/>
+                                        <field name="phone"/>
+                                        <field name="street"/>
+                                        <field name="street2"/>
+                                        <field name="zip"/>
+                                        <field name="city"/>
+                                        <field name="country_id"/>
+                                        <field name="mobile"/>
+<!--                                        <field name="fax"/>-->
+                                        <field name="state_id"/>
+                                        <field name="image"/>
+                                        <field name="state"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <t t-set="color" t-value="kanban_color(record.color.raw_value)"/>
+                                                <div t-att-class="color + (record.title.raw_value == 1 ? ' oe_kanban_color_alert' : '') + ' oe_kanban_global_click'">
+                                                    <a class="fa fa-times pull-right" t-if="!read_only_mode"
+                                                       type="delete" title="."/>
+
+                                                    <div class="o_kanban_image">
+                                                        <img t-att-src="'data:image/png;base64,'+record.image.raw_value"
+                                                             t-if="record.image.raw_value" alt="."/>
+                                                        <t t-if="!record.image.raw_value">
+                                                            <img t-att-src='_s + "/base/static/src/img/truck.png"'
+                                                                 t-if="record.type.raw_value === 'delivery'" alt="."/>
+                                                            <img t-att-src='_s + "/base/static/src/img/money.png"'
+                                                                 t-if="record.type.raw_value === 'invoice'" alt="."/>
+                                                            <t t-if="record.type.raw_value !== 'invoice' and record.type.raw_value !== 'delivery'">
+                                                                <img t-att-src='_s + "/base/static/src/img/company_image.png"'
+                                                                     t-if="record.is_company.raw_value === true" alt="."/>
+                                                                <img t-att-src='_s + "/base/static/src/img/avatar.png"'
+                                                                     t-if="record.is_company.raw_value === false" alt="."/>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                    <div class="oe_kanban_details">
+                                                        <field name="name"/>
+                                                        <div t-if="record.function.raw_value">
+                                                            <field name="function"/>
+                                                        </div>
+                                                        <div t-if="record.email.raw_value">
+                                                            <field name="email"/>
+                                                        </div>
+                                                        <div t-if="record.type.raw_value != 'contact'">
+                                                            <div>
+                                                                <field name="zip"/>
+                                                                <field name="city"/>
+                                                            </div>
+                                                            <field name="state_id" t-if="record.state_id.raw_value"/>
+                                                            <field name="country_id"/>
+                                                        </div>
+                                                        <div t-if="record.phone.raw_value">
+                                                            Phone:
+                                                            <field name="phone"/>
+                                                        </div>
+                                                        <div t-if="record.mobile.raw_value">
+                                                            Mobile:
+                                                            <field name="mobile"/>
+                                                        </div>
+<!--                                                        <div t-if="record.fax.raw_value">-->
+<!--                                                            Fax:-->
+<!--                                                            <field name="fax"/>-->
+<!--                                                        </div>-->
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                    <form string="Contact / Address">
+                                        <sheet>
+                                            <field name="type" options="{'horizontal': true}" required="1"
+                                                   widget="radio"/>
+                                            <field invisible="1" name="state"/>
+                                            <hr/>
+                                            <group>
+                                                <group invisible="type == 'contact'">
+                                                    <label for="street" string="Address"/>
+                                                    <div>
+                                                        <div class="o_address_format" name="div_address">
+                                                            <field class="o_address_street" name="street"
+                                                                   placeholder="Street..."/>
+                                                            <field class="o_address_street" name="street2"
+                                                                   placeholder="Street 2..."/>
+                                                            <field class="o_address_street" name="city"
+                                                                   placeholder="City"/>
+                                                            <field class="o_address_country" name="area_id"
+                                                                   placeholder="Area"/>
+                                                            <field class="o_address_country" name="region_id"
+                                                                   placeholder="Region"/>
+                                                            <field class="o_address_country"
+                                                                   context="{'country_id': country_id, 'zip': zip}"
+                                                                   invisible="1" name="state_id"
+                                                                   options='{"no_open": True}' placeholder="State"/>
+                                                            <field class="o_address_street" invisible="1" name="zip"
+                                                                   placeholder="PO Box"/>
+                                                            <field class="o_address_country" name="country_id"
+                                                                   options='{"no_open": True, "no_create": True}'
+                                                                   placeholder="Country"/>
+                                                        </div>
+                                                    </div>
+                                                </group>
+                                                <group>
+                                                    <field name="name" required="type == 'contact'"
+                                                           string="Contact Name"/>
+                                                    <field invisible="type == 'contact'" name="title"
+                                                           placeholder="e.g. Mr." readonly="state not in ['draft']" />
+                                                    <field invisible="type == 'contact'" name="function"
+                                                           placeholder="e.g. Sales Director" readonly="state not in ['draft']"/>
+                                                    <field name="email"/>
+                                                    <field name="phone" widget="phone" readonly="state not in ['draft']"/>
+                                                    <field name="mobile" widget="phone" readonly="state not in ['draft']"/>
+                                                    <field name="comment" placeholder="internal note..." readonly="state not in ['draft']"/>
+                                                </group>
+                                            </group>
+                                            <field invisible="True" name="supplier" readonly="state not in ['draft']"/>
+                                            <field invisible="True" name="contractor" readonly="state not in ['draft']"/>
+                                            <field name="customer" readonly="state not in ['draft']"/>
+                                            <field invisible="True" name="image"/>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                            <page name="internal_notes" string="Internal Notes">
+                                <field name="comment" placeholder="Internal note..." readonly="state not in ['draft']"/>
+                            </page>
+                            <page name="sales_purchases" string="Other Details">
+                                <group name="container_row_2">
+                                    <group name="sale" string="Sale">
+                                        <field name="customer" readonly="state not in ['draft']"/>
+                                        <field name="user_id" readonly="state not in ['draft']"/>
+                                        <field invisible="customer == False" name="sales_user_id"
+                                               options='{"no_open": True, "no_create": True}'
+                                               />
+                                        <field invisible="customer == False" name="team_id"
+                                               options='{"no_open": True, "no_create": True}'
+                                               required="customer == True" readonly="state not in ['draft']"/>
+                                        <field domain="[('share', '=', False),('sale_team_id', '!=', False)]"
+                                               invisible="customer == False" name="sales_manager_id"
+                                               options='{"no_open": True, "no_create": True}' readonly="state not in ['draft']"
+                                               required="customer == True"/>
+                                        <field name="pricelist_id" options='{"no_open": True, "no_create": True}' readonly="state not in ['draft']"/>
+                                        <field name="credit_limit"/>
+                                    </group>
+                                    <group string="Account">
+                                        <field invisible="customer == False" name="payment_term_id" readonly="state not in ['draft']"/>
+                                        <field invisible="supplier == False" name="supplier_payment_term_id" readonly="state not in ['draft']"/>
+                                        <field name="account_payable_id" options='{"no_open": True, "no_create": True}'
+                                               required="state == 'draft'" readonly="state not in ['draft']"/>
+                                        <field name="account_receivable_id"
+                                               options='{"no_open": True, "no_create": True}'
+                                               required="state == 'draft'" readonly="state not in ['draft']"/>
+                                    </group>
+                                    <group string="Misc">
+                                        <field name="ref" readonly="state not in ['draft']"/>
+                                        <field groups="base.group_multi_company" name="company_id" readonly="state not in ['draft']"
+                                               options='{"no_open": True, "no_create": True}'/>
+                                    </group>
+                                    <group name="purchase">
+                                        <field invisible="1" name="supplier" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="contractor" readonly="state not in ['draft']" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <label for="history"/>
+                        <div>
+                            <field name="history"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="res_partner_registration_contractor_form" model="ir.ui.view">
+            <field name="name">res.partner.registration.details.form</field>
+            <field name="model">res.partner.registration.details</field>
+            <field name="arch" type="xml">
+                <form string="Contractor Registration">
+                    <header>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_send_approval"
+                                string="Send for Approval" type="object"/>
+                        <button class="oe_highlight" invisible="state not in ['waiting']" name="action_reedit"
+                                string="Re-edit" type="object"/>
+                        <button class="oe_highlight"
+                                groups="account.group_account_manager,base.group_partner_manager,hr.group_hr_manager"
+                                invisible="state not in ['waiting']" name="action_approve" string="Approve"
+                                type="object"/>
+                        <button class="oe_highlight"
+                                groups="account.group_account_manager,base.group_partner_manager,hr.group_hr_manager"
+                                invisible="state not in ['waiting']" name="action_cancel" string="Cancel"
+                                type="object"/>
+                        <field name="state" statusbar_visible="draft,waiting,approved,cancelled" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <field class="oe_avatar" name="image"
+                               options='{"preview_image": "image_medium", "size": [90, 90]}' widget="image"/>
+                        <div class="oe_title">
+                            <field invisible="1" name="is_company" readonly="state not in ['draft']"/>
+                            <field class="oe_edit_only" invisible="1" name="company_type" options="{'horizontal': true}"
+                                   widget="radio"/>
+                            <h1>
+                                <field default_focus="1" name="name" placeholder="Name" required="type == 'contact'"
+                                readonly="state not in ['draft']"/>
+                            </h1>
+                            <div class="o_row">
+                                <field invisible="1" name="parent_id" readonly="state not in ['draft']"/>
+                                <field invisible="1" name="company_name" readonly="state not in ['draft']"/>
+                            </div>
+                        </div>
+                        <group readonly="state != 'draft'">
+                            <group>
+                                <!--        groups="base.group_no_one" removed due to error -->
+                                <field invisible="parent_id == False" name="type"/>
+                                <label for="street" string="Address"/>
+                                <div class="o_address_format">
+                                    <div class="oe_edit_only">
+                                        <button class="oe_link" invisible="parent_id == False or type != 'contact'"
+                                                name="open_parent" string="(edit)" type="object"/>
+                                    </div>
+                                    <field class="o_address_street" name="street" placeholder="Street..."
+                                           readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_street" name="street2" placeholder="Street 2..."
+                                           readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_city" name="city" placeholder="City"
+                                           readonly="type == 'contact' and parent_id != False"/>
+                                    <field class="o_address_country" name="area_id" readonly="state not in ['draft']"
+                                           options='{"no_open": True, "no_create": True}' placeholder="Area"/>
+                                    <field class="o_address_country" name="region_id" readonly="state not in ['draft']"
+                                           options='{"no_open": True, "no_create": True}' placeholder="Region"/>
+                                    <field class="o_address_state" context="{'country_id': country_id, 'zip': zip}"
+                                           invisible="1" name="state_id" options='{"no_open": True, "no_create": True}'
+                                           placeholder="State" readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_zip" invisible="1" name="zip" placeholder="ZIP"
+                                           readonly="type == 'contact' and state not in ['draft'] and parent_id != False"/>
+                                    <field class="o_address_country" name="country_id"
+                                           options='{"no_open": True, "no_create": True}' placeholder="Country"
+                                           readonly="parent_id != False and state not in ['draft']"/>
+<!--                                    type == 'contact' and-->
+                                </div>
+                                <!--                                <field name="website" widget="url" placeholder="e.g. www.odoo.com"/>-->
+                                <field name="category_id" options='{"no_open": True, "no_create": True}'
+                                       placeholder="Tags..." widget="many2many_tags" readonly="state not in ['draft']"/>
+                                <field name="ppf_no" readonly="state not in ['draft']"/>
+                                <field name="nssf_no" readonly="state not in ['draft']"/>
+                            </group>
+                            <group>
+                                <field invisible="is_company == True" name="function" readonly="state not in ['draft']"
+                                       placeholder="e.g. Sales Director"/>
+                                <field name="phone" widget="phone" readonly="state not in ['draft']"/>
+                                <field name="mobile" widget="phone" readonly="state not in ['draft']"/>
+<!--                                <field name="fax" readonly="state not in ['draft']"/>-->
+                                <field name="email" widget="email" readonly="state not in ['draft']"/>
+                                <field name="transaction_currency_id" options="{'no_create': True, 'no_open': True}"
+                                       required="customer == True or supplier == True or contractor == True" readonly="state not in ['draft']"/>
+                                <field invisible="1" name="delivery_warehouse_id" readonly="state not in ['draft']"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field invisible="is_company == True" name="title" options='{"no_open": True}'
+                                       readonly="state not in ['draft']"/>
+                                <label for="related_partner_id" string="Go to"/>
+                                <div invisible="related_partner_id == False">
+                                    <field name="related_partner_id"/>
+                                </div>
+                            </group>
+                        </group>
+                        <notebook colspan="4">
+                            <page name="internal_notes" string="Internal Notes">
+                                <field name="comment" placeholder="Internal note..." readonly="state not in ['draft']"/>
+                            </page>
+                            <page name="sales_purchases" string="Other Details">
+                                <group name="container_row_2">
+                                    <group name="sale" string="Sale">
+                                        <field name="customer" readonly="state not in ['draft']"/>
+                                        <field name="user_id" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="sales_user_id"/>
+                                        <field invisible="1" name="team_id" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="sales_manager_id" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="pricelist_id" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="credit_limit" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="supplier" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="contractor" readonly="state not in ['draft']"/>
+                                    </group>
+                                    <group string="Account">
+                                        <field name="account_payable_id" options='{"no_open": True, "no_create": True}'
+                                               required="state == 'draft'" readonly="state not in ['draft']"/>
+                                        <field name="account_receivable_id"
+                                               options='{"no_open": True, "no_create": True}'
+                                               required="state == 'draft'" readonly="state not in ['draft']"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <label for="history"/>
+                        <div>
+                            <field name="history"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="res_partner_registration_details_search_view" model="ir.ui.view">
+            <field name="name">res.partner.registration.details.search</field>
+            <field name="model">res.partner.registration.details</field>
+            <field name="arch" type="xml">
+                <search string="Partner Registration">
+                    <field name="name" readonly="state not in ['draft']"/>
+                    <field name="phone" readonly="state not in ['draft']"/>
+                    <field name="email" readonly="state not in ['draft']"/>
+                    <field name="sales_user_id"/>
+                    <field name="sales_manager_id" readonly="state not in ['draft']"/>
+                    <field name="team_id" readonly="state not in ['draft']"/>
+                    <field name="transaction_currency_id" readonly="state not in ['draft']"/>
+                    <field name="delivery_warehouse_id" readonly="state not in ['draft']"/>
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+        <record id="action_partner_registration_details_vendor" model="ir.actions.act_window">
+            <field name="name">Vendor Registration</field>
+            <field name="res_model">res.partner.registration.details</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="domain">[('supplier', '=', True),('parent_id', '=', False)]</field>
+            <field name="context">{'default_supplier': 1, 'supplier': 1, 'default_customer': 0, 'customer': 0}</field>
+            <field name="search_view_id" ref="res_partner_registration_details_search_view"/>
+        </record>
+        <record id="action_vendor_partner_registration_details_customer_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence">1</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="res_partner_registration_details_customer_vendor_tree"/>
+            <field name="act_window_id" ref="action_partner_registration_details_vendor"/>
+        </record>
+        <record id="action_vendor_partner_registration_details_customer_view_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="res_partner_registration_details_form"/>
+            <field name="act_window_id" ref="action_partner_registration_details_vendor"/>
+        </record>
+        <record id="action_partner_registration_details_customer" model="ir.actions.act_window">
+            <field name="name">Customer Registration</field>
+            <field name="res_model">res.partner.registration.details</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="domain">[('customer', '=', True),('parent_id', '=', False)]</field>
+            <field name="context">{'default_customer': 1, 'customer': 1, 'default_supplier': 0, 'supplier': 0}</field>
+            <field name="search_view_id" ref="res_partner_registration_details_search_view"/>
+        </record>
+        <record id="action_customer_partner_registration_details_customer_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence">1</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="res_partner_registration_details_customer_vendor_tree"/>
+            <field name="act_window_id" ref="action_partner_registration_details_customer"/>
+        </record>
+        <record id="action_customer_partner_registration_details_customer_view_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="res_partner_registration_details_form"/>
+            <field name="act_window_id" ref="action_partner_registration_details_customer"/>
+        </record>
+        <record id="action_partner_registration_details_contractor" model="ir.actions.act_window">
+            <field name="name">Contractor Registration</field>
+            <field name="res_model">res.partner.registration.details</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="domain">[('contractor', '=', True)]</field>
+            <field name="context">{'default_contractor': 1, 'contractor': 1, 'default_customer': 0, 'customer': 0,
+                'default_supplier': 0, 'supplier': 0, 'default_is_company': 0, 'is_company': 0}
+            </field>
+            <field name="search_view_id" ref="res_partner_registration_details_search_view"/>
+        </record>
+        <record id="action_contractor_partner_registration_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence">1</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="res_partner_registration_contractor_tree"/>
+            <field name="act_window_id" ref="action_partner_registration_details_contractor"/>
+        </record>
+        <record id="action_contractor_partner_registration_contractor_view_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="res_partner_registration_contractor_form"/>
+            <field name="act_window_id" ref="action_partner_registration_details_contractor"/>
+        </record>
+<!--        changed menu  sales_team.menu_sales-->
+        <menuitem action="action_partner_registration_details_customer"
+                  groups="sales_team.group_sale_salesman,base.group_partner_manager,account.group_account_user"
+                  id="menu_partner_registration_details_customer" parent="sale.menu_tag_config" sequence="100"/>
+        <menuitem action="action_partner_registration_details_vendor"
+                  groups="purchase.group_purchase_user,base.group_partner_manager,account.group_account_user"
+                  id="menu_partner_registration_details_vendor" parent="purchase.menu_procurement_management"
+                  sequence="100"/>
+        <menuitem groups="base.group_partner_manager,account.group_account_user,hr.group_hr_manager"
+                  id="menu_hr_contractor_view" name="Contractor" parent="hr.menu_hr_root" sequence="3"/>
+        <menuitem action="action_partner_registration_details_contractor"
+                  groups="base.group_partner_manager,account.group_account_user,hr.group_hr_manager"
+                  id="menu_partner_registration_details_contractor" parent="menu_hr_contractor_view" sequence="3"/>
+    </data>
+</odoo>

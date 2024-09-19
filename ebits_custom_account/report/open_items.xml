@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="ebits_custom_account.report_open_items_qweb">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="has_second_currency" t-value="o.has_second_currency"/>
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <h2><span t-esc="res_company.name"/> : Open Items</h2>
+                        <div class="row mt32">
+                            <div class="col-xs-4">
+                                <strong>Date at filter</strong>
+                                <span t-field="o.date_at"/>
+                            </div>
+                            <div class="col-xs-4">
+                                <strong>Target Moves:</strong>
+                                <t class="text-center" t-if="o.only_posted_moves">All Posted Entries</t>
+                                <t class="text-center" t-if="not o.only_posted_moves">All Entries</t>
+                            </div>
+                            <div class="col-xs-4">
+                                <strong>Account balance at 0 filter:</strong>
+                                <t class="text-center" t-if="o.hide_account_balance_at_0">Hide</t>
+                                <t class="text-center" t-if="not o.hide_account_balance_at_0">Show</t>
+                            </div>
+                        </div>
+
+                        <t t-foreach="o.account_ids" t-as="account">
+                            <div class="page_break">
+                                <div class="act_as_table list_table" style="margin-top: 10px;"/>
+                                <div class="act_as_caption account_title" style="width: 1241px !important;">
+                                    <span t-field="account.code"/> - <span t-field="account.name"/>
+                                </div>
+                                <t t-foreach="account.partner_ids" t-as="partner">
+                                    <div class="page_break">
+                                        <div class="act_as_caption account_title">
+                                            <span t-field="partner.name"/>
+                                        </div>
+                                        <t t-call="ebits_custom_account.report_open_items_qweb_lines"/>
+                                        <t t-call="ebits_custom_account.report_open_items_qweb_ending_cumul">
+                                            <t t-set="account_or_partner_object" t-value="partner"/>
+                                            <t t-set="type" t-value='"partner_type"'/>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-call="ebits_custom_account.report_open_items_qweb_ending_cumul">
+                                    <t t-set="account_or_partner_object" t-value="account"/>
+                                    <t t-set="type" t-value='"account_type"'/>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="ebits_custom_account.report_open_items_qweb_lines">
+        <div class="act_as_table data_table" style="width: 1240px !important;">
+            <div class="act_as_thead">
+                <div class="act_as_row labels">
+                    <div class="act_as_cell first_column" style="width: 80px;">Date</div>
+                    <div class="act_as_cell" style="width: 100px;">Entry</div>
+                    <div class="act_as_cell" style="width: 80px;">Journal</div>
+                    <div class="act_as_cell" style="width: 100px;">Account</div>
+                    <div class="act_as_cell" style="width: 140px;">Partner</div>
+                    <div class="act_as_cell" style="width: 290px;">Ref - Label</div>
+                    <div class="act_as_cell" style="width: 100px;">Due date</div>
+                    <div class="act_as_cell" style="width: 100px;">Original</div>
+                    <div class="act_as_cell" style="width: 100px;">Residual</div>
+                    <t t-if="has_second_currency">
+                        <div class="act_as_cell" style="width: 50px;">Cur.</div>
+                        <div class="act_as_cell amount" style="width: 100px;">Cur. Original</div>
+                        <div class="act_as_cell amount" style="width: 100px;">Cur. Residual</div>
+                    </t>
+                </div>
+            </div>
+
+            <t t-foreach="partner.move_line_ids" t-as="line">
+                <div class="act_as_row lines">
+                    <div class="act_as_cell left"><span t-field="line.date"/></div>
+                    <div class="act_as_cell left"><span t-field="line.entry"/></div>
+                    <div class="act_as_cell left"><span t-field="line.journal"/></div>
+                    <div class="act_as_cell left"><span t-field="line.account"/></div>
+                    <div class="act_as_cell left"><span t-field="line.partner"/></div>
+                    <div class="act_as_cell left"><span t-field="line.label"/></div>
+                    <div class="act_as_cell left"><span t-field="line.date_due"/></div>
+                    <div class="act_as_cell amount"><span t-field="line.amount_total_due"/></div>
+                    <div class="act_as_cell amount"><span t-field="line.amount_residual"/></div>
+                    <t t-if="has_second_currency">
+                        <div class="act_as_cell"><span t-field="line.currency_name"/></div>
+                        <t t-if="line.currency_name">
+                            <div class="act_as_cell amount"><span t-field="line.amount_total_due_currency"/></div>
+                            <div class="act_as_cell amount"><span t-field="line.amount_residual_currency"/></div>
+                        </t>
+                        <t t-if="not line.currency_name">
+                            <div class="act_as_cell"><span t-field="line.amount_total_due_currency"/></div>
+                            <div class="act_as_cell"><span t-field="line.amount_residual_currency"/></div>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </template>
+
+    <template id="ebits_custom_account.report_open_items_qweb_ending_cumul">
+        <div class="act_as_table list_table" style="width: 1240px !important;">
+            <div class="act_as_row labels" style="font-weight: bold;">
+                <t t-if='type == "account_type"'>
+                    <div class="act_as_cell first_column" style="width: 395px;"><span t-field="account_or_partner_object.code"/> - <span t-field="account_or_partner_object.name"/></div>
+                    <div class="act_as_cell right" style="width: 395px;">Ending balance</div>
+                </t>
+                <t t-if='type == "partner_type"'>
+                    <div class="act_as_cell first_column" style="width: 395px;"></div>
+                    <div class="act_as_cell right" style="width: 395px;">Partner ending balance</div>
+                </t>
+                <div class="act_as_cell" style="width: 100px;"></div>
+                <div class="act_as_cell amount" style="width: 100px;"></div>
+                <div class="act_as_cell amount" style="width: 100px;"><span t-field="account_or_partner_object.final_amount_residual"/></div>
+                <t t-if="has_second_currency">
+                    <t t-if='type == "account_type"'>
+                        <div class="act_as_cell amount" style="width: 50px;"></div>
+                        <div class="act_as_cell amount" style="width: 200px;"></div>
+                    </t>
+                    <t t-if='type == "partner_type"'>
+                        <div class="act_as_cell amount" style="width: 50px;"></div>
+                        <div class="act_as_cell amount" style="width: 200px;"><span t-field="account_or_partner_object.final_amount_residual_currency"/></div>
+                    </t>
+                </t>
+            </div>
+        </div>
+    </template>
+
+</odoo>

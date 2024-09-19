@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="filter_invoice_salesmanager" model="ir.filters">
+            <field name="name">By Sales Manager</field>
+            <field name="model_id">account.invoice.report</field>
+            <field name="domain">[]</field>
+            <field name="user_id" eval="False"/>
+            <field name="context">{'group_by': ['date:month', 'sales_manager_id']}</field>
+        </record>
+        
+        <record id="filter_invoice_team" model="ir.filters">
+            <field name="name">By Team</field>
+            <field name="model_id">account.invoice.report</field>
+            <field name="domain">[]</field>
+            <field name="user_id" eval="False"/>
+            <field name="context">{'group_by': ['date:month', 'team_id']}</field>
+        </record>
+        
+        <record id="filter_invoice_region" model="ir.filters">
+            <field name="name">By Region</field>
+            <field name="model_id">account.invoice.report</field>
+            <field name="domain">[]</field>
+            <field name="user_id" eval="False"/>
+            <field name="context">{'group_by': ['date:month', 'region_id']}</field>
+        </record>
+        
+        <record id="filter_invoice_area" model="ir.filters">
+            <field name="name">By Area</field>
+            <field name="model_id">account.invoice.report</field>
+            <field name="domain">[]</field>
+            <field name="user_id" eval="False"/>
+            <field name="context">{'group_by': ['date:month', 'area_id']}</field>
+        </record>
+        
+        <record id="filter_invoice_warehouse" model="ir.filters">
+            <field name="name">By Warehouse</field>
+            <field name="model_id">account.invoice.report</field>
+            <field name="domain">[]</field>
+            <field name="user_id" eval="False"/>
+            <field name="context">{'group_by': ['date:month', 'warehouse_id']}</field>
+        </record>
+
+        <record id="view_account_invoice_report_search_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.report.search</field>
+            <field name="model">account.invoice.report</field>
+            <field name="inherit_id" ref="account.view_account_invoice_report_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='invoice_date_due']" position="after">
+                    <filter string="Pro-forma" name="pro_forma" domain="[('state', '=', 'proforma')]"/>
+                    <filter string="Pending For Approval" name="approval" domain="[('state', '=', 'proforma2')]"/>
+                </xpath>
+                <xpath expr="//field[@name='product_categ_id']" position="after">
+                    <field name="warehouse_id"/>
+                </xpath>
+                <xpath expr="//field[@name='product_categ_id']" position="after">
+                    <field name="region_id"/>
+                    <field name="area_id"/>
+                    <field name="sales_manager_id"/>
+                    <field name="team_id"/>
+                </xpath>
+                <xpath expr="//group/filter[@name='user']" position="before">
+                    <filter string="Region" name='region' context="{'group_by': 'region_id'}"/>
+                    <filter string="Area" name='area' context="{'group_by': 'area_id'}"/>
+                    <filter string="Manager" name='manager' context="{'group_by': 'sales_manager_id'}"/>
+                    <filter string="Team" name='team' context="{'group_by': 'team_id'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

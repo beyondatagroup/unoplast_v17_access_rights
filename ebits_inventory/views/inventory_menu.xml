@@ -1,0 +1,57 @@
+<odoo>
+
+        <menuitem id="material_move_root_menu" 
+            name="Material Moves" 
+            sequence="50"
+            web_icon="ebits_inventory,static/description/icon_menu.png"/>
+
+        <menuitem id="menu_cloth_order" 
+            name="Cloth Orders" 
+            sequence="3" 
+            parent="material_move_root_menu"
+            groups="ebits_inventory.group_raw_material_issue_user,ebits_inventory.group_raw_material_issue_manager"/>
+            
+        <menuitem id="menu_material_request" 
+            name="Material Requests" 
+            sequence="4" 
+            parent="material_move_root_menu"
+            groups="ebits_inventory.group_material_request_user,ebits_inventory.group_material_request_manager"/>
+            
+        <menuitem id="menu_material_issue" 
+            name="Material Issue" 
+            sequence="5" 
+            parent="material_move_root_menu"
+            groups="ebits_inventory.group_material_issue_user"/>
+            
+        <menuitem id="menu_material_return" 
+            name="Material Return" 
+            sequence="6" 
+            parent="material_move_root_menu"
+            groups="ebits_inventory.group_material_return_user"/>
+            
+
+        <menuitem id="menu_internal_stock_transfer" 
+            name="Internal Stock Transfers" sequence="2" 
+            parent="material_move_root_menu" 
+            groups="ebits_inventory.group_internal_stock_request_user,ebits_inventory.group_internal_stock_request_manager,ebits_inventory.group_internal_stock_issue_user"/>
+            
+        <menuitem id="material_move_reporting_menu" 
+            name="Reporting" 
+            sequence="10" 
+            parent="material_move_root_menu"
+            />
+            
+        <menuitem id="material_move_scheduler_menu" 
+            name="Scheduler" 
+            sequence="11" 
+            parent="material_move_root_menu"
+            groups="base.group_no_one"
+            />
+            
+        <menuitem id="material_move_configuration_menu" 
+            name="Configuration" 
+            sequence="15" 
+            parent="material_move_root_menu"
+            groups="ebits_inventory.group_internal_stock_request_manager"
+            />
+</odoo>

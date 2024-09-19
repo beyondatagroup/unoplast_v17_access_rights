@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="po_register_billing_detail_report_wizard_form" model="ir.ui.view">
+        <field name="name">Purchase Orders-Billing Detailed</field>
+        <field name="model">po.register.billing.detail.register.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="warehouse_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                        <field  name="partner_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+<!--                        <field domain="[('supplier', '=', True)]" name="partner_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>-->
+                        <field name="currency_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="date_to"/>
+                        <field  name="category_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                        <field  name="product_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+<!--                        <field domain="[('type', '=', 'normal')]" name="category_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>-->
+<!--                        <field domain="[('purchase_ok', '=', True)]" name="product_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>-->
+                        <field name="state"/>
+                    </group>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_po_register_billing_detail_report_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Orders-Billing Detailed</field>
+        <field name="res_model">po.register.billing.detail.register.report.wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="po_register_billing_detail_report_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_po_register_billing_detail_report_wizard"
+              id="sub_menu_purchase_register_billing_detail_report"
+              name="Purchase Orders-Billing Detailed" parent="purchase.purchase_report" sequence="11"/>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+ebits_custom_hr.access_loan_type,access_loan_type,ebits_custom_hr.model_loan_type,base.group_user,1,1,1,1
+ebits_custom_hr.access_hr_loan,access_hr_loan,ebits_custom_hr.model_hr_loan,base.group_user,1,1,1,1
+ebits_custom_hr.access_hr_loan_emi_line,access_hr_loan_emi_line,ebits_custom_hr.model_hr_loan_emi_line,base.group_user,1,1,1,1

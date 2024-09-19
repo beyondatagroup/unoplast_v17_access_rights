@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="report_purchase_order_rml"
+            string="Purchase Order"
+            model="purchase.order" 
+            report_type="pdf"
+            rml="ebits_custom_purchase/report/purchase_order_report_rml.rml" 
+            name="purchase.order.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_purchase_order_service_rml"
+            string="Service Purchase Order"
+            model="purchase.order" 
+            report_type="pdf"
+            rml="ebits_custom_purchase/report/purchase_order_service_report_rml.rml" 
+            name="purchase.order.service.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_purchase_requisition_rml"
+            string="Purchase Requisition"
+            model="purchase.requisition.extend" 
+            report_type="pdf"
+            rml="ebits_custom_purchase/report/purchase_requisition_report_rml.rml" 
+            name="purchase.requisition.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            string="Purchase Order" 
+            id="purchase.action_report_purchase_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="purchase.report_purchaseorder" 
+            file="purchase.report_purchaseorder" 
+            menu="False"
+        />
+
+        <report 
+            string="Request for Quotation" 
+            id="purchase.report_purchase_quotation" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="purchase.report_purchasequotation" 
+            file="purchase.report_purchasequotation"
+            menu="False"
+        />        
+</odoo>

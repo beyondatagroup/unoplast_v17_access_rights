@@ -1,0 +1,43 @@
+<odoo>
+        <record id="lc_report_wizard_form" model="ir.ui.view">
+            <field name="name">LC Report Wizard</field>
+            <field name="model">lc.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Generate Report">
+                    <group>
+                        <group>                    
+                            <field name="lc_no_id" options="{'no_open':True, 'no_create':True}"/>
+                        </group>
+                        <group>
+                            <field name="account_id" options="{'no_open':True, 'no_create':True}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_print_report_pdf" string="Generate PDF Report" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_lc_report_wizard" model="ir.actions.act_window">
+            <field name="name">Generate LC Report</field>
+             <field name="res_model">lc.report.wizard</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="lc_report_wizard_form"/>
+             <field name="context">{}</field>
+             <field name="target">new</field>
+        </record>
+
+        <menuitem 
+            id="sub_menu_lc_report_wizard" 
+            name="LC Report" 
+            sequence="12" 
+            parent="account.menu_finance_reports" 
+            action="action_lc_report_wizard"
+            />
+        
+</odoo>

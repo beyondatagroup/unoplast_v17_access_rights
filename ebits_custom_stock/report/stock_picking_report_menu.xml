@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="report_stock_picking_report_rml"
+            string="Delivery Order"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stock_picking_rml_report.rml" 
+            name="stock.picking.rml.report" 
+        />
+        
+        <report 
+            id="report_stock_picking_report_pack_rml"
+            string="Picking Slip"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stock_picking_pack_rml_report.rml" 
+            name="stock.picking.pack.rml.report" 
+        />
+        
+        <report 
+            id="report_stock_picking_in_report_pack_rml"
+            string="Goods Receipt Note"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stock_picking_in_pack_rml_report.rml" 
+            name="stock.picking.in.pack.rml.report" 
+        />
+        
+        <report 
+            id="report_stock_picking_sales_return_report_rml"
+            string="Sales Return Note"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stock_picking_sales_return_rml_report.rml" 
+            name="stock.picking.sales.return.rml.report" 
+        />
+        
+        <report 
+            id="report_stock_picking_purchase_return_report_rml"
+            string="Purchase Return Note"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stock_picking_purchase_return_rml_report.rml" 
+            name="stock.picking.purchase.return.rml.report" 
+        />
+        
+        <report
+            string="Delivery Slip"
+            id="stock.action_report_delivery"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="stock.report_deliveryslip"
+            file="stock.report_deliveryslip"
+            menu="False"
+        />
+        
+        <report
+            string="Picking Operations"
+            id="stock.action_report_picking"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="stock.report_picking"
+            file="stock.report_picking_operations"
+            menu="False"
+        />
+        
+        <report 
+            id="report_stock_picking_internal_issue_report_rml"
+            string="Internal Stock Issue"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stock_picking_internal_issue_rml_report.rml" 
+            name="stock.picking.internal.issue.rml.report" 
+        />
+        
+</odoo>

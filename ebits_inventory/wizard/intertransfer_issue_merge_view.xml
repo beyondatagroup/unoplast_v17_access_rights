@@ -1,0 +1,33 @@
+<odoo>
+        <record id="inter_transfer_issue_merge_wizard" model="ir.ui.view">
+            <field name="name">Inter Transfer Issue Merge Wizard</field>
+            <field name="model">inter.transfer.issue.merge</field>
+            <field name="arch" type="xml">
+                <form string="Inter Transfer Issue Merge">
+                <group>
+                    <p>
+                        All the selected issues will be merged into single issue as per your requirement 
+                        Are you sure want to do it ?.
+                        <i>Note : This process cannot be reversed</i>
+                    </p>
+                </group>
+                    <footer>
+                        <button name="action_merge" string="Merge" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <act_window
+            id="act_inter_transfer_issue_merge"
+            name="Merge Issues"
+            res_model="inter.transfer.issue.merge"
+            src_model="internal.stock.transfer.issue"
+            view_mode="form"
+            target="new"
+            multi="True"
+            key2="client_action_multi"
+            />
+        
+</odoo>

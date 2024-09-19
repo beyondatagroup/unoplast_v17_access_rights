@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="purchase_cancel_reason_wizard_form" model="ir.ui.view">
+        <field name="name">Purchase Requisition Cancel Reason</field>
+        <field name="model">purchase.cancel.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Requisition Cancel Reason Form">
+                <group>
+                    <field name="purchase_req_id" readonly="1"/>
+                    <field name="name"/>
+                </group>
+                <footer>
+                    <button name="action_cancel" type="object" string="Done"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_cancel_reason_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Requisition Cancel Reason</field>
+        <field name="res_model">purchase.cancel.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_purchase_req_id' : context.get('active_id', False)}</field>
+    </record>
+
+
+    <!--    <record id="action_purchase_cancel_reason_wizard" model="ir.actions.act_window">-->
+    <!--        <field name="name">Purchase Requisition Cancel Reason</field>-->
+    <!--        <field name="res_model">purchase.cancel.reason.wizard</field>-->
+    <!--        <field name="view_type">form</field>-->
+    <!--        <field name="view_mode">form</field>-->
+    <!--        <field name="view_id" ref="purchase_cancel_reason_wizard_form"/>-->
+    <!--        <field name="context">{'default_purchase_req_id': context.get('active_id', False)}</field>-->
+    <!--        <field name="target">new</field>-->
+    <!--    </record>-->
+
+    <record id="purchase_resend_reason_wizard_form" model="ir.ui.view">
+        <field name="name">Purchase Requisition Resend Reason</field>
+        <field name="model">purchase.resend.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Requisition Resend Reason Form">
+                <group>
+                    <field name="purchase_req_id" readonly="1"/>
+                    <field name="name"/>
+                </group>
+                <footer>
+                    <button name="action_resend" type="object" string="Done"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_resend_reason_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Requisition Resend Reason</field>
+        <field name="res_model">purchase.resend.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_purchase_req_id': context.get('active_id', False)}</field>
+    </record>
+
+
+    <record id="purchase_requisition_wizard_form" model="ir.ui.view">
+        <field name="name">Purchase Requisition</field>
+        <field name="model">purchase.requisition.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Requisition Form">
+                <group>
+                    <field name="order_id"/>
+                </group>
+                <group>
+                    <group>
+                        <button name="action_select_all" type="object" string="Select All" class="oe_highlight"/>
+                    </group>
+                    <group>
+                        <button name="action_deselect_all" type="object" string="Deselect All" class="oe_highlight"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Purchase Requisition Lines">
+                        <field name="requisition_line" widget="one2many_list">
+                            <tree editable="bottom" create="0" delete="0">
+                                <field name="requisition_id" force_save="1"/>
+                                <field name="date_requisition" force_save="1"/>
+                                <field name="product_id" force_save="1"/>
+                                <field name="uom_id" force_save="1"/>
+                                <field name="date_required" force_save="1"/>
+                                <field name="approved_qty" force_save="1"/>
+                                <field name="po_ordered_qty" force_save="1"/>
+                                <field name="po_approved" force_save="1"/>
+                                <field name="pending_qty" force_save="1"/>
+                                <field name="pr_line_id" force_save="1" invisible="1"/>
+
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_get_product_list" type="object" string="Update"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_purchase_requisition_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Requisition</field>
+        <field name="res_model">purchase.requisition.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+    <record id="purchase_force_closed_reason_wizard_form" model="ir.ui.view">
+        <field name="name">Purchase Requisition Force Close Reason</field>
+        <field name="model">purchase.force.closed.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Requisition Force Closed Reason Form">
+                <group>
+                    <field name="name"/>
+                </group>
+                <footer>
+                    <button name="action_force_closed" type="object" string="Done" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_force_closed_reason_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase Requisition Force Close Reason</field>
+        <field name="res_model">purchase.force.closed.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,412 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+<!--        <menuitem id="sub_menu_auto_scheduler_request_wizard"-->
+<!--                  sequence="1"-->
+<!--                  parent="material_move_scheduler_menu"-->
+<!--                  action="ebits_inventory.action_auto_scheduler_request_wizard"-->
+<!--                  />-->
+
+        <record id="internal_stock_transfer_master_tree" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Master</field>
+            <field name="model">internal.stock.transfer.master</field>
+            <field name="arch" type="xml">
+                <tree string="Internal Stock Transfer Master">
+                    <field name="name"/>
+                    <field name="requesting_warehouse_id"/>
+                    <field name="issuing_warehouse_id"/>
+                    <field name="allow_auto_request"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_master_form" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Master</field>
+            <field name="model">internal.stock.transfer.master</field>
+            <field name="arch" type="xml">
+                <form string="Internal Stock Transfer Master">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="allow_auto_request"/>
+                                <p style="color:red;">
+                                    <i>
+                                        Note : Only branch can be selected for auto inter transfer request generation.
+                                    </i>
+                                </p>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Request">
+                                <field name="requesting_warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                            <group string="Issue">
+                                <field name="issuing_warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+                <record id="internal_stock_transfer_master_search" model="ir.ui.view">
+                    <field name="name">Internal Stock Transfer Master</field>
+                    <field name="model">internal.stock.transfer.master</field>
+                    <field name="arch" type="xml">
+                        <search string="Search Internal Stock Transfer Master">
+                            <field name="name"/>
+                            <field name="requesting_warehouse_id"/>
+                            <field name="issuing_warehouse_id"/>
+                            <filter name="active" string="Active" domain="[('active', '=', True)]" context="{}"/>
+                            <filter name="inactive" string="In Active" domain="[('active', '!=', True)]" context="{}"/>
+                            <filter name="allow_auto_request" string="Auto Request Warehouse(s)" domain="[('allow_auto_request', '=', True)]" context="{}"/>
+                            <group expand="0" string="Group By">
+                                <filter string="Requesting Warehouse/Branch" domain="[]" name="requesting_warehouse_id" context="{'group_by': 'requesting_warehouse_id'}"/>
+                                <filter string="Issuing Warehouse/Branch" domain="[]" name="issuing_warehouse_id" context="{'group_by': 'issuing_warehouse_id'}"/>
+                            </group>
+                        </search>
+                    </field>
+                </record>
+
+        <record id="action_internal_stock_transfer_master_lines" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Master</field>
+            <field name="res_model">internal.stock.transfer.master</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="sub_menu_internal_stock_transfer_master"
+                  sequence="1"
+                  parent="ebits_inventory.material_move_configuration_menu"
+                  action="ebits_inventory.action_internal_stock_transfer_master_lines"
+        />
+
+
+        <record id="action_internal_stock_transfer_request_receipt" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">internal.stock.transfer.receipt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('request_id', '=', active_id)]</field>
+        </record>
+
+        <record id="internal_stock_transfer_request_tree" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="model">internal.stock.transfer.request</field>
+            <field name="arch" type="xml">
+                <tree string="Internal Stock Transfer Request">
+                    <field name="name"/>
+                    <field name="date_requested"/>
+                    <field name="date_required" invisible="1"/>
+                    <field name="requesting_warehouse_id"/>
+                    <field name="required_location_id" invisible="1"/>
+                    <field name="approver_user_id"/>
+                    <field name="date_approved"/>
+                    <field name="warehouse_master_id" options="{'no_open': True, 'no_create': True}"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_request_form" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="model">internal.stock.transfer.request</field>
+            <field name="arch" type="xml">
+                <form string="Internal Stock Transfer Request" readonly="state in ['done','cancelled']">
+                    <header>
+                        <!--                         <button name="action_send_approval" string="Send For Approval" type="object" states="draft"-->
+                        <!--                                class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_user"/>-->
+                        <!--                        <button name="action_approve" string="Approve" type="object" states="waiting"-->
+                        <!--                                class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_manager"/>-->
+                        <!--                        <button name="action_reedit" string="Re-Edit" type="object" states="waiting"-->
+                        <!--                                class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_manager"/>-->
+                        <!--                        <button name="%(action_reject_stock_transfer_request)d" string="Reject" type="action"-->
+                        <!--                                states="waiting" class="oe_highlight"-->
+                        <!--                                groups="ebits_inventory.group_internal_stock_request_manager"/>-->
+                        <button name="action_send_approval" string="Send For Approval" type="object" invisible="state not in ['draft']"
+                                class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_user"/>
+                        <button name="action_approve" string="Approve" type="object" invisible="state not in ['waiting']"
+                                class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_manager"/>
+                        <button name="action_reedit" string="Re-Edit" type="object" invisible="state not in ['waiting']"
+                                class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_manager" />
+                        <button name="%(action_reject_stock_transfer_request)d" string="Reject" type="action"
+                                class="oe_highlight" invisible="state not in ['waiting']"
+                                groups="ebits_inventory.group_internal_stock_request_manager"/>
+                         <button name="print_internal_stock_transfer_request" string="Print" type="object"
+                                class="oe_highlight" invisible="state not in ['done']"
+                                groups="ebits_inventory.group_internal_stock_request_manager"/>
+
+                        <!--                        <button name="%(action_internal_stock_transfer_request_receipt)d" string="Receipts" type="action" states="done" class="oe_highlight" groups="ebits_inventory.group_internal_stock_request_user"/>-->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,cancelled"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="date_required" readonly="state in ['done','waiting','cancelled']"/>
+                                <field name="requester" readonly="state in ['done','waiting','cancelled']"
+                                />
+                                <field name="approver_user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="date_approved"/>
+                                <field name="requesting_warehouse_id" options="{'no_open': True, 'no_create': True}"
+                                       readonly="state in ['done','waiting','cancelled']"
+                                />
+                                <field name="required_location_id" options="{'no_open': True, 'no_create': True}"
+                                       readonly="state in ['done','waiting','cancelled']"
+
+                                       domain="[('usage', '=', 'internal')]"/>
+                            </group>
+                            <group>
+                                <field name="date_requested"/>
+                                <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="warehouse_master_id" options="{'no_open': True, 'no_create': True}"
+                                       required="1" domain="[('requesting_warehouse_id', '=', requesting_warehouse_id)]"
+                                       readonly="state in ['done','waiting','cancelled']"
+                                />
+                                <field name="issue_id" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+
+                                <button name="action_check_stock" string="Check Stock" type="object"
+                                        class="oe_highlight" invisible="state not in ['draft','waiting']"/>
+                            </group>
+                        </group>
+                        <newline/>
+                        <notebook>
+                            <page string="Internal Stock Transfer Request Lines">
+                                <field name="request_lines" widget="one2many_list" readonly="state in ['done','cancelled']"
+
+                                       context="{'default_date_required': date_required}">
+                                    <form string="Internal Stock Transfer Request Lines">
+                                        <group>
+                                            <group>
+                                                <field name="product_id" />
+                                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="required_qty"/>
+                                                <field name="date_required"/>
+                                                <field name="qty" readonly="state in ['draft']"/>
+                                                <field name="req_loc_stock" readonly="state in ['draft']"/>
+                                                <field name="dest_loc_stock" readonly="state in ['draft']"/>
+                                                <field name="remarks" readonly="state in ['draft']"/>
+                                                <field name="state" readonly="state in ['draft']"/>
+                                            </group>
+                                            <!--                                            <group>-->
+                                            <!--                                                <field name="issued_qty"/>-->
+                                            <!--                                                <field name="received_qty"/>-->
+                                            <!--                                                <field name="pending_issue_qty"/>-->
+                                            <!--                                                <field name="pending_receipt_qty"/>-->
+                                            <!--                                            </group>-->
+                                        </group>
+                                    </form>
+                                    <tree editable="bottom">
+                                        <field name="product_id" options="{'no_open': True, 'no_create': True}"
+                                               domain="[('type', '!=', 'service')]" readonly="state not in ['draft']"/>
+                                        <field name="uom_id" options="{'no_open': True, 'no_create': True}" readonly="state not in ['draft']"/>
+                                        <field name="required_qty" readonly="state not in ['draft']"/>
+                                        <field name="date_required" readonly="state not in ['draft']"/>
+                                        <field name="qty" readonly="state not in ['waiting']"/>
+                                        <field name="req_loc_stock" readonly="state in ['draft','waiting']"/>
+                                        <field name="dest_loc_stock" readonly="state in ['draft','waiting']"/>
+                                        <field name="remarks" readonly="state not in ['waiting']"/>
+                                        <field name="state" />
+                                    </tree>
+                                </field>
+                                <group>
+                                    <field name="total_quantity_based_uom"/>
+                                </group>
+                            </page>
+                            <page string="History">
+                                <h3>History</h3>
+
+                                <field name="history" readonly="1"/>
+
+                                <field name="move_lines" invisible="1"/>
+                            </page>
+                            <page string="Remarks">
+                                <group>
+                                    <field name="remarks"
+                                           readonly="state in ['done','waiting','cancelled']"
+                                    />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_request_search" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Request Search</field>
+            <field name="model">internal.stock.transfer.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Internal Stock Transfer Request">
+                    <field name="name"/>
+                    <field name="date_requested"/>
+                    <field name="date_required"/>
+                    <field name="requesting_warehouse_id"/>
+                    <field name="required_location_id"/>
+                    <field name="approver_user_id"/>
+                    <field name="date_approved"/>
+                    <field name="warehouse_master_id"/>
+                    <field name="state"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Creator" name="user" context="{'group_by': 'user_id'}"/>
+                        <filter string="Approver" name="approver_user_id" context="{'group_by': 'approver_user_id'}"/>
+                        <filter string="Requesting Warehouse/Branch" name="requesting_warehouse_id" context="{'group_by': 'requesting_warehouse_id'}"/>
+                        <filter string="Issuing Warehouse/Branch" name="warehouse_master_id" context="{'group_by': 'warehouse_master_id'}"/>
+                        <filter string="Required Location" name="required_location_id" context="{'group_by': 'required_location_id'}"/>
+                        <filter string="State" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_request_lines_tree" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Request Lines Tree</field>
+            <field name="model">internal.stock.transfer.request.lines</field>
+            <field name="arch" type="xml">
+                <tree string="Internal Stock Transfer Request Lines" create="0" edit="0">
+                    <field name="request_id"/>
+                    <field name="product_id"/>
+                    <field name="uom_id"/>
+                    <field name="requesting_warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                    <field name="warehouse_master_id" options="{'no_open': True, 'no_create': True}"/>
+                    <field name="required_qty"/>
+                    <field name="date_required"/>
+                    <field name="qty"/>
+                    <!--                    <field name="dest_loc_stock"/>-->
+                    <!--                    <field name="issued_qty"/>-->
+                    <field name="state"/>
+                    <!--                    <field name="received_qty"/>-->
+                    <!--                    <field name="pending_issue_qty"/>-->
+                    <!--                    <field name="pending_receipt_qty"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_request_lines_form" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Request Lines Form</field>
+            <field name="model">internal.stock.transfer.request.lines</field>
+            <field name="arch" type="xml">
+                <form string="Internal Stock Transfer Request Lines" create="0" edit="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,cancelled"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="uom_id"/>
+                                <field name="required_qty"/>
+                                <field name="date_required"/>
+                                <field name="qty"/>
+                                <!--                                <field name="dest_loc_stock"/>-->
+                                <field name="remarks"/>
+                                <field name="state"/>
+                            </group>
+                            <group>
+                                <field name="requesting_warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="warehouse_master_id" options="{'no_open': True, 'no_create': True}"
+                                       required="1"/>
+                                <!--                                <field name="issued_qty"/>-->
+                                <!--                                <field name="received_qty"/>-->
+                                <!--                                <field name="pending_issue_qty"/>-->
+                                <!--                                <field name="pending_receipt_qty"/>-->
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+                <record id="internal_stock_transfer_request_lines_search" model="ir.ui.view">
+                    <field name="name">Internal Stock Transfer Request Lines Search</field>
+                    <field name="model">internal.stock.transfer.request.lines</field>
+                    <field name="arch" type="xml">
+                        <search string="Search Internal Stock Transfer Request Lines">
+                            <field name="request_id"/>
+                            <field name="product_id"/>
+                            <field name="uom_id"/>
+                            <field name="requesting_warehouse_id"/>
+                            <field name="warehouse_master_id"  options="{'no_open': True, 'no_create': True}" required="1"/>
+                            <field name="date_required"/>
+                            <field name="state"/>
+                            <group expand="0" string="Group By">
+                                <filter string="Product" domain="[]" name="product_id" context="{'group_by': 'product_id'}"/>
+                                <filter string="Requesting Warehouse/Branch" name="requesting_warehouse_id" domain="[]" context="{'group_by': 'requesting_warehouse_id'}"/>
+                                <filter string="Issuing Warehouse/Branch" name="warehouse_master_id" domain="[]" context="{'group_by': 'warehouse_master_id'}"/>
+                                <filter string="State" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                            </group>
+                        </search>
+                    </field>
+                </record>
+
+        <record id="action_internal_stock_transfer_request_draft" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'draft'),('requesting_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request_waiting" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'waiting'),('requesting_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request_done" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'done'),('requesting_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request_cancel" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'cancelled'),('requesting_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request_all" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request_new" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">form,tree</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request</field>
+            <field name="res_model">internal.stock.transfer.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_request_lines" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Request Lines</field>
+            <field name="res_model">internal.stock.transfer.request.lines</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="sub_menu_internal_stock_transfer_request"
+                  name="Request" sequence="2"
+                  parent="menu_internal_stock_transfer"
+                  action="action_internal_stock_transfer_request"
+                  groups="ebits_inventory.group_internal_stock_request_user,ebits_inventory.group_internal_stock_request_manager"/>
+
+        <menuitem id="sub_menu_internal_stock_transfer_request_lines"
+                  name="Request Lines" sequence="3"
+                  parent="menu_internal_stock_transfer"
+                  action="action_internal_stock_transfer_request_lines"
+                  groups="ebits_inventory.group_internal_stock_request_user,ebits_inventory.group_internal_stock_request_manager"/>
+    </data>
+</odoo>

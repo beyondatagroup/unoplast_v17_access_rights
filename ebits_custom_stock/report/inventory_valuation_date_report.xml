@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="paperformat_ebits_custom_stock_9" model="report.paperformat">
+        <field name="name">Inventory Valuation Date Report</field>
+        <field name="default" eval="True" />
+        <field name="format">custom</field>
+        <field name="page_height">297</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">23</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">20</field>
+        <field name="dpi">94</field>
+    </record>
+    <record id="ebits_custom_stock.report_inventory_valuation_date_action" model="ir.actions.report">
+        <field name="name">Inventory Valuation Report</field>
+        <field name="model">inventory.valuation.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ebits_custom_stock.report_inventory_valuation_date</field>
+        <field name="report_file">ebits_custom_stock.report_inventory_valuation_date</field>
+        <field name="binding_model_id" ref="ebits_custom_stock.model_inventory_valuation_report_wizard" />
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="ebits_custom_stock.paperformat_ebits_custom_stock_9" />
+    </record>
+    <template id="report_inventory_valuation_date">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div>
+                        <style>
+                          
+                            <!-- .report-container {
+                                border: 1px solid lightgray;
+                                padding: 20px;
+                                max-width: 900px;
+                                margin: 0 auto;
+                                font-weight: bold;
+                            } -->
+                            .report-header {
+                                text-align: center;
+                                margin-bottom: 20px;
+                                font-weight: bold;
+                            }
+                            .report-header h1 {
+                                margin: 0;
+                                font-size: 15px;
+                                font-weight: normal;
+                            }
+                            .report-header h2 {
+                                margin: 5px 0;
+                                font-size: 13px;
+                                font-weight: normal;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+                            table, th, td {
+                                border: 1px solid lightgray;
+                                font-size: 11px;
+                            }
+                            th, td {
+                                padding: 5px;
+                                text-align: center;
+                            }
+                            .grand-total {
+                                text-align: right;
+                                font-weight: bold;
+                                padding-right: 8px;
+                            }
+                            <!-- .signature-section {
+                                text-align: right;
+                                margin-top: 50px;
+                                font-size: 13px;
+                            }
+                            .signature-section p {
+                                margin: 0;
+                            } -->
+                        </style>
+                        <div class="report-container">
+                            <div class="report-header">
+                                <h1>Unoplast (T) Ltd</h1>
+                                <h2>Inventory Valuation Report (As on Date <t t-esc="o.date.strftime('%d/%m/%Y')"/>)</h2>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>
+                                            <t t-esc="o.summary and (o.report_type == 'product' and 'Product Category' or 'Location') or 'Location'"/>
+                                        </th>
+                                        <th>
+                                            <t t-esc="o.summary and (o.report_type == 'product' and 'Product' or 'Product Category') or 'Product Category'"/>
+                                        </th>
+                                        <th>
+                                            <t t-esc="o.summary and (o.report_type == 'product' and 'Location' or 'Product') or 'Product'"/>
+                                        </th>
+                                        <th>UOM</th>
+                                        <th>Quantity</th>
+                                        <th>Inventory Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="s_no" t-value="1" />
+                                    <t t-foreach="o.action_print_report_date_rml()" t-as="line">
+                                        <tr>
+                                            <td class="text-center" style="padding: 10px;">
+                                                <t t-esc="s_no" />
+                                            </td>
+                                            <t t-set="s_no" t-value="s_no + 1" />
+                                            <td>
+                                                <t t-esc="line['location']"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line['category']"/>
+                                                
+                                            </td>
+                                            <td>
+                                                <t t-esc="line['product']"/>
+                                                
+                                            </td>
+                                            <td>
+                                                <t t-esc="line['uom']"/>
+                                                
+                                            </td>
+                                            <td>
+                                                <t t-esc="line['quantity']"/>
+                                                
+                                            </td>
+                                            <td>
+                                                <t t-esc="round(line['inventory_value'],2)"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td colspan="5" class="grand-total">Grand Total</td>
+                                        <td><t t-esc="round(o.total_qty,2)"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td style="text-align: right;" colspan="7">
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <br />
+                                      for
+                                            <b>Unoplast (T) Ltd</b>
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <br />
+                                            Authorised Signature
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

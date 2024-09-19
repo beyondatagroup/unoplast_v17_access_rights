@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="internal_stock_transfer_receipt_detailed_report_wizard_form" model="ir.ui.view">
+        <field name="name">Internal Stock Transfer Receipt Report</field>
+        <field name="model">internal.stock.transfer.receipt.register.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="receive_type"/>
+                        <field invisible="receive_type == 'pending_received' or receive_type == False" name="date_from"
+                               required="receive_type == 'completed_received'"/>
+                        <field invisible="receive_type == 'pending_received' or receive_type == False" name="date_to"
+                               required="receive_type == 'completed_received'"/>
+                    </group>
+                    <group>
+                        <field name="warehouse_ids" options="{'no_open':True, 'no_create':True}"
+                               widget="many2many_tags"/>
+                        <field invisible="warehouse_type == False" name="issuing_warehouse"/>
+                        <field name="product_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                        <field invisible="1" name="warehouse_type"/>
+                    </group>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_print_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_internal_stock_transfer_receipt_detailed_report_wizard" model="ir.actions.act_window">
+        <field name="name">Internal Stock Transfer Receipt Report</field>
+        <field name="res_model">internal.stock.transfer.receipt.register.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_internal_stock_transfer_receipt_detailed_report_wizard"
+              groups="ebits_inventory.group_material_request_user,ebits_inventory.group_material_issue_user"
+              id="menu_internal_stock_transfer_receipt_detailed_report" name="Internal Stock Transfer Receipt Report"
+              parent="material_move_reporting_menu" sequence="03"/>
+</odoo>

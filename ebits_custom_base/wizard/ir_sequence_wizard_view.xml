@@ -1,0 +1,35 @@
+<odoo>
+    
+        <record id="ir_sequence_sub_sequence_wizard_form" model="ir.ui.view">
+            <field name="name">Ir Sequence Sub Sequence Wizard Form</field>
+            <field name="model">ir.sequence.sub.sequence.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Periodic Sequence">
+                    <group> 
+                        <group>   
+                            <field name="sequence_id" readonly="1"/>        
+                            <field name="year"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_create_sub_sequence" string="Create Periodic Sequence" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_ir_sequence_sub_sequence_wizard" model="ir.actions.act_window">
+            <field name="name">Create Periodic Sequence</field>
+             <field name="res_model">ir.sequence.sub.sequence.wizard</field>
+             <field name="type">ir.actions.act_window</field>
+<!--             <field name="view_type">form</field>-->
+             <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="ir_sequence_sub_sequence_wizard_form"/>
+             <field name="context">{'default_sequence_id': context.get('active_id', False)}</field>
+             <field name="target">new</field>
+        
+        </record>
+        
+</odoo>

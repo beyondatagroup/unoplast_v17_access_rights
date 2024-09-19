@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="ebits_custom_account.report_aged_partner_balance_other_qweb">
+        <t t-call="report.html_container">
+            <t t-set="data_report_margin_top" t-value="12"/>
+            <t t-set="data_report_header_spacing" t-value="9"/>
+            <t t-set="data_report_dpi" t-value="110"/>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="show_move_line_details" t-value="o.show_move_line_details"/>
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <h2><span t-esc="res_company.name"/> : Aged Partner Balance</h2>
+                        <div class="row mt32">
+                            <div class="col-xs-4">
+                                <strong>Date at filter</strong>
+                                <span t-field="o.date_at"/>
+                            </div>
+                            <div class="col-xs-4">
+                                <strong>Target Moves:</strong>
+                                <t class="text-center" t-if="o.only_posted_moves">All Posted Entries</t>
+                                <t class="text-center" t-if="not o.only_posted_moves">All Entries</t>
+                            </div>
+                        </div>
+                        <t t-foreach="o.account_ids" t-as="account">
+                            <div class="page_break">
+                                <div class="act_as_table list_table" style="margin-top: 10px;"/>
+                                <div class="act_as_caption account_title" style="width: 1541px !important;">
+                                    <br></br>
+                                    <span t-field="account.code"/> - <span t-field="account.name"/>
+                                </div>
+                                <t t-if="not show_move_line_details"><br></br>
+                                    <div class="act_as_table data_table" style="width: 1420px !important;">
+                                        <div class="act_as_thead">
+                                            <div class="act_as_row labels">
+                                                <div class="act_as_cell" style="width: 450px;">Partner</div>
+                                                <div class="act_as_cell" style="width: 150px;">Not Due</div>
+                                                <div class="act_as_cell" style="width: 150px;">0-30</div>
+                                                <div class="act_as_cell" style="width: 150px;">30-60</div>
+                                                <div class="act_as_cell" style="width: 150px;">60-90</div>
+                                                <div class="act_as_cell" style="width: 150px;">90-120</div>
+                                                <div class="act_as_cell" style="width: 150px;">120+</div>
+                                                <div class="act_as_cell" style="width: 200px;">Total</div>
+                                                <div class="act_as_cell" style="width: 30px;"></div>
+                                            </div>
+                                        </div>
+                                        <t t-foreach="account.partner_ids" t-as="partner">
+                                            <t t-foreach="partner.line_ids" t-as="line">
+                                                <div class="act_as_row lines">
+                                                    <div class="act_as_cell left"><span t-field="line.partner"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.current_other"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.age_30_days_other"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.age_60_days_other"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.age_90_days_other"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.age_120_days_other"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.older_other"/></div>
+                                                    <div class="act_as_cell amount"><span t-field="line.amount_residual_other"/></div>
+                                                    <div class="act_as_cell left"><span t-field="line.currency_id.symbol"/></div>
+                                                </div>
+                                            </t>
+                                        </t>
+                                    </div>
+                                    <t t-call="ebits_custom_account.report_aged_partner_balance_qweb_account_ending_cumul_other"/>
+                                </t>
+                                <t t-if="show_move_line_details">
+                                    <t t-foreach="account.partner_ids" t-as="partner">
+                                        <div class="page_break">
+                                            <div class="act_as_caption account_title">
+                                                <br></br>
+                                                <span t-field="partner.name"/>
+                                            </div>
+<!--                                            <t t-call="ebits_custom_account.report_aged_partner_balance_qweb_move_lines"/>-->
+                                            <br></br>
+                                            <div class="act_as_table data_table" style="width: 1420px !important;">
+                                                <div class="act_as_thead">
+                                                    <div class="act_as_row labels">
+                                                        <div class="act_as_cell first_column" style="width: 90px;">Date</div>
+                                                        <div class="act_as_cell" style="width: 160px;">Entry</div>
+                                                        <div class="act_as_cell" style="width: 240px;">Partner</div>
+                                                        <div class="act_as_cell" style="width: 240px;">Ref - Label</div>
+                                                        <div class="act_as_cell" style="width: 90px;">Due date</div>
+                                                        <div class="act_as_cell" style="width: 100px;">Not Due</div>
+                                                        <div class="act_as_cell" style="width: 110px;">0-30</div>
+                                                        <div class="act_as_cell" style="width: 100px;">30-60</div>
+                                                        <div class="act_as_cell" style="width: 100px;">60-90</div>
+                                                        <div class="act_as_cell" style="width: 100px;">90-120</div>
+                                                        <div class="act_as_cell" style="width: 100px;">120+</div>
+                                                        <div class="act_as_cell" style="width: 130px;">Total</div>
+                                                        <div class="act_as_cell" style="width: 30px;"></div>
+                                                    </div>
+                                                </div>
+                                                <t t-foreach="partner.move_line_ids" t-as="line">
+                                                    <div class="act_as_row lines">
+                                                        <div class="act_as_cell left"><span t-field="line.date"/></div>
+                                                        <div class="act_as_cell left"><span t-field="line.entry"/></div>
+                                                        <div class="act_as_cell left"><span t-field="line.partner"/></div>
+                                                        <div class="act_as_cell left"><span t-field="line.label"/></div>
+                                                        <div class="act_as_cell left"><span t-field="line.date_due"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.current_other"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.age_30_days_other"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.age_60_days_other"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.age_90_days_other"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.age_120_days_other"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.older_other"/></div>
+                                                        <div class="act_as_cell amount"><span t-field="line.amount_residual_other"/></div>
+                                                        <div class="act_as_cell left"><span t-field="line.currency_id.symbol"/></div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <t t-call="ebits_custom_account.report_aged_partner_balance_qweb_partner_ending_cumul_other">
+                                                <t t-set="partner_cumul_line" t-value="partner.line_ids"/>
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-call="ebits_custom_account.report_aged_partner_balance_qweb_account_ending_cumul_other"/>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+<!--    <template id="ebits_custom_account.report_aged_partner_balance_qweb_move_lines">-->
+<!--        <br></br>-->
+<!--        <div class="act_as_table data_table" style="width: 1420px !important;">-->
+<!--            <div class="act_as_thead">-->
+<!--                <div class="act_as_row labels">-->
+<!--                    <div class="act_as_cell first_column" style="width: 90px;">Date</div>-->
+<!--                    <div class="act_as_cell" style="width: 160px;">Entry</div>-->
+<!--                    <div class="act_as_cell" style="width: 240px;">Partner</div>-->
+<!--                    <div class="act_as_cell" style="width: 240px;">Ref - Label</div>-->
+<!--                    <div class="act_as_cell" style="width: 90px;">Due date</div>-->
+<!--                    <div class="act_as_cell" style="width: 100px;">Not Due</div>-->
+<!--                    <div class="act_as_cell" style="width: 110px;">0-30</div>-->
+<!--                    <div class="act_as_cell" style="width: 100px;">30-60</div>-->
+<!--                    <div class="act_as_cell" style="width: 100px;">60-90</div>-->
+<!--                    <div class="act_as_cell" style="width: 100px;">90-120</div>-->
+<!--                    <div class="act_as_cell" style="width: 100px;">120+</div>-->
+<!--                    <div class="act_as_cell" style="width: 130px;">Total</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <t t-foreach="partner.move_line_ids" t-as="line">-->
+<!--                <div class="act_as_row lines">-->
+<!--                    <div class="act_as_cell left"><span t-field="line.date"/></div>-->
+<!--                    <div class="act_as_cell left"><span t-field="line.entry"/></div>-->
+<!--                    <div class="act_as_cell left"><span t-field="line.partner"/></div>-->
+<!--                    <div class="act_as_cell left"><span t-field="line.label"/></div>-->
+<!--                    <div class="act_as_cell left"><span t-field="line.date_due"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.current"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.age_30_days"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.age_60_days"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.age_90_days"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.age_120_days"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.older"/></div>-->
+<!--                    <div class="act_as_cell amount"><span t-field="line.amount_residual"/></div>-->
+<!--                </div>-->
+<!--            </t>-->
+<!--        </div>-->
+<!--    </template>-->
+
+    <template id="ebits_custom_account.report_aged_partner_balance_qweb_partner_ending_cumul_other">
+        <div class="act_as_table list_table" style="width: 1420px !important;">
+            <div class="act_as_row labels" style="font-weight: bold;">
+                <div class="act_as_cell center" style="width: 820px;">Partner cumul aged balance</div>
+<!--                <div class="act_as_cell" style="width: 200px;"/>-->
+                <div class="act_as_cell amount" style="width: 100px;"><span t-field="partner_cumul_line.current_other"/></div>
+                <div class="act_as_cell amount" style="width: 110px;"><span t-field="partner_cumul_line.age_30_days_other"/></div>
+                <div class="act_as_cell amount" style="width: 100px;"><span t-field="partner_cumul_line.age_60_days_other"/></div>
+                <div class="act_as_cell amount" style="width: 100px;"><span t-field="partner_cumul_line.age_90_days_other"/></div>
+                <div class="act_as_cell amount" style="width: 100px;"><span t-field="partner_cumul_line.age_120_days_other"/></div>
+                <div class="act_as_cell amount" style="width: 100px;"><span t-field="partner_cumul_line.older_other"/></div>
+                <div class="act_as_cell amount" style="width: 160px;"><span t-field="partner_cumul_line.amount_residual_other"/></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="ebits_custom_account.report_aged_partner_balance_qweb_account_ending_cumul_other"><br></br>
+        <div class="act_as_table list_table" style="width: 1420px !important;">
+            <div class="act_as_row labels" style="font-weight: bold;">
+                <t t-if="not show_move_line_details">
+                    <div class="act_as_cell right" style="width: 450px;">Total</div>
+                    <div class="act_as_cell amount" style="width: 150px;"><span t-field="account.cumul_current_other"/></div>
+                    <div class="act_as_cell amount" style="width: 150px;"><span t-field="account.cumul_age_30_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 150px;"><span t-field="account.cumul_age_60_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 150px;"><span t-field="account.cumul_age_90_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 150px;"><span t-field="account.cumul_age_120_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 150px;"><span t-field="account.cumul_older_other"/></div>
+                    <div class="act_as_cell amount" style="width: 230px;"><span t-field="account.cumul_amount_residual_other"/></div>
+                </t>
+                <t t-if="show_move_line_details">
+                    <div class="act_as_cell center" style="width: 820px;">Total</div>
+<!--                    <div class="act_as_cell" style="width: 200px;"/>-->
+                    <div class="act_as_cell amount" style="width: 100px;"><span t-field="account.cumul_current_other"/></div>
+                    <div class="act_as_cell amount" style="width: 110px;"><span t-field="account.cumul_age_30_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 100px;"><span t-field="account.cumul_age_60_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 100px;"><span t-field="account.cumul_age_90_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 100px;"><span t-field="account.cumul_age_120_days_other"/></div>
+                    <div class="act_as_cell amount" style="width: 100px;"><span t-field="account.cumul_older_other"/></div>
+                    <div class="act_as_cell amount" style="width: 160px;"><span t-field="account.cumul_amount_residual_other"/></div>
+                </t>
+            </div>
+        </div>
+    </template>
+
+</odoo>

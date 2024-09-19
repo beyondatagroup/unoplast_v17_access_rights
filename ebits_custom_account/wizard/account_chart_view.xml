@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_account_account_coa_view" model="ir.ui.view">
+            <field name="name">account.account.coa.view</field>
+            <field name="model">account.account.coa.view</field>
+            <field name="arch" type="xml">
+                <form string="COA - Hierarchy">
+                    <group>
+                        <group>
+                            <field name="date_from"/> 
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="target_move" widget="radio"/> 
+                            <field name="company_id" invisible="1"/>
+<!--                            <field name="include_initial_balance" invisible="1"/>-->
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Open Charts" name="account_chart_open_window" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_account_account_coa_view" model="ir.actions.act_window">
+            <field name="name">COA - Hierarchy</field>
+            <field name="res_model">account.account.coa.view</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_account_account_coa_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_account_account_coa_view" id="menu_action_account_coa_view_tree" parent="account.menu_finance_entries" sequence="20"/>
+    </data>
+</openerp>

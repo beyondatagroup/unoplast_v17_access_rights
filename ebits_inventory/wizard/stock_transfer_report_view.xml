@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="internal_stock_transfer_report_wizard_form" model="ir.ui.view">
+        <field name="name">Internal Stock Transfer Report Wizard</field>
+        <field name="model">internal.stock.transfer.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field invisible="1" name="warehouse_ids" options="{'no_open':True,'no_create':True}" widget="many2many_tags"/>
+                        <field name="requesting_warehouse_ids" options="{'no_open':True,'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="state"/>
+                        <field name="issue_state"/>
+                        <field name="receipt_state"/>
+                    </group>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_internal_stock_transfer_report_wizard" model="ir.actions.act_window">
+        <field name="name">Internal Stock Transfer Register</field>
+        <field name="res_model">internal.stock.transfer.report.wizard</field>
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="view_type">form</field>-->
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="internal_stock_transfer_report_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_internal_stock_transfer_report_wizard" groups="ebits_inventory.group_internal_stock_request_user,ebits_inventory.group_internal_stock_issue_user,ebits_inventory.group_internal_stock_receipt_user" id="menu_internal_stock_transfer_report" name="Internal Stock Transfer Register" parent="material_move_reporting_menu" sequence="16"/>
+</odoo>

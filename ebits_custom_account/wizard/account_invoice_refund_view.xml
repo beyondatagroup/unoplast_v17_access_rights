@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_invoice_refund" model="ir.ui.view">
+            <field name="name">account.invoice.refund.form</field>
+            <field name="model">account.invoice.refund</field>
+            <field name="inherit_id" ref="account.view_account_invoice_refund"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/group/field[@name='filter_refund']" position="replace">
+                    <field invisible="filter_refund != 'refund'" name="filter_refund" readonly="filter_refund == 'refund'"/>
+                </xpath></field>
+        </record>
+    </data>
+</odoo>

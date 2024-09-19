@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_analytic_account_form_inherit" model="ir.ui.view">
+            <field name="name">account.analytic.account.form.type</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                    <field name="analytic_account_type" required="1"/>
+                    <field name="parent_id" options="{'no_create': True}" required="analytic_account_type == 'normal'"/>
+                </xpath></field>
+        </record>
+        <record id="view_account_analytic_account_search_inherit" model="ir.ui.view">
+            <field name="name">account.analytic.account.search.type</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search/field[@name='name']" position="after">
+                    <field name="analytic_account_type"/>
+                    <field name="parent_id"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter context="{'group_by': 'parent_id'}" domain="[]" name="parent_type" string="Parent"/>
+                    <filter context="{'group_by': 'analytic_account_type'}" domain="[]" name="group_type" string="Type"/>
+                </xpath></field>
+        </record>
+        <record id="view_account_analytic_account_list_inherit" model="ir.ui.view">
+            <field name="name">account.analytic.account.list</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_list"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="analytic_account_type"/>
+                    <field name="parent_id"/></field></field>
+        </record>
+        <record id="view_account_analytic_account_drill" model="ir.ui.view">
+            <field name="name">account.analytic.account.drill</field>
+            <field name="model">account.analytic.account</field>
+<!--            <field name="field_parent">children_ids</field>-->
+            <field name="arch" type="xml">
+<!--                <tree colors="blue:analytic_account_type == 'view';black:analytic_account_type == 'normal';" string="Chart of Analytic Accounts" toolbar="1">-->
+                <tree string="Chart of Analytic Accounts">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="display_name"/>
+                    <field name="partner_id"/>
+                    <field invisible="1" name="active"/>
+                    <field groups="base.group_multi_company" invisible="1" name="company_id"/>
+                    <field name="analytic_account_type"/>
+                    <field invisible="1" name="parent_id"/>
+                    <field name="debit"/>
+                    <field name="credit"/>
+                    <field name="balance"/>
+                </tree></field>
+        </record>
+        <record id="action_account_analytic_account_drill" model="ir.actions.act_window">
+            <field name="name">Chart of Analytic Accounts - Hierarchy</field>
+            <field name="res_model">account.analytic.account</field>
+<!--            <field name="view_type">tree</field>-->
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_account_analytic_account_drill"/>
+            <field name="domain">[('parent_id', '=', False)]</field>
+        </record>
+    </data>
+</odoo>

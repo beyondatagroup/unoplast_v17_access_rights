@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_payment_from_invoices_inherit" model="ir.ui.view">
+            <field name="name">account.register.payments.wizard</field>
+<!--            <field name="model">account.register.payments</field>-->
+            <field name="model">account.payment.register</field>
+<!--            <field name="inherit_id" ref="account.view_account_payment_from_invoices"/>-->
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='communication']" position="after">
+                    <field invisible="1" name="sales_user_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field invisible="1" name="manager_user_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field invisible="payment_type == 'outbound'" name="customer_receipt"/>
+                    <field invisible="1" name="lc_no_id"/>
+                    <field invisible="payment_type == 'inbound'" name="cheque_no"/>
+                    <field invisible="payment_type == 'inbound'" name="cheque_date"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_payment_form_inherit" model="ir.ui.view">
+            <field name="name">account.payment.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="/form/sheet/group/group/field[@name='payment_type']" position="replace">-->
+                <xpath expr="//field[@name='payment_type']" position="attributes">
+<!--                    <field name="payment_type" readonly="1" widget="selection"/>-->
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+<!--                <xpath expr="//field[@name='customer_receipt']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+
+<!--                <xpath expr="//field[@name='sales_user_id']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+
+<!--                <xpath expr="//field[@name='manager_user_id']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+
+<!--                <xpath expr="//field[@name='ref']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+
+<!--                <xpath expr="//field[@name='partner_id']" position="replace">-->
+<!--                    <field context="{'default_is_company': True,-->
+<!--                    'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound'}"-->
+<!--                           domain="['|', ('supplier', '=', True), ('customer', '=', True), ('parent_id', '=', False)]"-->
+<!--                           invisible="payment_type not in ('inbound', 'outbound')" name="partner_id"-->
+<!--                           nolabel="1" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"-->
+<!--                           required="payment_type in ('inbound', 'outbound')"/>-->
+<!--                </xpath>-->
+
+                <xpath expr="//field[@name='destination_journal_id']" position="after">
+                    <field invisible="payment_type == 'inbound'" name="cheque_no"/>
+                    <field invisible="payment_type == 'inbound'" name="cheque_date"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/group/group/field[@name='communication']" position="replace">-->
+                <xpath expr="//field[@name='ref']" position="replace">
+                    <field name="ref" readonly="state != 'draft'"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/group/group/div[@name='amount_div']" position="after">-->
+                <xpath expr="//field[@name='date']" position="before">
+                    <field invisible="1" name="company_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="company_currency_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field invisible="1" name="currency_id_rate"/>
+                    <field name="currency_id_value"/>
+                    <field name="amount_local_currency"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/group/group/div[@name='amount_div']/field[@name='currency_id']" position="replace">-->
+<!--&lt;!&ndash;                <xpath expr="//field[@name='amount']/field[@name='currency_id']" position="replace">&ndash;&gt;-->
+<!--                    <field name="currency_id" options="{'no_create': True}" readonly="state != 'draft'"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/header/field[@name='state']" position="replace">-->
+<!--                    <field name="state" statusbar_visible="draft,posted,reconciled" widget="statusbar"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/header/button[@name='post']" position="replace">-->
+                <xpath expr="/form/header/button[@name='action_post']" position="replace">
+<!--                    <button class="oe_highlight" invisible="state != 'draft' or payment_type not in ['outbound', 'transfer']"
+name="send_for_approval" string="Send For Approval" type="object"/>-->
+                    <button class="oe_highlight" invisible="state != 'draft' or payment_type not in ['outbound']"
+                            name="send_for_approval" string="Send For Approval" type="object"/>
+                    <button class="oe_highlight" groups="ebits_custom_account.group_customer_payment_approval"
+                            invisible="state != 'draft' or payment_type != 'inbound'" name="action_post" string="Confirm"
+                            type="object"/>
+                    <button class="oe_highlight" groups="ebits_custom_account.group_supplier_payment_approval"
+                            invisible="state != 'waiting' or payment_type != 'outbound'" name="action_post" string="Confirm"
+                            type="object"/>
+<!--                    <button class="oe_highlight" groups="ebits_custom_account.group_inter_account_transfer_approval" invisible="state != 'waiting' or payment_type != 'transfer'" name="action_post" string="Confirm" type="object"/>-->
+                    <button class="oe_highlight" groups="ebits_custom_account.group_inter_account_transfer_approval"
+                            invisible="state != 'waiting'" name="action_post" string="Confirm" type="object"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/group/group/field[@name='payment_date']" position="after">-->
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+<!--                    <field invisible="payment_type in ['outbound', 'transfer']" name="customer_receipt" readonly="state != 'draft'"/>-->
+                    <field invisible="payment_type in ['outbound']" name="customer_receipt" readonly="state != 'draft'"/>
+<!--                    <field invisible="partner_type != 'supplier'" name="lc_no_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>-->
+<!--                    <field invisible="payment_type in ['outbound', 'transfer']" name="sales_user_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>-->
+<!--                    <field invisible="payment_type in ['outbound']" name="sales_user_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>-->
+<!--                    <field invisible="payment_type in ['outbound', 'transfer']" name="manager_user_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>-->
+<!--                    <field invisible="payment_type in ['outbound']" name="manager_user_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>-->
+                </xpath>
+<!--                <xpath expr="/form/sheet/group" position="inside">-->
+                <xpath expr="//field[@name='destination_journal_id']" position="after">
+                        <field name="amount_to_text_pay_currency"/>
+                        <field name="amount_to_text_local_currency"/>
+                        <field name="approved_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="approved_date"/>
+                        <field name="cancel_user_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field invisible="1" name="cancel_requested"/>
+<!--                        <field name="customer_receipt"/>-->
+<!--                        <field name="sales_user_id"/>-->
+<!--                        <field name="manager_user_id"/>-->
+<!--                        <field name="ref"/>-->
+
+<!--                    </group>-->
+                </xpath>
+                <xpath expr="/form/sheet/group" position="after">
+                    <!--                    <label for="edit_reason"/>-->
+                    <!--                    <field name="edit_reason" nolabel="1"/>-->
+                    <div class="oe_clear"/>
+                    <label for="cancel_reason"/>
+                    <field name="cancel_reason" nolabel="1"/>
+                </xpath>
+            </field>
+        </record>
+
+<!--        commented due to dependence on account_cancel-->
+<!--        <record id="account_cancel.payment_cancel_form_inherit" model="ir.ui.view">-->
+<!--            <field name="name">payment.cancel.form.inherit</field>-->
+<!--            <field name="model">account.payment</field>-->
+<!--            <field name="inherit_id" ref="account.view_account_payment_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//header/field[@name='state']" position="before">-->
+<!--                    <button class="oe_highlight" invisible="state in ['draft', 'waiting']-->
+<!--                    or cancel_requested == True" name="%(action_account_payment_cancel_wizard)d"-->
+<!--                            string="Send Cancellation Request" type="action"/>-->
+<!--                    <button class="oe_highlight" groups="account.group_account_manager"-->
+<!--                            invisible="state in ['draft', 'waiting'] or cancel_requested != True"-->
+<!--                            name="cancel" string="Cancel" type="object"/>-->
+<!--                    <button class="oe_highlight" groups="account.group_account_manager"-->
+<!--                            invisible="state not in ['waiting']"-->
+<!--                            name="%(action_account_payment_reedit_wizard)d" string="Re-Edit" type="action"/>-->
+<!--                    <button class="oe_highlight" groups="base.group_user"-->
+<!--                            invisible="state in ['draft', 'sent']"-->
+<!--                            name="payment_print" string="Print" type="object"/>-->
+<!--                </xpath></field>-->
+<!--        </record>-->
+
+
+        <record id="view_account_payment_form_inherit_payment_inherit" model="ir.ui.view">
+            <field name="name">account.payment.form</field>
+            <field name="model">account.payment</field>
+<!--            <field name="inherit_id" ref="payment.view_account_payment_form_inherit_payment"/>-->
+            <field name="inherit_id" ref="account_payment.view_account_payment_form_inherit_payment"/>
+            <field name="arch" type="xml">
+                <field name="payment_transaction_id" position="replace">
+                    <field invisible="1" name="payment_transaction_id"/></field></field>
+        </record>
+
+<!--        <record id="payment.view_partners_form_payment_defaultcreditcard" model="ir.ui.view">-->
+<!--            <field name="name">view.res.partner.form.payment.defaultcreditcard</field>-->
+<!--            <field name="model">res.partner</field>-->
+<!--            <field name="inherit_id" ref="account.partner_view_buttons"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr='//group[@name="banks"]' position="inside">-->
+<!--                    <field invisible="1" name="payment_token_count" string="Credit card(s)" widget="statinfo"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="view_account_payment_tree_inherit" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+<!--                <tree position="attributes">-->
+<!--                    <attribute name="decoration-danger">-->
+<!--                        cancel_requested==True</attribute>-->
+<!--                </tree>-->
+<!--                <field name="partner_id" position="replace">-->
+<!--                    -->
+<!--                </field>-->
+<!--                <field name="payment_date" position="after">-->
+                <field name="date" position="after">
+                    <field name="customer_receipt"/>
+<!--                    <field name="partner_id" string="Customer"/>-->
+                    <field name="partner_id"/>
+                    <field name="sales_user_id"/>
+                    <field name="user_id"/>
+                    <field invisible="1" name="cancel_requested"/>
+                </field>
+<!--                <field name="payment_method_id" position="after">-->
+                <field name="payment_method_line_id" position="after">
+<!--                    is replaced with ref-->
+<!--                    <field name="communication"/>-->
+                    <field name="ref"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_account_supplier_payment_tree_inherit" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="decoration-danger">
+                        cancel_requested==True</attribute>
+                </tree>
+<!--                <field name="partner_id" position="replace"></field>-->
+<!--                <field name="payment_date" position="after">-->
+                <field name="date" position="after">
+<!--                    <field name="partner_id" string="Vendor"/>-->
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="approved_id"/>
+                    <field invisible="1" name="cancel_requested"/>
+                </field>
+<!--                <field name="payment_method_id" position="after">-->
+                <field name="payment_method_line_id" position="after">
+                    <field name="cheque_no"/>
+                    <field name="cheque_date"/>
+<!--                    is replaced with ref-->
+<!--                    <field name="communication"/>-->
+                    <field name="ref"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_payment_invoice_form_inherit" model="ir.ui.view">
+            <field name="name">account.payment.invoice.form</field>
+            <field name="model">account.payment</field>
+<!--            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>-->
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+<!--                not needed data is also not there-->
+<!--                <xpath expr="/form/sheet/group/group/field[@name='writeoff_account_id']" position="replace">-->
+<!--                    <field domain="[('internal_type', '!=', 'view')]"-->
+<!--                           invisible="payment_difference_handling == 'open'"-->
+<!--                           name="writeoff_account_id" required="payment_difference_handling == 'reconcile'"-->
+<!--                           string="Post Difference In"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/group/group/field[@name='communication']" position="after">-->
+                <xpath expr="//field[@name='destination_journal_id']" position="after">
+                    <field invisible="0" name="sales_user_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field invisible="0" name="manager_user_id" options="{'no_create': True, 'no_open': True}"/>
+<!--                    <field invisible="payment_type in ['outbound', 'transfer']" name="customer_receipt"/>-->
+<!--                    <field invisible="payment_type in ['outbound']" name="customer_receipt"/>-->
+<!--                    <field invisible="payment_type == 'inbound'" name="lc_no_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--                    <field invisible="payment_type == 'inbound'" name="cheque_no"/>-->
+<!--                    <field invisible="payment_type == 'inbound'" name="cheque_date"/>-->
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_payment_search_inherit" model="ir.ui.view">
+            <field name="name">account.payment.search</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+<!--                    <field name="move_name"/>-->
+                    <field name="customer_receipt"/>
+                    <field name="sales_user_id"/>
+                    <field name="user_id"/>
+                    <field name="approved_id"/>
+<!--                    <field name="communication"/>-->
+                    <field name="ref"/>
+                </field>
+                <xpath expr="//filter[@name='state_posted']" position="before">
+                    <filter domain="[('state', '=', 'waiting')]" name="state_waiting" string="Pending for Approval"/>
+                    <filter domain="[('cancel_requested', '=', True)]" name="cancel_requested" string="Pending Cancellation"/>
+                </xpath></field>
+        </record>
+        <record id="view_account_internal_payment_tree" model="ir.ui.view">
+            <field name="name">account.internal.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="cancel_requested==True" decoration-info="state=='draft'" decoration-muted="state=='reconciled'" edit="false">
+<!--                    <field name="payment_date"/>-->
+                    <field name="date"/>
+                    <field name="user_id"/>
+                    <field name="approved_id"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="destination_journal_id"/>
+                    <field name="payment_method_id"/>
+<!--                    <field name="communication"/>-->
+                    <field name="ref"/>
+                    <field name="amount" sum="Amount"/>
+                    <field groups="base.group_multi_company" name="company_id"/>
+                    <field name="state"/>
+                    <field invisible="1" name="currency_id"/>
+                    <field invisible="1" name="partner_type"/>
+                    <field invisible="1" name="cancel_requested"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_account_payments_internal" model="ir.actions.act_window">
+            <field name="name">Internal Transfers</field>
+            <field name="res_model">account.payment</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,graph</field>
+<!--            <field name="context">{'default_payment_type': 'transfer'}</field>-->
+<!--            <field name="domain">[('payment_type', '=', 'transfer')]</field>-->
+            <field name="domain">[('is_internal_transfer', '=', True)]</field>
+            <field name="view_id" ref="view_account_internal_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to register a internal payment/transfer
+                </p>
+                <p>
+                    Payments are used to register liquidity movements (send, collect or transfer money).
+                  You can then process those payments by your own means or by using installed facilities.
+                </p></field>
+        </record>
+<!--        <record id="account.action_account_payments" model="ir.actions.act_window">-->
+<!--            <field name="name">Payments</field>-->
+<!--            <field name="res_model">account.payment</field>-->
+<!--&lt;!&ndash;            <field name="view_type">form</field>&ndash;&gt;-->
+<!--            <field name="view_mode">tree,form,graph</field>-->
+<!--            <field name="context">{'default_payment_type': 'inbound'}</field>-->
+<!--            <field name="domain">[('partner_type', '=', 'customer')]</field>-->
+<!--            <field name="view_id" ref="account.view_account_payment_tree"/>-->
+<!--            <field name="help" type="html">-->
+<!--                <p class="oe_view_nocontent_create">-->
+<!--                    Click to register a payment-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                    Payments are used to register liquidity movements (send, collect or transfer money).-->
+<!--                  You can then process those payments by your own means or by using installed facilities.-->
+<!--                </p>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="account.action_account_payments_payable" model="ir.actions.act_window">-->
+<!--            <field name="name">Payments</field>-->
+<!--            <field name="res_model">account.payment</field>-->
+<!--&lt;!&ndash;            <field name="view_type">form</field>&ndash;&gt;-->
+<!--            <field name="view_mode">tree,form,graph</field>-->
+<!--            <field name="context">{'default_payment_type': 'outbound'}</field>-->
+<!--            <field name="domain">[('partner_type', '=', 'supplier')]</field>-->
+<!--            <field name="view_id" ref="account.view_account_supplier_payment_tree"/>-->
+<!--            <field name="help" type="html">-->
+<!--                <p class="oe_view_nocontent_create">-->
+<!--                    Click to register a payment-->
+<!--                </p>-->
+<!--                <p>-->
+<!--                    Payments are used to register liquidity movements (send, collect or transfer money).-->
+<!--                  You can then process those payments by your own means or by using installed facilities.-->
+<!--                </p></field>-->
+<!--        </record>-->
+        <record id="action_account_payments_receivable_cancellation" model="ir.actions.act_window">
+            <field name="name">Payments- Pending Cancellation</field>
+            <field name="res_model">account.payment</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{'default_payment_type': 'inbound'}</field>
+            <field name="domain">[('partner_type', '=', 'customer'), ('cancel_requested', '=', True)]</field>
+            <field name="view_id" ref="account.view_account_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    No Payments Requested to Cancel !!!!
+                </p></field>
+        </record>
+        <record id="action_account_payments_payable_cancellation" model="ir.actions.act_window">
+            <field name="name">Payments - Pending Cancellation</field>
+            <field name="res_model">account.payment</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{'default_payment_type': 'outbound'}</field>
+<!--            <field name="domain">[('partner_type', '=', 'supplier'), ('cancel_requested', '=', True)]</field>-->
+            <field name="domain">[('partner_type', '=', 'supplier')]</field>
+            <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    No Payments Requested to Cancel !!!!
+                </p></field>
+        </record>
+        <record id="action_account_payments_internal_cancel" model="ir.actions.act_window">
+            <field name="name">Internal Transfers - Pending Cancellation</field>
+            <field name="res_model">account.payment</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,graph</field>
+<!--            <field name="context">{'default_payment_type': 'transfer'}</field>-->
+<!--            <field name="domain">[('payment_type', '=', 'transfer'), ('cancel_requested', '=', True)]</field>-->
+            <field name="domain">[('is_internal_transfer', '=', True), ('cancel_requested', '=', True)]</field>
+            <field name="view_id" ref="view_account_internal_payment_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    No internal payment/transfer Requested to Cancel !!!!
+                </p></field>
+        </record>
+
+<!--        <record id="account.action_account_invoice_payment" model="ir.actions.act_window">-->
+<!--        <record id="account.action_account_payments" model="ir.actions.act_window">-->
+<!--            <field name="name">Register Payment</field>-->
+<!--            <field name="res_model">account.payment</field>-->
+<!--&lt;!&ndash;            <field name="view_type">form</field>&ndash;&gt;-->
+<!--            <field name="view_mode">form</field>-->
+<!--&lt;!&ndash;            <field name="view_id" ref="account.view_account_payment_invoice_form"/>&ndash;&gt;-->
+<!--            <field name="view_id" ref="account.view_account_payment_form"/>-->
+<!--&lt;!&ndash;            <field name="context">&ndash;&gt;-->
+<!--&lt;!&ndash;                {&ndash;&gt;-->
+<!--&lt;!&ndash;                'lc_no_id': context.get('lc_no_id', False),&ndash;&gt;-->
+<!--&lt;!&ndash;                'default_lc_no_id': context.get('lc_no_id', False)}&ndash;&gt;-->
+<!--&lt;!&ndash;            </field>&ndash;&gt;-->
+<!--            <field name="target">new</field>-->
+<!--        </record>-->
+
+        <menuitem groups="account.group_account_user"
+                  id="menu_account_payments_internal_transfer"
+                  name="Internal Transfer" parent="account_accountant.menu_accounting" sequence="3"/>
+        <menuitem action="action_account_payments_internal"
+                  groups="account.group_account_user"
+                  id="menu_action_account_payments_internal_transfer"
+                  parent="menu_account_payments_internal_transfer" sequence="1"/>
+        <menuitem action="action_account_payments_internal_cancel"
+                  groups="account.group_account_user"
+                  id="menu_action_account_payments_internal_transfer_cancel"
+                  parent="menu_account_payments_internal_transfer" sequence="2"/>
+
+
+        <menuitem action="action_account_payments_receivable_cancellation"
+                  groups="account.group_account_user"
+                  id="menu_action_account_payments_customer_cancellation"
+                  parent="account.menu_finance_receivables" sequence="20"/>
+        <menuitem action="action_account_payments_payable_cancellation"
+                  groups="account.group_account_user"
+                  id="menu_action_account_payments_vendor_cancellation"
+                  parent="account.menu_finance_payables" sequence="20"/>
+    </data>
+</odoo>

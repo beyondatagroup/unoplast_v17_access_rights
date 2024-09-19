@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<document filename="inventory_valuation_date_report_rml.pdf">
+  <template pageSize="(842.0, 595.0)" title="Inventory Valuation At Date Report" author="EBITS TechCon" allowSplitting="20">
+        <pageTemplate id="first">
+             <pageGraphics>
+                <stroke color="#cccccc"/>
+            </pageGraphics>
+            <frame id="first" x1="0.5cm" y1="3.0" width="810" height="580"/>
+        </pageTemplate>
+    </template>
+    <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table2">
+      <blockAlignment value="LEFT"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="2,0" stop="2,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="3,0" stop="3,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="4,0" stop="4,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="5,0" stop="5,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="5,-1" stop="5,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="6,0" stop="6,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="6,-1" stop="6,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="7,-1" stop="7,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="8,0" stop="8,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="8,-1" stop="8,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="9,0" stop="9,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="9,0" stop="9,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="9,0" stop="9,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="9,-1" stop="9,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="10,0" stop="10,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="10,0" stop="10,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="10,0" stop="10,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="10,-1" stop="10,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="11,0" stop="11,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="11,0" stop="11,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="11,0" stop="11,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="11,-1" stop="11,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="12,0" stop="12,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="12,0" stop="12,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="12,0" stop="12,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="12,-1" stop="12,-1"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table3">
+      <blockAlignment value="LEFT"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="2,0" stop="2,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="3,0" stop="3,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="4,0" stop="4,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="5,0" stop="5,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="5,-1" stop="5,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="6,0" stop="6,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="6,-1" stop="6,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="7,-1" stop="7,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="8,0" stop="8,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="8,-1" stop="8,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="9,0" stop="9,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="9,0" stop="9,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="9,0" stop="9,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="9,-1" stop="9,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="10,0" stop="10,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="10,0" stop="10,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="10,0" stop="10,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="10,-1" stop="10,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="11,0" stop="11,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="11,0" stop="11,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="11,0" stop="11,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="11,-1" stop="11,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="12,0" stop="12,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="12,0" stop="12,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="12,0" stop="12,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="12,-1" stop="12,-1"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table7">
+    <blockAlignment value="LEFT"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,-1" stop="1,-1"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <paraStyle name="A1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="B1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="C1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="D1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="E1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="F1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="G1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="H1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="I1" fontName="Helvetica-Bold" fontSize="9.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="J2" fontName="Helvetica-Bold" fontSize="9.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <images>
+    </images>
+    </stylesheet>
+    <story>
+    <pto>
+    <pto_header>
+        <blockTable colWidths="810.0" style="Table1">
+            <tr>
+                <td>
+                    <para style="J2">[[ company.partner_id.name and company.partner_id.name or '' ]]</para>
+                </td>
+            </tr>
+        </blockTable>
+        <blockTable colWidths="810.0" style="Table1">
+            <tr>
+                <td>
+                    <para style="J2">Inventory Valuation Report ( As on Date [[ formatLang(o.date, date=True) ]] )</para>
+                </td>
+            </tr>
+        </blockTable>
+    </pto_header>
+    <blockTable colWidths="810.0" style="Table1">
+        <tr>
+            <td>
+                <para style="J2">[[ company.partner_id.name and company.partner_id.name or '' ]]</para>
+            </td>
+        </tr>
+    </blockTable>
+    <para style="B1">[[repeatIn(objects, 'o')]]<seqReset id="seq1"/></para>
+    <blockTable colWidths="810.0" style="Table1">
+        <tr>
+            <td>
+                <para style="J2">Inventory Valuation Report ( As on Date [[ formatLang(o.date, date=True) ]] )</para>
+            </td>
+        </tr>
+    </blockTable>
+    <blockTable colWidths="30.0,170.0,170.0,160.0,80.0,80.0,120.0" style="Table2" repeatRows="1">
+        <tr>
+            <td>
+                <para style="C1">S.No</para>
+            </td>
+            <td>
+                <para style="C1">[[ o.summary and (o.report_type == "product" and 'Product Category' or 'Location') or 'Location' ]]</para>
+            </td>
+            <td>
+                <para style="C1">[[ o.summary and (o.report_type == "product" and 'Product' or 'Product Category') or 'Product Category' ]]</para>
+            </td>
+            <td>
+                <para style="C1">[[ o.summary and (o.report_type == "product" and 'Location' or 'Product') or 'Product' ]]</para>
+            </td>
+            <td>
+                <para style="C1">UOM</para>
+            </td>
+            <td>
+                <para style="C1">Quantity</para>
+            </td>
+            <td>
+                <para style="C1">Inventory Value</para>
+            </td>
+        </tr>
+        <tr style="Table2"><para style="C1">[[repeatIn(o.action_print_report_date_rml(), 'line')]]</para>
+            <td> 
+                <para style="C1">[[ line['uom'] == 'Total' and removeParentNode('para') or '' ]]<seq id="seq1"/></para>
+            </td>
+            <td>
+                <para style="F1">[[ o.summary and (o.report_type == "product" and line['category'] or line['location']) or line['location'] ]]</para>
+            </td>
+            <td>
+                <para style="F1"> [[ o.summary and (o.report_type == "product" and line['product'] or line['category']) or line['category'] ]] </para>
+            </td>
+            <td>
+                <para style="F1"> [[ o.summary and (o.report_type == "product" and line['location'] or line['product']) or line['product'] ]] </para>
+            </td>
+            <td>
+                <para style="C1"> [[ line['uom'] != "Total" and removeParentNode('para') or '' ]] [[ line['uom']  and line['uom'] or '' ]]</para>
+                <para style="F1"> [[ line['uom'] == "Total" and removeParentNode('para') or '' ]] [[ line['uom']  and line['uom'] or '' ]] </para>
+            </td>
+            <td>
+                <para style="D1"> [[ line['uom'] != "Total" and removeParentNode('para') or '' ]] [[ formatLang(line['quantity'], digits=3) ]]</para>
+                <para style="G1"> [[ line['uom'] == "Total" and removeParentNode('para') or '' ]] [[ formatLang(line['quantity'], digits=3) ]]</para>
+            </td>
+            <td>
+                <para style="G1"> [[ formatLang(line['inventory_value']) ]]</para>
+            </td>
+        </tr>
+    </blockTable>
+    <blockTable colWidths="610.0,80.0,120.0" style="Table2">
+        <tr>
+            <td>
+                <para style="D1">Grand Total </para>
+            </td>
+            <td>
+                <para style="D1">[[ o.product_id and formatLang(o.total_qty, digits=3) or 0.00 ]]</para>
+            </td>
+            <td>
+                <para style="D1"></para>
+            </td>
+        </tr>
+    </blockTable>
+    <blockTable colWidths="300.0,510.0" style="Table7">
+        <tr>
+            <td>
+                <para style="F1"><b></b></para>
+                <para style="F1"></para>
+            </td>
+            <td>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1">For <b>[[ company.partner_id.name ]]</b></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1">Authorised Signature</para>
+            </td>
+        </tr>
+    </blockTable>
+    </pto>
+    </story>
+</document>

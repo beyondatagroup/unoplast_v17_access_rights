@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_partnerledger_inherit" inherit_id="account.report_partnerledger">
+<!--        <xpath expr="//table[@class='table table-condensed']/thead/tr/th[@t-if='amount_currency']" position="replace">-->
+        <xpath expr="//table[@class='table table-condensed']" position="before">
+            <div class="row">
+                <div class="col-xs-3">
+                    <t><strong>L :</strong> Local Currency<br/></t>
+                    <t t-if="data['form']['amount_currency'] == True"><strong>T :</strong> Transaction Currency</t>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//table[@class='table table-condensed']/thead/tr" position="replace">
+            <th>Date</th>
+            <th>JRNL</th>
+            <th>Account</th>
+            <th>Ref</th>
+            <th>Debit(L*)</th>
+            <th>Credit(L*)</th>
+            <th>Balance(L*)</th>
+            <th t-if="data['form']['amount_currency'] == True">Debit(T*)</th>
+            <th t-if="data['form']['amount_currency'] == True">Credit(T*)</th>
+            <th t-if="data['form']['amount_currency'] == True">Balance(T*)</th>
+        </xpath>
+        <xpath expr="//table[@class='table table-condensed']/tbody/tr/td[@t-if='amount_currency']" position="replace">
+            <td t-if="data['form']['amount_currency'] == True" class="text-right">
+                <span t-esc="line['debit_currency']"/>
+                <span t-esc="line['currency_code']"/>
+            </td>
+            <td t-if="data['form']['amount_currency'] == True" class="text-right">
+                <span t-esc="line['credit_currency']"/>
+                <span t-esc="line['currency_code']"/>
+            </td>
+            <td t-if="data['form']['amount_currency'] == True" class="text-right">
+                <span t-esc="line['progress_currency']"/>
+                <span t-esc="line['currency_code']"/>
+            </td>
+        </xpath>
+    </template>
+
+</odoo>

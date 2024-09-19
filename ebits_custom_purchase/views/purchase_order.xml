@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase.view_partner_property_form" model="ir.ui.view">
+        <field name="name">res.partner.purchase.property.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">36</field>
+        <field name="arch" type="xml">
+            <group name="purchase" position="inside">
+                <field name="property_purchase_currency_id" options="{'no_create': True, 'no_open': True}"
+                       invisible="1"/>
+            </group>
+        </field>
+    </record>
+
+    <record id="purchase_order_approval_hierarchy_tree" model="ir.ui.view">
+        <field name="name">PO Approval Hierarchy</field>
+        <field name="model">purchase.order.approval.hierarchy</field>
+        <field name="arch" type="xml">
+            <tree string="PO Approval Hierarchy">
+                <field name="name"/>
+                <field name="warehouse_id"/>
+                <field name="category_ids" widget="many2many_tags"/>
+                <field name="hierarchy_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_order_approval_hierarchy_form" model="ir.ui.view">
+        <field name="name">PO Approval Hierarchy</field>
+        <field name="model">purchase.order.approval.hierarchy</field>
+        <field name="arch" type="xml">
+            <form string="PO Approval Hierarchy">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="warehouse_id" options="{'no_create':True, 'no_open': True}"/>
+                            <field name="hierarchy_type"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="category_ids" options="{'no_create':True, 'no_open': True}"
+                                   widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="1st Level Approval">
+                            <group>
+                                <group>
+                                    <field name="one_level_user_ids" options="{'no_create':True, 'no_open': True}"
+                                           required="1" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page invisible="hierarchy_type == 'one'" string="2nd Level Approval">
+                            <group>
+                                <group>
+                                    <field name="two_level_user_ids"
+                                           options="{'no_create':True, 'no_open': True}" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_order_approval_hierarchy_search" model="ir.ui.view">
+        <field name="name">PO Approval Hierarchy</field>
+        <field name="model">purchase.order.approval.hierarchy</field>
+        <field name="arch" type="xml">
+            <search string="PO Approval Hierarchy">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="category_ids"/>
+                <field name="hierarchy_type"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_purchase_order_approval_hierarchy" model="ir.actions.act_window">
+        <field name="name">PO Approval Hierarchy</field>
+        <field name="res_model">purchase.order.approval.hierarchy</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                WELCOME! Click on create button to create your purchase approval hierarchy
+            </p>
+        </field>
+    </record>
+
+    <menuitem action="action_purchase_order_approval_hierarchy" id="menu_po_approval_hierarchy"
+              parent="purchase.menu_purchase_config" sequence="1"/>
+
+    <record id="purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/header" position="replace">
+                <header>
+
+                    <button class="oe_highlight" id="bid_confirm" invisible="state not in ('draft')"
+                            name="button_confirm"
+                            string="Send for Approval" type="object"/>
+
+                    <button class="oe_highlight" groups="purchase.group_purchase_manager"
+                            name="action_one_approve" string="Approve Order" invisible="state not in ('to approve')"
+                            type="object"/>
+                    <button class="oe_highlight" groups="purchase.group_purchase_manager"
+                            name="action_two_approve" string="Approve Order"
+                            invisible="state not in ('to_second_approve')"
+                            type="object"/>
+                    <button name="action_create_invoice" string="Create Bill" type="object" class="oe_highlight"
+                            context="{'create_bill':True}"
+                            invisible="state not in ('purchase', 'done') or invoice_status in ('no', 'invoiced')"
+                            data-hotkey="w"/>
+                    <button name="action_create_invoice" string="Create Bill" type="object"
+                            context="{'create_bill':True}"
+                            invisible="state not in ('purchase', 'done') or invoice_status not in ('no', 'invoiced') or not order_line"
+                            data-hotkey="w"/>
+
+                    <button context="{'send_rfq':False}" invisible="state not in ('purchase','done')"
+                            name="action_rfq_send"
+                            string="Send PO by Email" type="object"/>
+                    <button invisible="state in ('cancel') or state not in ['cancel']" name="button_draft"
+                            string="Set to Draft" type="object"/>
+                    <button groups="purchase.group_purchase_manager"
+                            invisible="state not in ('draft', 'to approve', 'sent', 'purchase')"
+                            name="%(action_purchase_order_cancel_wizard)d" string="Cancel" type="action"/>
+                    <button groups="base.group_user" invisible="state not in ('purchase','done')"
+                            name="print_purchase_order" string="Print PO" type="object"/>
+                    <button groups="purchase.group_purchase_manager" invisible="state not in ('purchase','done')"
+                            name="%(action_purchase_order_amend_wizard)d" string="Amend" type="action"/>
+                    <button name="button_draft" invisible="state != 'cancel'" string="Set to Draft" type="object"
+                            data-hotkey="o"/>
+
+
+                    <field name="state" readonly="1" statusbar_visible="draft,sent,to approve,done" widget="statusbar"/>
+                </header>
+            </xpath>
+            <button name="action_view_picking" position="replace">
+                <button class="oe_stat_button" icon="fa-truck"
+                        invisible="state in ('draft', 'sent', 'to approve', 'to_2nd_approve') and picking_ids == []"
+                        name="action_view_picking" type="object">
+                    <!--  old                  <field help="Incoming Shipments" name="picking_count" string="Shipment" widget="statinfo"/>-->
+                    <field help="Incoming Shipments" name="incoming_picking_count" string="Shipment" widget="statinfo"/>
+                    <field invisible="1" name="picking_ids"/>
+                </button>
+            </button>
+            <button name="action_view_invoice" position="replace">
+                <button class="oe_stat_button" icon="fa-pencil-square-o"
+                        invisible="state in ('draft', 'sent', 'to approve', 'to_2nd_approve') and invoice_ids == []"
+                        name="action_view_invoice" type="object">
+                    <field name="invoice_count" string="Vendor Bills" widget="statinfo"/>
+                    <field invisible="1" name="invoice_ids"/>
+                </button>
+                <button class="oe_stat_button" icon="fa-pencil-square-o"
+                        invisible="state in ('draft', 'sent', 'to approve', 'to_2nd_approve')"
+                        name="action_view_invoice_refund" type="object">
+                    <field name="invoice_refund_count" string="Refunds" widget="statinfo"/>
+                </button>
+            </button>
+            <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="replace">
+                <field
+                        context="{'search_default_supplier':1, 'default_supplier_rank':1,'res_partner_search_mode': 'supplier', 'default_is_company': True,}"
+                        name="partner_id" domain="[('supplier_rank', '>', 0)]"
+                        options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/field[@name='currency_id']" position="replace">
+                <field name="currency_id" options="{'no_create': True, 'no_open': True}" readonly="state !='draft'"/>
+                <field name="amendment_no"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/group/group/field[@name='fiscal_position_id']" position="replace">
+                <field invisible="1" name="fiscal_position_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='picking_type_id']" position="replace">-->
+            <!--                </xpath>-->
+            <xpath expr="/form/sheet/group/group/field[@name='company_id']" position="after">
+                <field invisible="1" name="company_currency_id"/>
+                <field name="warehouse_id" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'" required="1"/>
+                <field domain="[('code','=','incoming')]" name="picking_type_id" readonly="state != 'draft'"
+                       options="{'no_create': True, 'no_open': True}"/>
+                <label for="lc_no_id"/>
+                <div>
+                    <field class="oe_inline" name="lc_no_id"/>
+                    <button class="oe_highlight" invisible="state not in ['purchase', 'done']"
+                            name="action_open_stock_landed_cost" string="Open LandedCost" type="object"/>
+                </div>
+            </xpath>
+            <xpath expr="/form/sheet/group/group/field[@name='partner_ref']" position="after">
+                <field name="category_id" options="{'no_open':True, 'no_create':True}" readonly="state != 'draft'"/>
+            </xpath>
+            <xpath expr="/form/sheet/group" position="after">
+                <button class="oe_highlight" invisible="state not in 'draft'"
+                        name="%(action_purchase_requisition_wizard)d" string="Select PR items" type="action"/>
+            </xpath>
+            <xpath expr="//page[@name='purchase_delivery_invoice']/group/group/field[@name='incoterm_id']"
+                   position="after">
+                <field name="shipping_mode_id" options="{'no_create':True}" readonly="state != 'draft'"/>
+                <field name="delivery_location" readonly="state != 'draft'"/>
+                <field name="depature_time"/>
+                <field name="arrival_time"/>
+            </xpath>
+            <field name="origin" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+            <field name="dest_address_id" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+            <field name="partner_ref" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+            <field name="date_order" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
+                   position="replace">
+                <field context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"
+                       domain="[('purchase_ok', '=', True),('purchase_req_required', '=', False)]" name="product_id"
+                       options="{'no_create': True, 'no_open': True}"
+                       width="35%"
+                       readonly="state not in ['draft'] or pr_qty !=  0.00 "/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_qty']"
+                   position="replace">
+                <field name="pr_qty"/>
+                <field name="product_qty" readonly="pr_qty != 0.00"/>
+            </xpath>
+            <!--            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom']"-->
+            <!--                   position="replace">-->
+            <!--                &lt;!&ndash;                    <field groups="product.group_uom" name="product_uom" readonly="state in ('purchase', 'done', 'cancel') or pr_qty != 0.0"/>&ndash;&gt;-->
+            <!--                <field name="product_uom" readonly="state in ('purchase', 'done', 'cancel') or pr_qty != 0.0"/>-->
+            <!--            </xpath>-->
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='taxes_id']"
+                   position="after">
+                <!--                <field domain="[('landed_cost_ok', '=', True)]" name="lc_expenses_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>-->
+                <field name="lc_expenses_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_received']"
+                   position="after">
+                <field column_invisible="not context.get('show_purchase', False)" name="qty_returned"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_invoiced']"
+                   position="before">
+                <field column_invisible="1" name="invoice_status"/>
+                <field column_invisible="not context.get('show_purchase', False)" name="qty_to_invoice"/>
+                <field column_invisible="not context.get('show_purchase', False)" name="qty_to_refund"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_invoiced']"
+                   position="after">
+                <field column_invisible="not context.get('show_purchase', False)" name="qty_refunded"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']"
+                   position="replace">
+                <field context="{'partner_id': parent.partner_id}"
+                       domain="[('purchase_ok', '=', True),('purchase_req_required', '=', False)]" name="product_id"
+                       options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='price_unit']"
+                   position="before">
+                <field name="pr_qty"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group[2]/field[@name='date_planned']"
+                   position="replace">
+                <field name="date_planned" readonly="state not in ('draft', 'sent')"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/group/group/field[@name='invoice_status']" position="before">
+                <field name="picking_state"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/group/group/field[@name='payment_term_id']" position="replace">
+                <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"
+                       readonly="state != 'draft'"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='taxes_id']"
+                   position="after">
+                <!--                <field domain="[('landed_cost_ok', '=', True)]" name="lc_expenses_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>-->
+                <field name="lc_expenses_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//page[@name='purchase_delivery_invoice']/group/group" position="inside">
+                <field name="default_location_dest_id_usage" invisible="1"/>
+                <field name="incoterm_id" readonly="state == 'done'"/>
+                <field name="incoterm_location" readonly="state == 'done'"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group//group/notebook/page"
+                   position="after">
+                <page string="PR Line">
+                    <field name="pr_lines" widget="one2many_list" readonly="1">
+                        <tree editable="bottom">
+                            <field name="pr_line_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="pr_qty"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[1]" position="after">
+                <page string="LC &amp; Other Info">
+                    <separator string="LC Info"/>
+                    <button class="oe_highlight" invisible="state not in ['draft','sent','to approve','to_2nd_approve']"
+                            name="recompute_lc_values" string="Recompute LC Cost" type="object"/>
+                    <field name="lc_line" nolabel="1" widget="one2many_list" readonly="state in ['purchase','done','cancel']">
+                        <tree editable="bottom">
+                            <field invisible="1" name="lc_expense_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="name"/>
+                            <field name="po_product_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field invisible="1" name="lc_account_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="product_qty"/>
+                            <field name="po_amount"/>
+                            <field name="percentage"/>
+                            <field name="amount" sum="Amount"/>
+                            <field name="picking_ids" readonly="1" widget="many2many_tags"/>
+                        </tree>
+                    </field>
+                    <separator string="Approval Info"/>
+                    <group>
+                        <group>
+                            <field name="one_approver_ids" options="{'no_create': True, 'no_open': True}"
+                                   widget="many2many_tags"/>
+                            <field name="one_approved_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="one_approved_date"/>
+                        </group>
+                        <group>
+                            <field name="two_approver_ids" options="{'no_create': True, 'no_open': True}"
+                                   widget="many2many_tags"/>
+                            <field name="two_approved_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="two_approved_date"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="/form/sheet/notebook" position="after">
+                <label for="history"/>
+                <field class="oe_inline" name="history"/>
+            </xpath>
+
+            <xpath expr="/form/sheet/notebook/page/group/group/field[@name='notes']" position="replace">
+                <group colspan="2">
+                    <field name="total_quantity_based_uom"/>
+                    <field name="amount_to_text" readonly="1" force_save="1"/>
+                    <field name="amount_to_text_local_currency" readonly="1" force_save="1"/>
+                </group>
+                <label for="notes" string="Terms and Conditions"/>
+                <field name="notes" nolabel="1" colspan="2" readonly="state in ['purchase','done','cancel']"
+                       placeholder="An administrator can set up default Terms and conditions in your Company Warehouse/Branch settings."/>
+                <newline/>
+                <label for="purchase_remarks" string="Remarks"/>
+                <field name="purchase_remarks" nolabel="1" placeholder="Remarks (If any)" colspan="2" readonly="state in ['purchase','done','cancel']"/>
+
+            </xpath>
+
+            <xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
+                   position="after">
+                <button help="Click here to view the product wise history" icon="fa-clipboard"
+                        invisible="state not in ['draft','sent','to approve','to_2nd_approve']"
+                        name="%(action_purchase_order_history_wizard)d" type="action" class="oe_link float-end"/>
+                <button icon="fa-mail-forward" name="%(action_po_product_location_qty_wizard)d"
+                        type="action" class="oe_link float-end"/>
+            </xpath>
+            <xpath expr="//page[@name='products']/field[@name='order_line']/tree//field[@name='product_packaging_qty']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//page[@name='products']/field[@name='order_line']/tree//field[@name='product_packaging_id']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="purchase_order_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.tree</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="partner_ref" readonly="state != 'draft'"/>
+                <field name="one_approver_ids" invisible="1"/>
+                <field name="one_approved_id" invisible="1"/>
+                <field name="two_approver_ids" invisible="1"/>
+                <field name="two_approved_id" invisible="1"/>
+                <field name="category_id" readonly="state != 'draft'"/>
+            </field>
+            <field name="origin" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+            <field name="date_order" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+            <field name="partner_ref" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </field>
+            <field name="amount_total" position="after">
+                <field name="depature_time"/>
+                <field name="arrival_time"/>
+            </field>
+
+            <field name="origin" position="after">
+                <field name="warehouse_id" readonly="state != 'draft'"/>
+                <field name="picking_type_id" readonly="state != 'draft'" invisible="1"/>
+            </field>
+            <field name="state" position="replace">
+            </field>
+            <field name="invoice_status" position="replace">
+                <field name="picking_state"/>
+                <field name="invoice_status"/>
+                <field name="state"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_filter_inherit" model="ir.ui.view">
+        <field name="name">request.quotation.select</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="partner_ref"/>
+                <field name="category_id"/>
+                <field name="one_approver_ids"/>
+                <field name="one_approved_id"/>
+                <field name="two_approver_ids"/>
+                <field name="two_approved_id"/>
+            </field>
+            <field name="product_id" position="before">
+                <field name="warehouse_id"/>
+                <field name="picking_type_id" domain="[('code','=','incoming')]"/>
+            </field>
+            <xpath expr="/search/group" position="inside">
+                <filter string="Division" name="warehouse_id" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                <filter string="Operation Type" name="picking_type_id" domain="[]"
+                        context="{'group_by':'picking_type_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_line_tree" model="ir.ui.view">
+        <field name="name">purchase.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <tree create="false" string="Purchase Order Lines">
+                <field name="order_id"/>
+                <field name="name"/>
+                <field name="partner_id" string="Vendor"/>
+                <field name="warehouse_id"/>
+                <field name="product_id"/>
+                <field name="price_unit"/>
+                <field name="pr_qty"/>
+                <field name="product_qty"/>
+                <field name="qty_received"/>
+                <field name="qty_invoiced"/>
+                <field name="qty_to_invoice"/>
+                <field name="invoice_status"/>
+                <field name="qty_to_refund"/>
+                <field name="qty_refunded"/>
+                <field groups="uom.group_uom" name="product_uom"/>
+                <field name="price_subtotal" widget="monetary"/>
+                <field name="date_planned" widget="date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_purchase_history_" model="ir.actions.act_window">
+        <field name="name">Purchase Order Lines</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="ebits_custom_purchase.purchase_order_line_tree"/>
+        <field name="context">{}</field>
+        <field name="domain">[('state', 'in', ('purchase', 'done'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No purchase order were made for this product yet!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_purchase_order_lines_view" model="ir.actions.act_window">
+        <field name="name">Purchase Order Lines</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="context">{}</field>
+        <field name="domain">[('state', 'in', ('purchase', 'done'))]</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+    </record>
+
+    <record id="action_purchase_order_lines_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="purchase_order_line_tree"/>
+        <field name="act_window_id" ref="action_purchase_order_lines_view"/>
+    </record>
+
+    <record id="action_purchase_order_lines_view_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="purchase.purchase_order_line_form2"/>
+        <field name="act_window_id" ref="action_purchase_order_lines_view"/>
+    </record>
+
+    <menuitem action="action_purchase_history_" id="menu_purchase_order_lines_view"
+              parent="purchase.menu_procurement_management" sequence="6"/>
+
+    <record id="purchase_rfq_draft_dashboard" model="ir.actions.act_window">
+        <field name="name">Requests for Quotation</field>
+        <field name="res_model">purchase.order</field>
+        <field name="context">{'search_default_todo':1, 'search_default_warehouse_id': [active_id],
+            'default_warehouse_id': active_id}
+        </field>
+        <field name="domain">[('state','in',('draft','sent')),('warehouse_id', '=', active_id)]</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+            </p>
+            <p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p>
+            <p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_rfq_to_approve_dashboard" model="ir.actions.act_window">
+        <field name="name">Quotation To be Approved</field>
+        <field name="res_model">purchase.order</field>
+        <field name="context">{'search_default_warehouse_id': [active_id], 'default_warehouse_id': active_id}</field>
+        <field name="domain">[('state','=', 'to approve'),('warehouse_id', '=', active_id)]</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+            </p>
+            <p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p>
+            <p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_rfq_to_2nd_approve_dashboard" model="ir.actions.act_window">
+        <field name="name">Quotation To be Approved</field>
+        <field name="res_model">purchase.order</field>
+        <field name="context">{'search_default_warehouse_id': [active_id], 'default_warehouse_id': active_id}</field>
+        <field name="domain">[('state','=', 'to_2nd_approve'),('warehouse_id', '=', active_id)]</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+            </p>
+            <p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p>
+            <p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_dashboard" model="ir.actions.act_window">
+        <field name="name">Purchase Order</field>
+        <field name="res_model">purchase.order</field>
+        <field name="context">{'search_default_warehouse_id': [active_id], 'default_warehouse_id': active_id}</field>
+        <field name="domain">[('state','not in', ('draft', 'sent', 'to approve', 'to_2nd_approve',
+            'cancel')),('warehouse_id', '=', active_id)]
+        </field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+            </p>
+            <p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p>
+            <p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_order_all_form_dashboard" model="ir.actions.act_window">
+        <field name="name">Purchase Order</field>
+        <field name="res_model">purchase.order</field>
+        <field name="context">{'search_default_warehouse_id': [active_id], 'default_warehouse_id': active_id}</field>
+        <field name="domain">[('warehouse_id', '=', active_id)]</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+            </p>
+            <p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p>
+            <p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase.act_res_partner_2_purchase_order" model="ir.actions.act_window">
+        <field name="name">RFQs and Purchases</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="context">{'search_default_partner_id': active_id, 'search_default_warehouse_id':
+            context.get("warehouse_id", False), 'search_default_currency_id': context.get("currency_id", False)}
+        </field>
+        <field eval="[(4, ref('purchase.group_purchase_user'))]" name="groups_id"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                This vendor has no purchase order. Click to create a new RfQ.
+            </p>
+            <p>
+                The request for quotation is the first step of the purchases flow. Once
+                converted into a purchase order, you will be able to control the receipt
+                of the products and the vendor bill.
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase.act_res_partner_2_purchase_order" model="ir.actions.act_window">
+        <field name="name">RFQs and Purchases</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="context">{'search_default_partner_id': active_id, 'search_default_warehouse_id':
+            context.get("warehouse_id", False), 'search_default_currency_id': context.get("currency_id", False)}
+        </field>
+        <field eval="[(4, ref('purchase.group_purchase_user'))]" name="groups_id"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                This vendor has no purchase order. Click to create a new RfQ.
+            </p>
+            <p>
+                The request for quotation is the first step of the purchases flow. Once
+                converted into a purchase order, you will be able to control the receipt
+                of the products and the vendor bill.
+            </p>
+        </field>
+    </record>
+
+</odoo>

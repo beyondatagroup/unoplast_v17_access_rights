@@ -1,0 +1,446 @@
+<odoo>
+    <menuitem id="purchase_requisition_extend_menu"
+              name="Purchase Requisition"
+              sequence="0"
+              parent="purchase.menu_purchase_root"
+              groups="ebits_custom_purchase.group_purchase_request_user,ebits_custom_purchase.group_purchase_request_manager,purchase.group_purchase_user"/>
+
+    <record id="purchase_category_tree" model="ir.ui.view">
+        <field name="name">Purchase Category</field>
+        <field name="model">purchase.category</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Category">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_category_form" model="ir.ui.view">
+        <field name="name">Purchase Category</field>
+        <field name="model">purchase.category</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="type"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_category_search" model="ir.ui.view">
+        <field name="name">Purchase Category</field>
+        <field name="model">purchase.category</field>
+        <field name="arch" type="xml">
+            <search string="Purchase Category">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="type"/>
+            </search>
+        </field>
+    </record>
+
+      <record id="action_purchase_category" model="ir.actions.act_window">
+        <field name="name">Purchase Category</field>
+        <field name="res_model">purchase.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                WELCOME! Click on create button to create your purchase categories
+            </p>
+        </field>
+    </record>
+
+
+
+    <record id="purchase_requisition_approval_hierarchy_tree" model="ir.ui.view">
+        <field name="name">PR Approval Hierarchy</field>
+        <field name="model">purchase.requisition.approval.hierarchy</field>
+        <field name="arch" type="xml">
+            <tree string="PR Approval Hierarchy">
+                <field name="name"/>
+                <field name="warehouse_id"/>
+                <field name="category_ids" widget="many2many_tags"/>
+                <field name="hierarchy_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_approval_hierarchy_form" model="ir.ui.view">
+        <field name="name">PR Approval Hierarchy</field>
+        <field name="model">purchase.requisition.approval.hierarchy</field>
+        <field name="arch" type="xml">
+            <form string="PR Approval Hierarchy">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="warehouse_id" options="{'no_create':True, 'no_open': True}"/>
+                            <field name="hierarchy_type"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="category_ids" widget="many2many_tags"
+                                   options="{'no_create':True, 'no_open': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="1st Level Approval">
+                            <group>
+                                <group>
+                                    <field name="one_level_user_ids" widget="many2many_tags"
+                                           options="{'no_create':True, 'no_open': True}" required="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="2nd Level Approval" invisible="hierarchy_type == 'one'">
+                            <group>
+                                <group>
+                                    <field name="two_level_user_ids" widget="many2many_tags"
+                                           options="{'no_create':True, 'no_open': True}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_approval_hierarchy_search" model="ir.ui.view">
+        <field name="name">PR Approval Hierarchy</field>
+        <field name="model">purchase.requisition.approval.hierarchy</field>
+        <field name="arch" type="xml">
+            <search string="PR Approval Hierarchy">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="category_ids" />
+                <field name="hierarchy_type"/>
+            </search>
+        </field>
+    </record>
+
+     <record id="action_purchase_requisition_approval_hierarchy" model="ir.actions.act_window">
+        <field name="name">PR Approval Hierarchy</field>
+        <field name="res_model">purchase.requisition.approval.hierarchy</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               WELCOME! Click on create button to create your purchase requisition hierarchy
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_extend_tree" model="ir.ui.view">
+        <field name="name">Purchase Requisition</field>
+        <field name="model">purchase.requisition.extend</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Requisition">
+                <field name="name"/>
+                <field name="date_requisition"/>
+                <field name="warehouse_id" readonly="state != 'draft'"/>
+                <field name="category_id" readonly="state != 'draft'"/>
+                <field name="user_id" readonly="state != 'draft'"/>
+                <field name="one_approved_id"/>
+                <field name="one_approved_date"/>
+                <button name="action_approve" string="Approve" type="object" class="btn-primary" invisible="state not in ('waiting')"
+                        groups="ebits_custom_purchase.group_purchase_request_manager" />
+                <field name="two_approved_id"/>
+                <field name="two_approved_date"/>
+                <button name="action_two_approve" string="Approve" type="object" invisible="state not in ['waiting_2nd']"
+                        class="btn-primary" groups="ebits_custom_purchase.group_purchase_request_manager"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_extend_form" model="ir.ui.view">
+        <field name="name">Purchase Requisition</field>
+        <field name="model">purchase.requisition.extend</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Requisition">
+
+                <header>
+                    <button name="action_send_for_approval" string="Send For Approval" type="object"
+                            invisible="state not in ('draft')"
+                            class="oe_highlight" groups="ebits_custom_purchase.group_purchase_request_user"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="state not in ('waiting')"
+                            groups="ebits_custom_purchase.group_purchase_request_manager"/>
+                    <button name="action_two_approve" string="Approve" type="object" invisible="state not in ['waiting_2nd']"
+                            class="oe_highlight" groups="ebits_custom_purchase.group_purchase_request_manager"/>
+                    <button name="%(action_purchase_cancel_reason_wizard)d" string="Reject" type="action"
+                            invisible="state  not in ('waiting','waiting_2nd')"
+                             groups="ebits_custom_purchase.group_purchase_request_manager"/>
+                    <button name="%(action_purchase_resend_reason_wizard)d" string="Re-Edit" type="action" invisible="state not in ('waiting','waiting_2nd')"
+                             groups="ebits_custom_purchase.group_purchase_request_user"/>
+                    <button name="print_purchase_requisition" string="Print PR" type="object" invisible="state not in ('approved')"
+                            groups="base.group_user"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting,approved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="category_id" options="{'no_open':True, 'no_create':True}" readonly="state != 'draft'"/>
+                            <field name="warehouse_id" options="{'no_open':True, 'no_create':True}" readonly="state != 'draft'"/>
+                            <!--                                <field name="picking_type_id" domain="[('warehouse_id', '=', warehouse_id), ('code', '=', 'internal')]" options="{'no_open':True, 'no_create':True}"/>-->
+                            <button name="action_check_quant" string="Check Stock" type="object"
+                                    invisible=" state not in ['draft', 'waiting','waiting_2nd']" class="oe_highlight"/>
+                        </group>
+                        <group>
+                            <field name="date_requisition"/>
+                            <field name="user_id" options="{'no_open':True, 'no_create':True}" readonly="state != 'draft'"/>
+                            <field name="date_required" />
+                            <!--                                <field name="department_id" options="{'no_open':True, 'no_create':True}"/>-->
+                            <field name="company_id" options="{'no_open':True, 'no_create':True}"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Purchase Item">
+                            <field name="purchase_line" widget="one2many_list" readonly="state in ['approved','cancel']"
+                                   context="{'date_required': date_required, 'default_date_required': date_required}">
+                                <tree editable="bottom">
+                                    <field name="product_id" options="{'no_open':True, 'no_create':True}"
+                                           domain="[('purchase_ok', '=', True)]"  />
+                                    <button name="%(action_product_location_qty_wizard)d" string="Quantity"
+                                            type="action" icon="fa-mail-forward"/>
+                                    <field name="required_qty"/>
+                                    <field name="uom_id" options="{'no_open':True, 'no_create':True}" />
+                                    <field name="date_required"  force_save="1"/>
+                                    <field name="location_id" options="{'no_open':True, 'no_create':True}"
+                                           domain="[('usage', '=', 'internal')]"  force_save="1"/>
+                                    <field name="available_stock"/>
+                                    <field name="avail_stock_in_categ"/>
+                                    <field name="transit_location_qty"/>
+                                    <field name="quality_stock"/>
+                                    <field name="po_qty"/>
+                                    <field name="grn_qty"/>
+                                    <field name="approved_qty"/>
+                                    <field name="ordered_qty" invisible="1"/>
+                                    <field name="to_ordered_qty" invisible="1"/>
+                                    <field name="remarks" />
+                                    <field name="company_id" options="{'no_open':True, 'no_create':True}"
+                                           groups="base.group_multi_company" invisible="1" />
+<!--                                    <field name="state" invisible="1"/>-->
+                                </tree>
+                                <form>
+                                    <header>
+                                        <field name="state" widget="statusbar"
+                                               statusbar_visible="draft,waiting,approved"/>
+                                    </header>
+                                    <sheet>
+                                        <group>
+                                            <group>
+<!--                                                <field name="product_id" options="{'no_open':True, 'no_create':True}"-->
+<!--                                                       domain="[('purchase_ok', '=', True)]"/>-->
+                                                <field name="product_id"
+                                                       domain="[('purchase_ok', '=', True)]" />
+                                                <label for="required_qty"/>
+                                                <div>
+                                                    <field name="required_qty"/>
+                                                    <field name="uom_id" options="{'no_open':True, 'no_create':True}"
+                                                           class="oe_inline"/>
+                                                </div>
+                                                <field name="available_stock"/>
+                                                <field name="avail_stock_in_categ"/>
+                                                <field name="transit_location_qty"/>
+                                                <field name="quality_stock"/>
+                                                <field name="po_qty"/>
+                                                <field name="grn_qty"/>
+                                                <field name="approved_qty"/>
+                                                <field name="ordered_qty" invisible="1"/>
+                                                <field name="to_ordered_qty" invisible="1"/>
+                                            </group>
+                                            <group>
+                                                <field name="date_required" />
+                                                <field name="location_id" options="{'no_open':True, 'no_create':True}"
+                                                       domain="[('usage', '=', 'internal')]"/>
+                                                <field name="remarks" />
+                                                <field name="company_id" options="{'no_open':True, 'no_create':True}"
+                                                       groups="base.group_multi_company" invisible="1"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                            <group>
+                                <field name="total_quantity_based_uom"/>
+                            </group>
+                        </page>
+                        <page string="Other Info">
+                            <group>
+                                <group>
+                                    <field name="one_approver_ids" options="{'no_create': True, 'no_open': True}"
+                                           widget="many2many_tags"/>
+                                    <field name="one_approved_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="one_approved_date"/>
+                                </group>
+                                <group>
+                                    <field name="two_approver_ids" options="{'no_create': True, 'no_open': True}"
+                                           widget="many2many_tags"/>
+                                    <field name="two_approved_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="two_approved_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string='Force Close'>
+                            <group>
+                                <field name="force_closed_reason"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <label for="remarks"/>
+                    <field name="remarks" nolabel="1" readonly="state != 'draft'"/>
+                    <div class="oe_clear"/>
+                    <label for="history"/>
+                    <field name="history" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_extend_search" model="ir.ui.view">
+        <field name="name">Purchase Requisition</field>
+        <field name="model">purchase.requisition.extend</field>
+        <field name="arch" type="xml">
+            <search string="Purchase Requisition">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="warehouse_id"/>
+                <field name="product_id"/>
+                <field name="user_id"/>
+                <field name="one_approved_id"/>
+                <field name="one_approved_date"/>
+                <field name="two_approved_id"/>
+                <field name="two_approved_date"/>
+                <field name="state"/>
+                <group expand="0" string="Group By">
+                    <filter string="Category" domain="[]" name="category_id" context="{'group_by':'category_id'}"/>
+                    <filter string="Warehouse/Branch" domain="[]" name="warehouse_id" context="{'group_by':'warehouse_id'}"/>
+                    <filter string="Requestor" domain="[]" name="user_id" context="{'group_by':'user_id'}"/>
+                    <filter string="Status" domain="[]" name="state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_purchase_requisition_extend" model="ir.actions.act_window">
+        <field name="name">Purchase Requisition</field>
+        <field name="res_model">purchase.requisition.extend</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                WELCOME! Click on create button to create your purchase requisitions
+            </p>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_extend_line_tree" model="ir.ui.view">
+        <field name="name">Purchase Requisition Line Tree</field>
+        <field name="model">po.requisition.item.lines</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Requisition Line" class="apply_dimension">
+                <field name="requisition_id"/>
+                <field name="date_requisition"/>
+                <field name="user_id"/>
+                <field name="warehouse_id"/>
+                <field name="category_id"/>
+                <field name="product_id" readonly="state != 'draft'"/>
+                <field name="uom_id" readonly="state != 'draft'"/>
+                <field name="required_qty" readonly="state != 'draft'"/>
+                <field name="date_required" readonly="state != 'draft'"/>
+                <field name="location_id" readonly="state != 'draft'"/>
+                <field name="available_stock"/>
+                <field name="transit_location_qty"/>
+                <field name="avail_stock_in_categ"/>
+                <field name="quality_stock"/>
+                <field name="po_qty"/>
+                <field name="grn_qty"/>
+                <field name="approved_qty" readonly="state not in ['waiting','waiting_2nd']"/>
+                <field name="ordered_qty"/>
+                <button name="%(action_purchase_force_closed_reason_wizard)d" string="Force Close" type="action"
+                        class="btn-primary" invisible="'to_ordered_qty' == 0.000 or 'state' != 'approved' or 'force_close' == True"/>
+<!--                <button name="%(action_purchase_force_closed_reason_wizard)d" string="Force Close" type="action"-->
+<!--                        class="btn-primary"-->
+<!--                        attrs="{'invisible': ['|', '|', ('to_ordered_qty', '=', 0.000), ('state', '!=', 'approved'), ('force_close', '=', True)]}"/>-->
+                <field name="force_close"/>
+                <field name="to_ordered_qty"/>
+                <field name="remarks" invisible="1" readonly="state != 'draft'"/>
+                <field name="state"/>
+                <field name="purchase_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_requisition_line_extend_search" model="ir.ui.view">
+        <field name="name">Purchase Requisition Line Search</field>
+        <field name="model">po.requisition.item.lines</field>
+        <field name="arch" type="xml">
+            <search string="Purchase Requisition Line">
+                <field name="requisition_id"/>
+                <field name="date_requisition"/>
+                <field name="product_id"/>
+                <field name="category_id"/>
+                <field name="warehouse_id"/>
+                <field name="product_id"/>
+                <field name="user_id"/>
+                <field name="date_required"/>
+                <field name="location_id"/>
+                <field name="remarks"/>
+                <field name="state"/>
+                <field name="purchase_ids"/>
+                <group expand="0" string="Group By">
+                    <filter string="Requisition" name="requisition_id" domain="[]" context="{'group_by':'requisition_id'}"/>
+                    <filter string="Warehouse/Branch" name="warehouse_id" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                    <filter string="Requestor" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Status" name="state" domain="[]" context="{'group_by':'state'}"/>
+                    <!--                        <filter string="PO Status" domain="[]" context="{'group_by':'po_state'}"/>-->
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_purchase_requisition_line_extend" model="ir.actions.act_window">
+        <field name="name">Purchase Requisition Line</field>
+        <field name="res_model">po.requisition.item.lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="purchase_requisition_extend_sub_menu"
+              action="action_purchase_requisition_extend"
+              name="Purchase Requisition"
+              sequence="1"
+              parent="purchase_requisition_extend_menu"
+              groups="ebits_custom_purchase.group_purchase_request_user,ebits_custom_purchase.group_purchase_request_manager,purchase.group_purchase_user"/>
+
+    <menuitem id="purchase_requisition_line_extend_sub_menu"
+              action="action_purchase_requisition_line_extend"
+              name="Purchase Requisition Lines"
+              sequence="2"
+              parent="purchase_requisition_extend_menu"
+              groups="ebits_custom_purchase.group_purchase_request_user,ebits_custom_purchase.group_purchase_request_manager,purchase.group_purchase_user"/>
+
+    <menuitem id="purchase_category_menu"
+              action="action_purchase_category"
+              name="Purchase Category" sequence="0"
+              parent="purchase.menu_purchase_config"
+              groups="ebits_custom_purchase.group_purchase_request_manager"/>
+
+
+    <menuitem id="menu_pr_approval_hierarchy"
+              action="action_purchase_requisition_approval_hierarchy"
+               parent="purchase.menu_purchase_config"
+              sequence="1"/>
+
+
+
+</odoo>

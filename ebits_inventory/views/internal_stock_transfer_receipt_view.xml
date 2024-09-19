@@ -1,0 +1,351 @@
+<odoo>
+    <data>
+        <record id="action_internal_stock_transfer_receipt_picking" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('internal_stock_transfer_receipt_id', '=', active_id)]</field>
+        </record>
+
+        <record id="internal_stock_transfer_receipt" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Receipt Tree</field>
+            <field name="model">internal.stock.transfer.receipt</field>
+            <field name="arch" type="xml">
+                <tree string="Internal Stock Transfer Receipt" create="0">
+                    <field name="name"/>
+                    <field name="issue_id"/>
+                    <field name="request_id" invisible="1"/>
+                    <field name="request_no"/>
+                    <field name="issue_ref"/>
+                    <field name="date_requested"/>
+                    <field name="date_required"/>
+                    <field name="date_last_issue"/>
+                    <field name="date_probable"/>
+                    <field name="date_last_received"/>
+                    <field name="warehouse_master_id" invisible="1"/>
+                    <field name="issue_warehouse"/>
+                    <field name="receiving_warehouse_id"/>
+                    <field name="issuing_location_id" invisible="1"/>
+                    <field name="receiving_location_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="closed"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_receipt_form" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Receipt Form</field>
+            <field name="model">internal.stock.transfer.receipt</field>
+            <field name="arch" type="xml">
+                <form string="Internal Stock transfer Receipt" create="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,partial,done"/>
+
+                        <button name="%(action_force_close_internal_stock_transfer_receipt)d" string="Force Close"
+                                type="action" class="oe_highlight" invisible="state not in ['draft','partial']"
+                                groups="ebits_inventory.group_internal_stock_receipt_user"/>
+                        <button name="%(action_internal_stock_transfer_receipt_picking)d" string="Transfers"
+                                type="action" class="oe_highlight" invisible="state not in ['done','partial']"
+                                groups="ebits_inventory.group_internal_stock_receipt_user"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="date_last_received"/>
+                                <field name="receiver_user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="receiving_warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="receiving_location_id" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="request_id" options="{'no_create': True}" invisible="1"/>
+                                <field name="request_no"/>
+                                <field name="issue_id" options="{'no_create': True}"/>
+                                <field name="issue_ref"/>
+                                <field name="picking_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Transportation">
+                                <field name="date_probable"/>
+                                <field name="driver_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="driver_name"/>
+                                <field name="driver_licence"/>
+                                <field name="driver_licence_type"/>
+                                <field name="driver_licence_place"/>
+                                <field name="driver_phone"/>
+                            </group>
+                            <group>
+                                <field name="vehicle_no"/>
+                                <field name="vehicle_owner"/>
+                                <field name="vehicle_owner_address"/>
+                                <field name="agent_name"/>
+                                <field name="closed" readonly="state in ['done']"/>
+                            </group>
+                        </group>
+                        <group>
+                            <button name="action_receive" string="Receive" type="object" invisible="state not in ['draft','partial']"
+                                    class="oe_highlight" groups="ebits_inventory.group_internal_stock_receipt_user"/>
+                        </group>
+                        <newline/>
+                        <notebook>
+                            <page string="Internal Stock Transfer Receipt Lines">
+                                <field name="receipt_lines" widget="one2many_list">
+                                    <form string="Internal Stock Transfer Receipt line">
+                                        <header>
+                                            <field name="state" widget="statusbar"
+                                                   statusbar_visible="draft,partial,done,"/>
+                                        </header>
+                                        <group>
+                                            <group>
+                                                <field name="product_id"
+                                                       options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="issued_qty"/>
+                                            </group>
+                                            <group>
+                                                <field name="date_required"/>
+                                                <field name="receipt_qty"/>
+                                                <field name="received_qty"/>
+                                                <field name="pending_receipt_qty"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree editable="bottom" string="Stock Transfer Receipt Line"
+                                          decoration-success="issued_qty==received_qty" create="0" delete="0">
+                                        <field name="product_id" options="{'no_open': True, 'no_create': True}"
+                                               domain="[('type', '!=', 'service')]"/>
+                                        <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="issued_qty"/>
+                                        <field name="date_required"/>
+                                        <field name="receipt_qty" readonly="state not in ['draft','partial']"/>
+                                        <field name="received_qty"/>
+                                        <field name="pending_receipt_qty"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                                <group>
+                                    <field name="total_quantity_based_uom"/>
+                                </group>
+                            </page>
+                            <page string="Request &amp; Issue Details">
+                                <group>
+                                    <group>
+                                        <field name="date_requested"/>
+                                        <field name="date_required"/>
+                                        <field name="approver_user_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="date_approved"/>
+                                        <field name="requester" options="{'no_open': True, 'no_create': True}"/>
+                                    </group>
+                                    <group>
+                                        <field name="date_last_issue"/>
+                                        <field name="warehouse_master_id" required="1"
+                                               domain="[('requesting_warehouse_id', '=', receiving_warehouse_id)]"
+                                               invisible="1"/>
+                                        <field name="issue_warehouse"/>
+                                        <field name="issuing_location_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Stock Moves">
+                                <field name="move_lines" widget="one2many_list" readonly="1">
+                                    <tree editable="bottom" delete="0" create="0">
+                                        <field name="name"/>
+                                        <field name="picking_id" string="Reference"/>
+                                        <field name="origin"/>
+                                        <field name="picking_type_id" invisible="1"/>
+                                        <field name="create_date" invisible="1" groups="base.group_no_one"/>
+                                        <field name="product_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_uom" options="{'no_open': True, 'no_create': True}"
+                                               string="Unit of Measure" groups="uom.group_uom"/>
+                                        <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="date" groups="base.group_no_one"/>
+                                        <!--                                        <field name="date_expected" invisible="context.get('scrap_move')"/> -->
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="History">
+                                <group>
+                                    <field name="history" readonly="1"/>
+                                    <field name="force_closed_reason"/>
+                                </group>
+                            </page>
+                            <page string="Remarks">
+                                <group>
+                                    <field name="remarks"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_receipt_search" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Receipt Search</field>
+            <field name="model">internal.stock.transfer.receipt</field>
+            <field name="arch" type="xml">
+                <search string="Search Internal Stock Transfer Receipt">
+                    <field name="name"/>
+                    <field name="request_no"/>
+                    <field name="issue_id"/>
+                    <field name="issue_ref"/>
+                    <field name="date_requested"/>
+                    <field name="date_required"/>
+                    <field name="date_last_received"/>
+                    <field name="date_last_issue"/>
+                    <field name="warehouse_master_id" invisible="1"/>
+                    <field name="issue_warehouse"/>
+                    <field name="receiving_warehouse_id"/>
+                    <field name="state"/>
+                    <filter string="Force Closed" name="Closed" domain="[('closed', '=', True)]" context="{}"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Issue" domain="[]" name="issue_id" context="{'group_by': 'issue_id'}"/>
+                        <filter string="Receiving Warehouse/Branch" domain="[]" name="receiving_warehouse_id"
+                                context="{'group_by': 'receiving_warehouse_id'}"/>
+                        <filter string="Issuing Warehouse/Branch" domain="[]" name="issue_warehouse"
+                                context="{'group_by': 'issue_warehouse'}"/>
+                        <filter string="State" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_receipt_line_tree" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Receipt Line Tree</field>
+            <field name="model">internal.stock.transfer.receipt.line</field>
+            <field name="arch" type="xml">
+                <tree string="Internal Stock Transfer Receipt Line" create="0" edit="0">
+                    <field name="receipt_id"/>
+                    <field name="request_no"/>
+                    <field name="product_id"/>
+                    <field name="uom_id"/>
+                    <field name="receiving_warehouse_id"/>
+                    <field name="issue_warehouse"/>
+                    <field name="issued_qty"/>
+                    <field name="date_required"/>
+                    <!--                    <field name="receipt_qty"/>-->
+                    <field name="received_qty"/>
+                    <field name="pending_receipt_qty"/>
+                    <field name="state"/>
+                    <field name="closed"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_receipt_line_form" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Receipt Line Form</field>
+            <field name="model">internal.stock.transfer.receipt.line</field>
+            <field name="arch" type="xml">
+                <form string="internal.stock.transfer.receipt Line" create="0" edit="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,partial,done,"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="issued_qty"/>
+                                <field name="receipt_qty"/>
+                                <field name="received_qty"/>
+                                <field name="pending_receipt_qty"/>
+                            </group>
+                            <group>
+                                <field name="receipt_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="date_required"/>
+                                <field name="receiving_warehouse_id"/>
+                                <field name="warehouse_master_id" invisible="1"/>
+                                <field name="issue_warehouse"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="internal_stock_transfer_receipt_line_search" model="ir.ui.view">
+            <field name="name">Internal Stock Transfer Receipt Line Search</field>
+            <field name="model">internal.stock.transfer.receipt.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Internal Stock Transfer Receipt Line">
+                    <field name="receipt_id"/>
+                    <field name="request_no"/>
+                    <field name="product_id"/>
+                    <field name="uom_id"/>
+                    <field name="date_required"/>
+                    <field name="receiving_warehouse_id"/>
+                    <field name="warehouse_master_id" invisible="1"/>
+                    <field name="issue_warehouse"/>
+                    <field name="state"/>
+                    <filter string="Force Closed" name="Closed" domain="[('closed', '=', True)]" context="{}"/>
+                    <group expand="0" string="Group By">
+<!--                        <filter string="Issue" domain="[]" name="issue_id" context="{'group_by': 'issue_id'}"/>-->
+                        <filter string="Request" domain="[]" name="request_no" context="{'group_by': 'request_no'}"/>
+                        <filter string="Receiving Warehouse/Branch" name="receiving_warehouse_id" domain="[]"
+                                context="{'group_by': 'receiving_warehouse_id'}"/>
+                        <filter string="Issuing Warehouse/Branch" name="issue_warehouse" domain="[]"
+                                context="{'group_by': 'issue_warehouse'}"/>
+                        <filter string="State" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_internal_stock_transfer_receipts_draft" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">internal.stock.transfer.receipt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'draft'),('receiving_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_receipts_waiting" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">internal.stock.transfer.receipt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'partial'),('receiving_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_receipts_done" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">internal.stock.transfer.receipt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'done'),('receiving_warehouse_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_receipts_all" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">internal.stock.transfer.receipt</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_receipts" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt</field>
+            <field name="res_model">internal.stock.transfer.receipt</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_internal_stock_transfer_receipt_line" model="ir.actions.act_window">
+            <field name="name">Internal Stock Transfer Receipt Line</field>
+            <field name="res_model">internal.stock.transfer.receipt.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="sub_menu_internal_stock_transfer_receipt"
+                  name="Receipt" sequence="6"
+                  parent="menu_internal_stock_transfer"
+                  action="action_internal_stock_transfer_receipts"
+                  groups="ebits_inventory.group_internal_stock_receipt_user"
+        />
+
+        <menuitem id="sub_menu_internal_stock_transfer_receipt_line"
+                  name="Receipt Lines" sequence="7"
+                  parent="menu_internal_stock_transfer"
+                  action="action_internal_stock_transfer_receipt_line"
+                  groups="ebits_inventory.group_internal_stock_receipt_user"/>
+    </data>
+</odoo>

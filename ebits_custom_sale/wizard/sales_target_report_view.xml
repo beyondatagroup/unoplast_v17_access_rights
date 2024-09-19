@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <record id="ebits_sale_target_wizard_form" model="ir.ui.view">
+  <field name="name">Ebits Sale Target Wizard</field>
+  <field name="model">sale.target.report.wizard</field>
+  <field name="arch" type="xml">
+   <form string="Generate Report">
+    <group>
+     <group>
+      <field name="date_from"/>
+      <field domain="[('date_start', '=', date_from), ('date_end', '=', date_to)]" name="target_id" options="{'no_open': True, 'no_create':True}"/>
+      <field name="based_product"/>
+     </group>
+     <group>
+      <field name="date_to"/>
+      <field name="based_team"/>
+     </group>
+    </group>
+    <group invisible="based_team in ('sales_person', 'sales_team') or based_product == 'product'" string="Group By">
+     <group>
+      <field name="group_by"/>
+     </group>
+    </group>
+    <group invisible="output == False">
+     <field invisible="1" name="name"/>
+     <h1>
+      <field filename="name" name="output" nolabel="1"/>
+     </h1>
+    </group>
+    <footer>
+     <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+     or
+     <button class="oe_link" special="cancel" string="Cancel"/>
+    </footer>
+   </form></field>
+ </record>
+ <record id="action_sale_target_report_wizard" model="ir.actions.act_window">
+  <field name="name">Generate Sales Target</field>
+  <field name="res_model">sale.target.report.wizard</field>
+  <field name="type">ir.actions.act_window</field>
+<!--  <field name="view_type">form</field>-->
+  <field name="view_mode">tree,form</field>
+  <field name="view_id" ref="ebits_sale_target_wizard_form"/>
+  <field name="context">{}</field>
+  <field name="target">new</field>
+ </record>
+ <menuitem action="action_sale_target_report_wizard" id="sub_menu_sale_target" name="Sale Target Report" parent="sale.menu_sale_report" sequence="17"/>
+</odoo>

@@ -1,0 +1,293 @@
+<odoo>
+    <data>
+        <record id="material_return_tree" model="ir.ui.view">
+            <field name="name">Material return Tree</field>
+            <field name="model">material.return</field>
+            <field name="arch" type="xml">
+                <tree string="Material Return">
+                    <field name="name"/>
+                    <field name="issue_id"/>
+                    <field name="user_id"/>
+                    <field name="date_accepted"/>
+                    <field name="date_return"/>
+                    <field name="accepted_by"/>
+                    <field name="warehouse_id"/>
+                    <field name="picking_type_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="material_return_form" model="ir.ui.view">
+            <field name="name">Material return Form</field>
+            <field name="model">material.return</field>
+            <field name="arch" type="xml">
+                <form string="Material Return" readonly="state  in ('done')">
+                    <header>
+                        <button name="print_material_return" type="object" string="Print" class="oe_highlight"/>
+
+
+                        <button name="action_confirm" string="Confirm" type="object"
+                                class="oe_highlight" invisible="state not in 'draft'"/>
+                        <button name="%(action_force_close_material_return)d" string="Force Close" type="action"
+                                class="oe_highlight"
+                                groups="ebits_inventory.group_material_return_user"
+                                invisible="state not in ('draft','inprogress')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="accepted_by" readonly="1" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"
+                                       readonly="state != 'draft' or return_material"/>
+                                <field name="picking_type_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('warehouse_id', '=', warehouse_id),('code', '=', 'internal')]"
+                                       readonly="state != 'draft' or return_material"/>
+                                <field name="closed" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="date_return"/>
+                                <field name="issue_id" options="{'no_create':True}"/>
+                                <field name="date_accepted"/>
+                                <field name="return_material" invisible="1"/>
+                            </group>
+                            <group>
+                                <button name="action_check_stock" string="Check Stock" type="object"
+                                        invisible="state not in 'draft'"
+                                        class="oe_highlight"/>
+                            </group>
+                        </group>
+                        <group>
+                            <button name="action_return" help="Click here to update Returned qty" type="object"
+                                    icon="fa-plus" string="Return" invisible="state not in 'inprogress'"
+                                    groups="ebits_inventory.group_material_return_user" class="oe_highlight"/>
+                        </group>
+                        <newline/>
+                        <notebook>
+                            <page string="Product Lines">
+                                <field name="return_lines" widget="one2many_list"
+                                       readonly="state  in ('done')" style="width: 100%;">
+                                    <form string="General Information">
+                                        <header>
+                                            <field name="state" widget="statusbar"
+                                                   statusbar_visible="draft,inprogress,done"/>
+                                        </header>
+                                        <group>
+                                            <group>
+                                                <field name="product_id" domain="[('type', '!=', 'service')]"
+                                                       options="{'no_open': True, 'no_create': True}"
+                                                       readonly="state != 'draft' or return_material "/>
+                                                <field name="qty"
+                                                       readonly="state != 'draft' or return_material"/>
+                                                <field name="uom_id" options="{'no_open':True, 'no_create':True}"/>
+                                                <field name="current_loc_stock"/>
+                                                <field name="pending_qty"/>
+                                                <field name="returned_qty"/>
+                                            </group>
+                                            <group>
+                                                <field name="machine_product_id" invisible='1'/>
+                                                <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                                       readonly="state != 'draft' or return_material"/>
+                                                <field name="location_dest_id"
+                                                       options="{'no_open': True, 'no_create': True}"
+                                                       readonly="state != 'draft' or return_material "/>
+                                                <field name="return_material" invisible='1'/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree editable="bottom" string="return Materials"
+                                          decoration-success="qty==returned_qty">
+                                        <field name="product_id" domain="[('type', '!=', 'service')]"
+                                               options="{'no_open': True, 'no_create': True}"
+                                               readonly="state != 'draft' or return_material"
+                                        />
+                                        <field name="machine_product_id" column_invisible='1'/>
+                                        <field name="qty"
+                                               readonly="state != 'draft' or return_material"/>
+                                        <field name="uom_id" options="{'no_open':True, 'no_create':True}"
+                                               readonly="state != 'draft' or return_material"/>
+                                        <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                               readonly="state != 'draft' or return_material"/>
+                                        <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"
+                                               readonly="state != 'draft' or return_material"/>
+                                        <field name="current_loc_stock"/>
+                                        <field name="return_qty" readonly="state != 'inprogress'"/>
+                                        <field name="pending_qty"/>
+                                        <field name="returned_qty"/>
+                                        <field name="state"/>
+                                        <field name="return_material" column_invisible="1"/>
+                                        <field name="warehouse_id" column_invisible="1"/>
+                                        <field name="company_id" column_invisible="1"/>
+                                    </tree>
+                                </field>
+                                <group>
+                                    <field name="total_quantity_based_uom"/>
+                                </group>
+                            </page>
+                            <page string="Stock Moves">
+                                <field name="move_lines" widget="one2many_list" readonly="1">
+                                    <tree editable="bottom" delete="false" create="false">
+                                        <field name="name"/>
+                                        <field name="picking_id" string="Reference"/>
+                                        <field name="origin"/>
+                                        <field name="picking_type_id" invisible="1"/>
+                                        <field name="create_date" invisible="1" groups="base.group_no_one"/>
+                                        <field name="product_id"/>
+                                        <field name="product_uom"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_uom" options="{'no_open': True, 'no_create': True}"
+                                               string="Unit of Measure" groups="uom.group_uom"/>
+                                        <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="date" groups="base.group_no_one"/>
+                                        <!--                                        <field name="date_expected" invisible="context.get('scrap_move')"/>-->
+                                        <!--                                        <field name="date_expected" />-->
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="History">
+                                <field name="history"/>
+                            </page>
+                        </notebook>
+                        <group>
+                            <field name="remarks" readonly="state in ['done','inprogress']"
+                            />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--        <record id="material_return_search" model="ir.ui.view">-->
+        <!--            <field name="name">Material Return Search</field>-->
+        <!--            <field name="model">material.return</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <search string="Search Raw Material returns">-->
+        <!--                    <field name="name"/>-->
+        <!--                    <field name="warehouse_id"/>-->
+        <!--                    <field name="picking_type_id"/>-->
+        <!--                    <field name="issue_id"/>-->
+        <!--                    <field name="user_id"/>-->
+        <!--                    <field name="date_accepted"/>-->
+        <!--                    <field name="accepted_by"/>-->
+        <!--                    <field name="department_id"/>-->
+        <!--                    <field name="state"/>-->
+        <!--                    <group expand="0" string="Group By">-->
+        <!--                        <filter string="Department" domain="[]" context="{'group_by': 'department_id'}"/>-->
+        <!--                        <filter string="Warehouse/Branch" domain="[]" context="{'group_by': 'warehouse_id'}"/>-->
+        <!--                        <filter string="Picking Type" domain="[]" context="{'group_by': 'picking_type_id'}"/>-->
+        <!--                        <filter string="state" domain="[]" context="{'group_by': 'state'}"/>-->
+        <!--                    </group>-->
+        <!--                </search>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <record id="material_return_line_tree" model="ir.ui.view">
+            <field name="name">Material Return Line Tree</field>
+            <field name="model">material.return.line</field>
+            <field name="arch" type="xml">
+                <tree string="Material Return Lines" create="0" edit="0">
+                    <field name="return_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="product_id"/>
+                    <field name="machine_product_id" invisible="1"/>
+                    <field name="qty"/>
+                    <field name="uom_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="pending_qty"/>
+                    <field name="returned_qty"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="material_return_line_form" model="ir.ui.view">
+            <field name="name">Material Return Line Form</field>
+            <field name="model">material.return.line</field>
+            <field name="arch" type="xml">
+                <form string="Material Return lines" create="0" edit="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="return_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="product_id" domain="[('type', '!=', 'service')]"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="qty"/>
+                                <field name="uom_id" options="{'no_open':True, 'no_create':True}"/>
+                                <field name="pending_qty"/>
+                                <field name="returned_qty"/>
+                            </group>
+                            <group>
+                                <field name="machine_product_id" invisible="1"
+                                       options="{'no_open':True, 'no_create':True}"/>
+                                <field name="location_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="material_return_lines_search" model="ir.ui.view">
+            <field name="name">Material Return Lines Search</field>
+            <field name="model">material.return.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Raw Material returns">
+                    <field name="product_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="machine_product_id" invisible="1"/>
+                    <field name="uom_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" domain="[]" name="product_id" context="{'group_by': 'product_id'}"/>
+                        <!--                        <filter string="Department" domain="[]" name="department" context="{'group_by': 'department_id'}"/>-->
+                        <filter string="Warehouse/Branch" domain="[]" name="warehouse_id"
+                                context="{'group_by': 'warehouse_id'}"/>
+                        <filter string="Source Location" domain="[]" name="location_id"
+                                context="{'group_by': 'location_id'}"/>
+                        <filter string="Destination Location" domain="[]" name="location_dest_id"
+                                context="{'group_by': 'location_dest_id'}"/>
+                        <filter string="state" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_material_return" model="ir.actions.act_window">
+            <field name="name">Material Return</field>
+            <field name="res_model">material.return</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_material_return_lines" model="ir.actions.act_window">
+            <field name="name">Material Return Line</field>
+            <field name="res_model">material.return.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="sub_menu_material_return"
+                  name="Material Return"
+                  sequence="1"
+                  parent="menu_material_return"
+                  action="action_material_return"
+                  groups="ebits_inventory.group_material_return_user"/>
+
+        <menuitem id="sub_menu_material_return_lines"
+                  name="Material Return Lines"
+                  sequence="2"
+                  parent="menu_material_return"
+                  action="action_material_return_lines"
+                  groups="ebits_inventory.group_material_return_user"/>
+    </data>
+</odoo>

@@ -1,0 +1,42 @@
+<odoo>
+        <record id="inter_transfer_request_merge_wizard" model="ir.ui.view">
+            <field name="name">Inter Transfer Request Merge Wizard</field>
+            <field name="model">inter.transfer.request.merge</field>
+            <field name="arch" type="xml">
+                <form string="Inter Transfer Request Merge">
+                <group>
+                    <group>
+                        <field name="date_requested"/>
+                        <field name="requester"/>
+                    </group>
+                    <group>
+                        <field name="date_required"/>
+                    </group>
+                </group>
+                <group>
+                    <p>
+                        All the selected request will be merged into single request 
+                        Are you sure want to do it ?.
+                        <i>Note : This process cannot be reversed</i>
+                    </p>
+                </group>
+                    <footer>
+                        <button name="action_merge" string="Merge" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+<!--        <act_window-->
+<!--            id="act_inter_transfer_request_merge"-->
+<!--            name="Merge Request"-->
+<!--            res_model="inter.transfer.request.merge"-->
+<!--            src_model="internal.stock.transfer.request"-->
+<!--            view_mode="form"-->
+<!--            target="new"-->
+<!--            multi="True"-->
+<!--            key2="client_action_multi"-->
+<!--            />-->
+        
+</odoo>

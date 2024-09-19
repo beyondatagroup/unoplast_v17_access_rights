@@ -1,0 +1,45 @@
+<odoo>
+		<record id="inter_process_production_report_wizard_form" model="ir.ui.view">
+			<field name="name">Inter Process Production Report Wizard</field>
+			<field name="model">inter.process.production.report.wizard</field>
+			<field name="arch" type="xml">
+				<form string="Generate Report">
+				    <group>
+				        <group>                    
+				            <field name="date_from"/>
+				            <field name="warehouse_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}"/>
+				            <field name="shift_type"/>
+				        </group>
+				        <group>  
+				            <field name="date_to"/>                  
+				            <field name="process_ids" options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>
+				            <field name="labour_ids" options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>
+				            <field name="summary"/>
+				        </group>
+				    </group>
+				    <group attrs="{'invisible': [('output', '=', False)]}">
+				        <field name="name" invisible="1"/>
+				        <h1>
+				            <field name="output" filename="name" nolabel= "1"/>
+				        </h1>
+				    </group>
+				    <footer>
+				        <button name="action_report" string="Generate Report" type="object" class="oe_highlight"/>
+				        or
+				        <button string="Cancel" class="oe_link" special="cancel"/>
+				    </footer>
+				</form>
+			</field>
+		</record>
+		
+		<record id="action_inter_process_production_report_wizard" model="ir.actions.act_window">
+			<field name="name">Generate Inter Process Production Report</field>
+			<field name="res_model">inter.process.production.report.wizard</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="inter_process_production_report_wizard_form"/>
+			<field name="context">{}</field>
+			<field name="target">new</field>
+		</record>
+</odoo>

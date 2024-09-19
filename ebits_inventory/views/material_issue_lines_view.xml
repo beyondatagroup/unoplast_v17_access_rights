@@ -1,0 +1,123 @@
+<odoo>
+
+        <record id="material_issue_line_tree" model="ir.ui.view">
+            <field name="name">Material Issue Line Tree</field>
+            <field name="model">material.issue.line</field>
+            <field name="arch" type="xml">
+                <tree create="0" edit="0">
+                    <field name="issue_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="product_id" />
+                    <field name="machine_product_id" invisible="1"/>
+                    <field name="qty"/>
+                    <field name="uom_id"/>
+                    <field name="location_id" />
+                    <field name="location_dest_id" />
+                    <field name="date_expected"/>
+                    <field name="stock_available"/>
+                    <field name="current_loc_stock"/>
+                    <field name="pending_qty"/>
+                    <field name="issued_qty"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="material_issue_line_form" model="ir.ui.view">
+            <field name="name">Raw Material Issue Line Form</field>
+            <field name="model">material.issue.line</field>
+            <field name="arch" type="xml">
+                <form string='Return Products' create="0" edit="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,partial,done,closed"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="issue_id"/>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="product_id" options="{'no_open': True,'no_create': True}" domain="[('type', '!=', 'service')]"/>
+                                <field name="machine_product_id" invisible="1"/>
+                                <field name="qty"/>
+                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="location_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="date_expected"/>
+                                <field name="stock_available"/>
+                                <field name="current_loc_stock"/>
+                                <field name="receiver_name"/>
+                                <field name="pending_qty"/>
+                                <field name="issued_qty"/>
+                                <field name="returnable" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="material_issue_line_search" model="ir.ui.view">
+            <field name="name">Material Issue Line Search</field>
+            <field name="model">material.issue.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Return Products">
+                    <field name="product_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="uom_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="date_expected"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" domain="[]" name="product_id" context="{'group_by': 'product_id'}"/>
+                        <filter string="Warehouse/Branch" domain="[]" name="warehouse_id" context="{'group_by': 'warehouse_id'}"/>
+                        <filter string="Source Location" domain="[]" name="location_id" context="{'group_by': 'location_id'}"/>
+                        <filter string="Destination Location" domain="[]" name="location_dest_id" context="{'group_by': 'location_dest_id'}"/>
+                        <filter string="state" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_material_issue_line" model="ir.actions.act_window">
+            <field name="name">Material Issue Lines</field>
+            <field name="res_model">material.issue.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('returnable', '=', 'no')]</field>
+            <field name="context">{'default_returnable': 'no'}</field>
+            <field name="help" type="html">
+                <p>
+                    No Issue available
+                </p>
+            </field>
+        </record>
+        
+        <record id="action_material_issue_line_returnable" model="ir.actions.act_window">
+            <field name="name">Material Issue Lines Returnable</field>
+            <field name="res_model">material.issue.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('returnable', '=', 'yes')]</field>
+            <field name="context">{'default_returnable': 'yes'}</field>
+            <field name="help" type="html">
+                <p>
+                    No Issue available
+                </p>
+            </field>
+        </record>
+        
+        <menuitem id="sub_menu_material_issue_line" 
+            name="Material Issue Lines" 
+            sequence="3" 
+            parent="menu_material_issue" 
+            action="action_material_issue_line"
+            groups="ebits_inventory.group_material_issue_user"/>
+       
+       <menuitem id="sub_menu_material_issue_line_returnable" 
+           name="Material Issue Lines Returnable" 
+           sequence="4" 
+           parent="menu_material_issue" 
+           action="action_material_issue_line_returnable"
+           groups="ebits_inventory.group_material_issue_user"/>
+</odoo>

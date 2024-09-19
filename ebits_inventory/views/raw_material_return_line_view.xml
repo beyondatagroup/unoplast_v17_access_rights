@@ -1,0 +1,107 @@
+<odoo>
+        
+        <record id="raw_material_return_line_tree" model="ir.ui.view">
+            <field name="name">Return Cloth Lines</field>
+            <field name="model">raw.material.return.line</field>
+            <field name="arch" type="xml">
+                <tree create="0" edit="0">
+                    <field name="issue_id"/>
+                    <field name="issued_to"/>
+                    <field name="product_id" string="Return Product"/>
+                    <field name="uom_id"/>
+                    <field name="expected_qty"/>
+                    <field name="total_returned_qty"/>
+                    <field name="balance_qty"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="closed"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="raw_material_return_line_product_form" model="ir.ui.view">
+            <field name="name">Return Cloth Lines</field>
+            <field name="model">raw.material.return.line</field>
+            <field name="arch" type="xml">
+                <form string='Return Cloth Material' create="0" edit="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,partial,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="issue_id"/>
+                                <field name="issued_to"/>
+                                <field name="product_id" string="Return Product" options="{'no_open': True, 'no_create': True}" domain="[('type', '!=', 'service')]"/>
+                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="expected_qty"/>
+                                <field name="total_returned_qty"/>
+                                <field name="balance_qty"/>
+                            </group>
+                            <group>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                                <field name="location_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="remarks"/>
+                                <field name="company_id" options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="raw_material_return_line_search" model="ir.ui.view">
+            <field name="name">Return Cloth</field>
+            <field name="model">raw.material.return.line</field>
+            <field name="arch" type="xml">
+                <search string="Return Cloth">
+                    <field name="product_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="remarks"/>
+                    <field name="state"/>
+                    <filter string="Force Closed" name="Closed" domain="[('closed', '=', True)]" context="{}"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" domain="[]" name="product_id" context="{'group_by': 'product_id'}"/>
+                        <filter string="Warehouse/Branch" name="warehouse_id" domain="[]" context="{'group_by': 'warehouse_id'}"/>
+                        <filter string="Source Location" name="location_id" domain="[]" context="{'group_by': 'location_id'}"/>
+                        <filter string="Destination Location" name="location_dest_id" domain="[]" context="{'group_by': 'location_dest_id'}"/>
+                        <filter string="State" name="state" domain="[]" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record id="action_raw_material_return_line" model="ir.actions.act_window">
+            <field name="name">Return Cloth Material</field>
+            <field name="res_model">raw.material.return.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('issue_type', '=', 'normal')]</field>
+            <field name="context">{'default_issue_type': 'normal', 'issue_type': 'normal'}</field>
+        </record>
+        
+        <record id="action_raw_material_return_line_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="raw_material_return_line_tree"/>
+            <field name="act_window_id" ref="action_raw_material_return_line"/>
+        </record>
+
+        <record id="action_raw_material_return_line_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="raw_material_return_line_product_form"/>
+            <field name="act_window_id" ref="action_raw_material_return_line"/>
+        </record>
+        
+        <menuitem id="sub_menu_return_products" 
+            sequence="2" 
+            parent="menu_cloth_order" 
+            action="action_raw_material_return_line"
+            groups="ebits_inventory.group_raw_material_issue_user,ebits_inventory.group_raw_material_issue_manager"/>
+        
+</odoo>

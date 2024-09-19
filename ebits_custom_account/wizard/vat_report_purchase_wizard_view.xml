@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vat_report_purchase_wizard_form" model="ir.ui.view">
+        <field name="name">Purchase VAT Report</field>
+        <field name="model">vat.report.purchase.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="warehouse_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                        <field domain="[('supplier', '=', True), ('parent_id', '=', False)]" name="partner_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="date_to"/>
+                        <field name="currency_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_vat_report_purchases_wizard" model="ir.actions.act_window">
+        <field name="name">Purchase VAT Report</field>
+        <field name="res_model">vat.report.purchase.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="vat_report_purchase_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_vat_report_purchases_wizard" id="menu_vat_report_purchase" name="VAT Report - Purchase" parent="account.menu_finance_legal_statement" sequence="44"/>
+</odoo>

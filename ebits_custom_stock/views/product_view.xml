@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_open_orderpoint" model="ir.actions.act_window">
+        <field name="context">{'default_product_id': active_id, 'search_default_product_id': active_id}</field>
+        <field name="name">Warehouse Reordering Rules</field>
+        <field name="res_model">stock.warehouse.orderpoint</field>
+    </record>
+    <record id="product_open_branch_orderpoint" model="ir.actions.act_window">
+        <field name="context">{'default_product_id': active_id, 'search_default_product_id': active_id}</field>
+        <field name="name">Branch Reordering Rules</field>
+        <field name="res_model">stock.branch.orderpoint</field>
+    </record>
+    <record id="product_variant_easy_edit_view_inherit" model="ir.ui.view">
+        <field name="name">product.product.view.form.easy</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute groups="ebits_custom_stock.group_product_edit_hide_user" name="edit">
+                    false</attribute>
+                <attribute groups="ebits_custom_stock.group_product_edit_hide_user" name="create">
+                    false</attribute>
+            </xpath></field>
+    </record>
+    <!-- Inherit Tree View for Product -->
+    <!-- <record id="product_product_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.product.view.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="edit" groups="ebits_custom_stock.group_product_edit_hide_user">false</attribute>
+                <attribute name="create" groups="ebits_custom_stock.group_product_edit_hide_user">false</attribute>
+            </xpath></field>
+    </record> -->
+    <!-- Inherit Kanban View for Product -->
+    <record id="product_kanban_view_inherit" model="ir.ui.view">
+        <field name="name">Product Kanban</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute groups="ebits_custom_stock.group_product_edit_hide_user" name="create">
+                    false</attribute>
+            </xpath></field>
+    </record>
+    <!-- Inherit Form View for Product Template -->
+    <!-- <record id="product_template_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.view.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit" groups="ebits_custom_stock.group_product_edit_hide_user">false</attribute>
+                <attribute name="create" groups="ebits_custom_stock.group_product_edit_hide_user">false</attribute>
+            </xpath></field>
+    </record> -->
+    <!-- Inherit Tree View for Product Template -->
+    <!-- <record id="product_template_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.view.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="edit" groups="ebits_custom_stock.group_product_edit_hide_user">false</attribute>
+                <attribute name="create" groups="ebits_custom_stock.group_product_edit_hide_user">false</attribute>
+            </xpath></field>
+    </record> -->
+    <!-- Inherit Kanban View for Product Template -->
+    <record id="product_template_kanban_view_inherit" model="ir.ui.view">
+        <field name="name">Product.template.product.kanban</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute groups="ebits_custom_stock.group_product_edit_hide_user" name="create">
+                    false</attribute>
+            </xpath></field>
+    </record>
+    <!-- ACTION NOT AVAILABLE ### -->
+    <!-- <record id="stock.product_product_view_form_easy_inherit_stock" model="ir.ui.view">
+        <field name="name">product.product.view.form.easy.inherit.stock</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <header>
+                        <button groups="ebits_custom_stock.group_custom_product_manager" invisible="type != 'product'" name="%(stock.action_view_change_product_quantity)d" string="Update Qty On Hand" type="action"/>
+                        <button groups="ebits_custom_stock.group_custom_product_manager" invisible="type != 'product'" name="%(stock.act_make_procurement)d" string="Procurement Request" type="action"/>
+                    </header>
+                </sheet>
+            </form></field>
+    </record> -->
+    <record id="product_form_view_procurement_button_inherit" model="ir.ui.view">
+        <field name="name">product.product.procurement</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.product_form_view_procurement_button"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_update_quantity_on_hand']" position="replace">
+                <button groups="ebits_custom_stock.group_custom_product_manager" invisible="type != 'product'" name="action_update_quantity_on_hand" string="Update Quantity" type="object"/>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="replace">
+                <button groups="ebits_custom_stock.group_custom_product_manager" invisible="type != 'product'" name="%(stock.action_product_replenish)d" string="Replenish" type="action" context="{'default_product_id': id}"/>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" icon="fa-refresh" invisible="type != 'product' or branch_nbr_reordering_rules == 1" name="%(product_open_branch_orderpoint)d" type="action" width="200">
+                    <field name="branch_nbr_reordering_rules" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" icon="fa-refresh" invisible="type not in ['product', 'consu'] or branch_nbr_reordering_rules != 1" name="%(product_open_branch_orderpoint)d" type="action" width="200">
+                    <div class="o_form_field o_stat_info mr4">
+                        <span class="o_stat_text">
+                            Min :
+                        </span>
+                        <span class="o_stat_text">
+                            Max:
+                        </span>
+                    </div>
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="branch_reordering_min_qty"/>
+                        </span>
+                        <span class="o_stat_value">
+                            <field name="branch_reordering_max_qty"/>
+                        </span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+    <record id="product_template_form_view_procurement_button_inherit" model="ir.ui.view">
+        <field name="name">product.template_procurement</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_update_quantity_on_hand']" position="replace">
+                <button groups="ebits_custom_stock.group_custom_product_manager" invisible="type != 'product'" name="action_update_quantity_on_hand" string="Update Quantity" type="object"/>
+            </xpath>
+            <xpath expr="//header/button[@name='%(stock.action_product_replenish)d']" position="replace">
+                <button groups="ebits_custom_stock.group_custom_product_manager" invisible="type not in ['consu', 'product']" name="%(stock.action_product_replenish)d" string="Replenish" type="action"/>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" icon="fa-refresh" invisible="type != 'product' or branch_nbr_reordering_rules == 1" name="action_view_branch_orderpoints" type="object">
+                    <field name="branch_nbr_reordering_rules" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" icon="fa-refresh" invisible="type != 'product' or branch_nbr_reordering_rules != 1" name="action_view_branch_orderpoints" type="object">
+                    <div class="o_form_field o_stat_info mr4">
+                        <span class="o_stat_text">
+                            Min:
+                        </span>
+                        <span class="o_stat_text">
+                            Max:
+                        </span>
+                    </div>
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="branch_reordering_min_qty"/>
+                        </span>
+                        <span class="o_stat_value">
+                            <field name="branch_reordering_max_qty"/>
+                        </span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="view_product_landed_cost_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.landed.cost.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_product_landed_cost_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='split_method_landed_cost']" position="after">
+                <field invisible="landed_cost_ok == False or type not in ['product', 'consu', 'service']" name="landed_percentage" string="Percentage(%)"/>
+            </xpath></field>
+    </record>
+    <record id="product_template_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.landed.cost.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+           
+            <xpath expr="//group[@name='bill']/field[@name='landed_cost_ok']" position="after">
+                <field domain="[('landed_cost_ok', '=', True)]" name="include_lc_product_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- NO VIEW AVAILABLE ### -->
+    <!-- <record id="view_stock_landed_cost_type_form" model="ir.ui.view">
+        <field name="name">stock.landed.cost.type.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page/group/group/field[@name='split_method']" position="after">
+                <field domain="[('landed_cost_ok', '=', True)]" name="include_lc_product_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+                <field name="landed_percentage" string="Percentage(%)"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/group/group/field[@name='property_account_expense_id']" position="replace">
+                <field domain="[('internal_type','=','other'),('deprecated', '=', False)]" name="property_account_expense_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath></field>
+    </record> -->
+
+    <!-- <record id="stock_landed_cost_tree_view" model="ir.ui.view">
+        <field name="name">product.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock_landed_costs.stock_landed_cost_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="split_method" position="after">
+                <field name="include_lc_product_ids" widget="many2many_tags"/>
+                <field name="landed_percentage" string="Percentage(%)"/></field></field>
+    </record>  -->
+    
+    <!-- FIELD NOT FIND 'property_stock_procurement' IN VIEW ### -->
+    <!-- NO FIELD categ_id AVAILABLE ### -->
+    <record id="view_template_property_form_stock_inherit" model="ir.ui.view">
+        <field name="name">product.template.stock.property.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//form/sheet/notebook/page/group/group/field[@name='property_stock_procurement']" position="replace">
+                <field domain="[('usage','=','procurement')]" name="property_stock_procurement" options="{'no_create': True, 'no_open': True}"/>
+            </xpath> -->
+            <xpath expr="//group[@name='stock_property']/field[@name='property_stock_production']" position="replace">
+                <field  name="property_stock_production" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//group[@name='stock_property']/field[@name='property_stock_inventory']" position="replace">
+                <field  name="property_stock_inventory" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <!-- <xpath expr="//form/sheet/notebook/page/group/group/field[@name='categ_id']" position="replace">
+                <field name="categ_id" options="{'no_create': True}" string="Internal Category"/>
+                </xpath> -->
+        </field>
+    </record>
+        <!-- FIELD NOT AVAILABLE  ### -->
+    <!-- <record id="view_template_property_form_stock_account_inherit" model="ir.ui.view">
+        <field name="name">product.template.stock.property.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock_account.view_template_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page/group/group/field[@name='property_stock_account_input']" position="replace">
+                <field domain="[('deprecated', '=', False)]" invisible="valuation != 'real_time'" name="property_stock_account_input" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/group/group/field[@name='property_stock_account_output']" position="replace">
+                <field domain="[('deprecated', '=', False)]" invisible="valuation != 'real_time'" name="property_stock_account_output" options="{'no_create': True, 'no_open': True}"/>
+            </xpath></field>
+    </record> -->
+    
+    <!-- NO FIELD AVAILABLE ### -->
+    <!-- <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="priority">5</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <page name="sales" position="after">
+                <page groups="account.group_account_invoice" name="invoicing" string="Invoicing">
+                    <group name="properties">
+                        <group>
+                            <field domain="[('internal_type','=','other'),('deprecated','=',False)]" groups="account.group_account_user" name="property_account_income_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="taxes_id" options="{'no_create': True}" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field domain="[('internal_type','=','other'),('deprecated','=',False)]" groups="account.group_account_user" name="property_account_expense_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="supplier_taxes_id" options="{'no_create': True}" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group name="accounting"/>
+                </page>
+            </page></field>
+    </record> -->
+
+    <record id="view_product_account_purchase_ok_form" model="ir.ui.view">
+        <field name="name">product.template.account.purchase.ok.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="property_account_expense_id" position="replace">
+                <field domain="[('deprecated','=',False)]" groups="account.group_account_user" name="property_account_expense_id" options="{'no_create': True, 'no_open': True}" readonly="purchase_ok == 0"/>
+            </field>
+            <field name="supplier_taxes_id" position="replace">
+                <field colspan="2" name="supplier_taxes_id" options="{'no_create': True}" readonly="purchase_ok == 0" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.normal.form.inherit.stock</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="supplier_taxes_id" position="after">
+                <!-- Use class="o_form_label" if you don't want to link it to any specific field -->
+                 <!-- LABEL NOT MENTOIN IN 'LABEL' ### -->
+                <!-- <label colspan="2" class="o_form_label" string=""/> -->
+                <field domain="[('deprecated','=',False)]" name="property_account_creditor_price_difference" options="{'no_create': True, 'no_open': True}" readonly="purchase_ok == 0"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="view_category_property_form" model="ir.ui.view">
+        <field name="name">product.category.property.form.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_income_categ_id']" position="replace">
+                <!-- domain="[('internal_type','=','other'),('deprecated', '=', False)]" DOMAIN NOT ALLOW ### -->
+                <field  name="property_account_income_categ_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='property_account_expense_categ_id']" position="replace">
+                <!-- domain="[('internal_type','=','other'),('deprecated', '=', False)]" DOMAIN NOT ALLOW ###  -->
+                <field name="property_account_expense_categ_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <!-- CHANGE VIEW ### -->
+            <!-- <group name="first" position="after">
+                <group groups="account.group_account_manager" name="account_property">
+                    <group string="Account Properties">
+                        <field domain="[('internal_type','=','other'),('deprecated', '=', False)]" name="property_account_income_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field domain="[('internal_type','=','other'),('deprecated', '=', False)]" name="property_account_expense_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                </group>
+            </group> -->
+            
+        </field>
+    </record>
+    <record id="stock_account.view_category_property_form" model="ir.ui.view">
+        <field name="name">product.category.stock.property.form.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="account.view_category_property_form"/>
+        <field name="arch" type="xml">
+            <group name="account_property" position="replace">
+                <group name="account_property" >
+                    <group string="Account Properties" groups="account.group_account_readonly">
+                        <field name="property_account_income_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="property_account_expense_categ_id" options="{'no_create': True, 'no_open': True}" />
+                    </group>
+                </group>
+                <group name="account_stock_property" string="Account Stock Properties">
+                    <field domain="[('deprecated', '=', False)]" name="property_stock_account_input_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field domain="[('deprecated', '=', False)]" name="property_stock_account_output_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field domain="[('deprecated', '=', False)]" name="property_stock_valuation_account_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="property_stock_journal" options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </group>
+            <!-- <group name="account_property" position="inside">
+                <group name="account_stock_property" string="Account Stock Properties">
+                    <field domain="[('deprecated', '=', False)]" name="property_stock_account_input_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field domain="[('deprecated', '=', False)]" name="property_stock_account_output_categ_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field domain="[('deprecated', '=', False)]" name="property_stock_valuation_account_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="property_stock_journal" options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </group> -->
+            <group name="account_property" position="before">
+                <group>
+                    <group string="Inventory Valuation">
+                        <field name="property_cost_method"/>
+                        <field name="property_valuation"/>
+                    </group>
+                </group>
+            </group></field>
+    </record>
+
+    <record id="product_stock_category_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.category.form</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <!-- FIELD NOT AVAILABEL -->
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="warehouse_ids" options="{'no_open': True, 'no_create': True}" required="1" widget="many2many_tags"/>
+                <field name="type"  />      
+            </xpath>
+            <xpath expr="//group[@name='logistics']/field[@name='route_ids']" position="replace">
+                <field name="route_ids" options="{'no_create': True}" widget="many2many_tags" groups="stock.group_adv_location"/>
+            </xpath>
+            <!-- <group name="first" position="after">
+                <group string="Logistics">
+                    <div colspan="2" invisible="parent_id == False">
+                        The following routes will apply to the products in this category taking into account parent categories:
+                        <field name="total_route_ids" nolabel="1" widget="many2many_tags"/>
+                    </div>
+                    <field name="removal_strategy_id" options="{'no_create': True}"/>
+                </group>
+            </group> -->
+        </field>
+    </record>
+    <record id="view_category_property_form" model="ir.ui.view">
+        <field name="name">product.category.property.form.inherit.stock</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="account.view_category_property_form"/>
+        <field name="arch" type="xml">
+            <field name="property_account_income_categ_id" position="before">
+                <field domain="[('deprecated','=',False)]" name="property_account_creditor_price_difference_categ" options="{'no_create': True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_pricelist_item_form_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.form</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='pricelist_rule_target']/field[@name='product_tmpl_id']" position="replace">
+                <field invisible="applied_on != '1_product'" name="product_tmpl_id" options="{'no_create': True, 'no_open': True}" required="applied_on == '1_product'" string="Product"/>
+            </xpath>
+            <xpath expr="//group[@name='pricelist_rule_target']/field[@name='product_id']" position="replace">
+                <field invisible="applied_on != '0_product_variant'" name="product_id" options="{'no_create': True, 'no_open': True}" required="applied_on == '0_product_variant'" string="Product Variant"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

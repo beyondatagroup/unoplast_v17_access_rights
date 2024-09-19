@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <record id="group_custom_product_manager" model="res.groups">
+            <field name="name">Product Master Manager</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        
+        <record id="group_custom_inventory_posting" model="res.groups">
+            <field name="name">Inventory Adjustment Validate User</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        
+        <record id="group_picking_force_assign_user" model="res.groups">
+            <field name="name">Inventory Force Assign</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        
+        <record id="group_approve_internal_location_transfers" model="res.groups">
+            <field name="name">Internal Location transfer Approver</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        
+        <record id="group_product_edit_hide_user" model="res.groups">
+            <field name="name">Product Master Create &amp; Edit(Hide)</field>
+        </record>
+        /home/hardik/workspace/Odoo17/odoo_apps/odoo_web_login_17/ebits_custom_stock/models/stock.py
+    </data>
+    <!-- <data noupdate="1">
+    
+        <record model="ir.rule" id="stock_branch_orderpoint_company_rule">
+            <field name="name">stock_branch.orderpoint multi-company</field>
+            <field name="model_id" ref="ebits_custom_stock.model_stock_branch_orderpoint"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|',('company_id','child_of',[user.company_id.id]),('company_id','=',False)]</field>
+        </record>
+        
+        <record model="ir.rule" id="stock_branch_orderpoint_stock_warehouse_rule">
+            <field name="name">stock_branch: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_stock.model_stock_branch_orderpoint"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user.default_warehouse_ids ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="stock_warehouse_orderpoint_stock_warehouse_rule">
+            <field name="name">stock_warehouse: read access on my warehouse</field>
+            <field name="model_id" ref="stock.model_stock_warehouse_orderpoint"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user.default_warehouse_ids ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+
+        <record model="ir.rule" id="internal_location_transfer_stock_warehouse_rule">
+            <field name="name">internal_location_transfer: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_stock.model_internal_location_transfer"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user.default_warehouse_ids ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="internal_transfer_lines_stock_warehouse_rule">
+            <field name="name">internal_transfer_lines: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_stock.model_internal_transfer_lines"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user.default_warehouse_ids ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+    
+    </data> -->
+</odoo>

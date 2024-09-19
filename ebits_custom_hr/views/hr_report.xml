@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="action_report_employee_payroll_custom" 
+            model="hr.payroll.custom" 
+            string="Payslip"
+            report_type="qweb-pdf"
+            name="ebits_custom_hr.report_payroll_custom_report" 
+            file="ebits_custom_hr.report_payroll_custom_report"
+        />
+</odoo>

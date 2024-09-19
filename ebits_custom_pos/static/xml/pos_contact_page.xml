@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template2" xml:space="preserve">
+   <t t-inherit="point_of_sale.PartnerListScreen" t-inherit-mode="extension">
+       <xpath expr="//div/div/button[contains(@class, 'new-customer') and contains(@class, 'btn-primary')]"
+              position="replace"/>
+   </t>
+</templates>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_budget.view_account_analytic_account_form_inherit_budget" model="ir.ui.view">
+            <field name="name">account.analytic.account.form.inherit.budget</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='main']" position="after">
+                    <notebook groups="account.group_account_user">
+                        <page invisible="1" string="Budget Items">
+                            <field colspan="4" invisible="1" mode="tree" name="crossovered_budget_line" nolabel="1" widget="one2many_list">
+                                <tree editable="top" string="Budget Items">
+                                    <field name="crossovered_budget_id"/>
+                                    <field name="general_budget_id"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="paid_date"/>
+                                    <field name="planned_amount" widget="monetary"/>
+                                    <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+                                    <field name="theoritical_amount" sum="Theoritical Amount" widget="monetary"/>
+                                    <field name="percentage"/>
+                                </tree>
+                                <form string="Budget Items">
+                                    <field name="crossovered_budget_id"/>
+                                    <field name="general_budget_id"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="paid_date"/>
+                                    <field name="planned_amount" widget="monetary"/>
+                                </form></field>
+                        </page>
+                    </notebook>
+                </xpath></field>
+        </record>
+        <record id="account_budget_view_form_inherit" model="ir.ui.view">
+            <field name="name">account.budget.form.inherit</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/field[@name='crossovered_budget_line']" position="replace">
+                    <field name="crossovered_budget_line"><tree string="Budget Lines" readonly="state not in ['draft']">
+                            <field name="general_budget_id"/>
+                            <field groups="analytic.group_analytic_accounting" name="analytic_account_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
+                            <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+                        </tree></field>
+                </xpath>
+                <xpath expr="/form/header/button[@name='action_budget_confirm']" position="replace">
+                    <button class="oe_highlight" invisible="state not in ['draft']" name="action_budget_confirm" string="Send for Approval" type="object"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/group/group/field[@name='creating_user_id']" position="after">-->
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="approved_user_id"/>
+                    <field name="date_approved"/>
+                    <button class="oe_highlight" icon="fa-mail-forward" invisible="state not in ['done']" name="action_check_actual_amount" string="Check Actual Amount" type="object"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[1]" position="replace">
+                    <page string="Account Budget Lines">
+                        <field context="{'default_date_from': date_from, 'default_date_to': date_to}" name="account_budget_line" widget="one2many_list" readonly="state != 'draft'" >
+                            <tree editable="bottom">
+<!--                                removed 'internal_type', '!=', 'view')-->
+<!--                                <field domain="[('internal_type', '!=', 'view')]" name="account_id"/>-->
+                                <field name="account_id"/>
+                                <field name="planned_amount"/>
+                                <field invisible="1" name="date_from"/>
+                                <field invisible="1" name="date_to"/>
+                                <field name="actual_amount"/>
+                                <field name="percentage"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="History">
+                        <field name="history"/>
+                    </page>
+                </xpath></field>
+        </record>
+        <record id="account_budget_lines_view_form_inherit" model="ir.ui.view">
+            <field name="name">account.budget.lines.form.inherit</field>
+            <field name="model">crossovered.budget.lines</field>
+            <field name="inherit_id" ref="account_budget.view_crossovered_budget_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group" position="replace">
+                    <group col="4">
+                        <field name="analytic_account_id"/>
+                        <field name="general_budget_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="planned_amount" widget="monetary"/>
+                        <field name="practical_amount" widget="monetary"/>
+                        <field groups="base.group_multi_company" name="company_id" options="{'no_create': True}"/>
+                    </group>
+                </xpath></field>
+        </record>
+        <record id="account_budget_line_tree" model="ir.ui.view">
+            <field name="name">Account Budget Line Tree</field>
+            <field name="model">account.budget.lines</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="crossovered_budget_id"/>
+                    <field name="account_id"/>
+                    <field name="planned_amount"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="actual_amount"/>
+                    <field name="percentage"/>
+                </tree></field>
+        </record>
+        <record id="account_budget_line_search" model="ir.ui.view">
+            <field name="name">Account Budget Line Search</field>
+            <field name="model">account.budget.lines</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="account_id"/>
+                    <field name="planned_amount"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </search></field>
+        </record>
+        <record id="action_account_budget_line" model="ir.actions.act_window">
+            <field name="name">Account Budget Line</field>
+            <field name="res_model">account.budget.lines</field>
+            <field name="type">ir.actions.act_window</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="account_budget_line_tree"/>
+        </record>
+        <menuitem action="action_account_budget_line" id="account_budget_line_sub_menu" name="Account Budget Line" parent="account.menu_finance_entries" sequence="61"/>
+    </data>
+</odoo>

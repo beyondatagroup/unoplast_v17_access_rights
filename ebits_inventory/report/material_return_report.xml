@@ -1,0 +1,319 @@
+<odoo>
+    <record id="paperformat_material_return" model="report.paperformat">
+        <field name="name">Material Return</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">65</field>
+        <field name="margin_bottom">93</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">58</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="action_material_return_report" model="ir.actions.report">
+        <field name="name">Material Return</field>
+        <field name="model">material.return</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ebits_inventory.material_return_report</field>
+        <field name="report_file">ebits_inventory.material_return_report</field>
+        <field name="binding_model_id" ref="model_material_return"/>
+        <field name="paperformat_id" ref="ebits_inventory.paperformat_material_return"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <template id="material_return_report">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="header">
+                        <div class=" justify-between items-center mb-2 "
+                             style="background:;width:100%;text-align:center; font-family: sans-serif;">
+                            <b>Material Return</b>
+                        </div>
+                        <table style="border: 1px solid lightgrey; width: 100%; float: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid lightgrey;">
+                                    <td style="width: 50%; padding: 1%; border-right: 1px solid lightgray;">
+                                        <div style="width: 40%; float: left;">
+                                            <img t-if="doc.company_id.logo"
+                                                 t-att-src="image_data_uri(doc.company_id.logo)"
+                                                 style="max-height: 100px; display: inline; vertical-align: middle;"
+                                                 alt="Logo"/>
+                                        </div>
+                                        <div style="width: 60%; float: left; text-align: left; font-size: 13px; font-family: sans-serif;">
+                                            <p>
+                                                <t t-foreach="doc.company_id.partner_id" t-as="do">
+                                                    <t t-if="doc.company_id.name">
+                                                        <b>
+                                                            <span t-field="doc.company_id.name"
+                                                                  style="margin-left: 5px; font-size: 15px;"></span>
+                                                        </b>
+                                                    </t>
+                                                    <br/>
+                                                    <t t-if="do.street">
+                                                        <span t-field="do.street"
+                                                              style="margin-left: 5px;"></span>
+                                                    </t>
+                                                    <br/>
+                                                    <t t-if="do.city">
+                                                        <span t-field="do.city"
+                                                              style="margin-left: 5px;"></span>
+                                                    </t>
+                                                    <t t-if="do.country_id">
+                                                        <span t-field="do.country_id"
+                                                              style="margin-left: 5px;"></span>
+                                                    </t>
+                                                    <br/>
+                                                    <t t-if="doc.company_id.email">
+                                                        <span style="margin-left: 5px;">Email:</span>
+                                                        <span t-field="doc.company_id.email"/>
+                                                    </t>
+                                                    <br/>
+                                                    <t t-if="doc.company_id.mobile">
+                                                        <span style="margin-left: 5px;">Mobile:</span>
+                                                        <span t-field="doc.company_id.mobile"/>
+                                                    </t>
+                                                    <br/>
+                                                    <t t-if="doc.company_id.phone">
+                                                        <span style="margin-left: 5px;">Phone:</span>
+                                                        <span t-field="doc.company_id.phone"/>
+                                                    </t>
+                                                    <br/>
+                                                    <t t-if="doc.company_id.vat">
+                                                        <span style="margin-left: 5px;">TIN:</span>
+                                                        <span t-field="doc.company_id.vat"/>
+                                                    </t>
+                                                </t>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="width: 50%; padding: 1%; font-size: 13px; font-family: sans-serif; position:fixed;top:20;">
+                                        <div style="width: 50%; float: left;">
+                                            <p>
+                                                <b>Return No</b>
+                                                <br/>
+                                                <span t-field="doc.name"/>
+
+
+                                            </p>
+                                        </div>
+                                        <div style="width: 50%; float: left;">
+                                            <p>
+                                                <b>Origin</b>
+                                                <br/>
+                                                <t t-esc="doc.issue_id.name"/>
+
+
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </thead>
+                        </table>
+                        <table style="border: 1px solid lightgrey; width: 100%; float: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid lightgrey;">
+                                    <td style="width: 50%; padding: 1%; border-right: 1px solid lightgray;">
+                                        <div style="width: 50%; float: left;">
+                                            <p>
+                                                <b>
+                                                    <span>Accepted by</span>
+                                                </b>
+                                                <br/>
+                                                <span t-field="doc.accepted_by.name"/>
+                                            </p>
+                                        </div>
+                                        <div style="width: 50%; float: left; text-align: left; font-size: 13px; font-family: sans-serif;">
+                                            <p>
+                                                <b>
+                                                    <span>Return User</span>
+                                                </b>
+                                                <br/>
+                                                <span t-field="doc.user_id.name"/>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td style="width: 50%; padding: 1%; font-size: 13px; font-family: sans-serif; position:fixed;top:20;">
+                                        <div style="width: 50%; float: left;">
+                                            <p>
+                                                <b>
+                                                    <span>Warehouse/Branch</span>
+                                                </b>
+                                                <br/>
+                                                <span t-field="doc.warehouse_id.name"/>
+                                                <br/>
+                                                <b>
+                                                    <span>Accepted Date</span>
+                                                </b>
+                                                <br/>
+                                                <span t-field="doc.date_accepted"/>
+                                            </p>
+                                        </div>
+                                        <div style="width: 50%; float: left;">
+                                            <p>
+                                                <b>
+                                                    <span>Status</span>
+                                                </b>
+                                                <br/>
+
+                                                <span t-field="doc.state"/>
+                                                <br/>
+                                                <b>
+                                                    <span>Last Returned Date</span>
+                                                </b>
+                                                <br/>
+                                                <span t-field="doc.date_return"/>
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="footer" style="border: 1px solid lightgray;border-top:none;">
+                        <div style=" padding: 15px">
+                            <table width="100%" style="font-size: 13px; border: hidden;">
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <b>Remarks:</b>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <span t-esc="doc.remarks"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right; border-top:hidden;">
+                                        for
+                                        <b t-esc="doc.company_id.name"/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        Authorised Signatory
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                    <div class="page" style="border: 1px solid lightgray;border-bottom: none;">
+                        <t t-if="(len(doc.return_lines)+1) &gt; 20">
+                            <style>
+                                .relative {
+                                page-break-inside: always;
+                                position: relative;
+                                width: 100%;
+                                height: 1513px;
+                                }
+                            </style>
+                        </t>
+                        <t t-else="">
+                            <style>
+                                .relative {
+                                position: relative;
+                                width: 100%;
+                                height: 615px;
+                                }
+                            </style>
+                        </t>
+
+                        <div class="relative">
+                            <style>
+                                .tab2 ,
+                                th {
+                                border: 1px solid lightgray;
+                                border-top: hidden;
+                                text-align: left;
+                                font-size: 13px;
+                                }
+                            </style>
+
+
+                            <table width="100%" class="tab2">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">S.No</th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">Particulars</th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">UOM</th>
+
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">Quantity</th>
+
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">Returned Qty
+                                        </th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">Pending Return
+                                            Qty
+                                        </th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px; ">Destination
+                                            Location
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <t t-set="s" t-value="1"/>
+                                <t t-foreach="doc.return_lines" t-as="line">
+
+                                    <tbody>
+                                        <tr>
+                                            <td id="th_sr_no">
+                                                <t t-esc="s"/>
+                                                <t t-set="s" t-value="s+1"/>
+                                            </td>
+                                            <td class="product-left">
+                                                <b>
+                                                    <span t-field="line.product_id.name"/>
+                                                </b>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="line.uom_id.name"
+                                                      style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.qty" style="margin-left:5px;"/>
+
+                                            </td>
+                                            <td>
+                                                <span t-field="line.return_qty" style="margin-left:5px;"/>
+
+                                            </td>
+                                            <td>
+                                                <span t-field="line.pending_qty" style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.location_dest_id.name" style="margin-left:5px;"/>
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="border-bottom: hidden; border-right: hidden;">
+                                                <div style="padding:10px;">
+                                                    <b>Total Returned Quantity:</b>
+                                                    <br/>
+                                                    <span t-esc="doc.total_quantity_based_uom"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </t>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

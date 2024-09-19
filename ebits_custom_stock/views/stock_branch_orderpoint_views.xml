@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_branch_orderpoint_tree" model="ir.ui.view">
+            <field name="name">stock.branch.orderpoint.tree</field>
+            <field name="model">stock.branch.orderpoint</field>
+            <field name="arch" type="xml">
+                <tree string="Branch Reordering Rules">
+                    <field name="name"/>
+                    <field name="active" invisible="1"/>
+                    <field name="warehouse_id" groups="stock.group_stock_multi_locations"/>
+                    <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                    <field name="product_id"/>
+                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" />
+                    <field name="product_min_qty"/>
+                    <field name="product_max_qty"/>
+                </tree>
+            </field>
+        </record>
+        <record id="branch_orderpoint_search" model="ir.ui.view">
+            <field name="name">stock.branch.orderpoint.search</field>
+            <field name="model">stock.branch.orderpoint</field>
+            <field name="arch" type="xml">
+                <search string="Branch Reordering Rules Search">
+                    <field name="name" string="Reordering Rules"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="product_id"/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                    <!-- <group expand="0" string="Group By">
+                        <filter string="Branch" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                        <filter string="Location" domain="[]" context="{'group_by':'location_id'}"/>
+                    </group> -->
+                </search>
+            </field>
+        </record>
+        <record id="view_branch_orderpoint_form" model="ir.ui.view">
+            <field name="name">stock.branch.orderpoint.form</field>
+            <field name="model">stock.branch.orderpoint</field>
+            <field name="arch" type="xml">
+                <form string="Branch Reordering Rules">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="product_id" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="warehouse_id" widget="selection" groups="stock.group_stock_multi_locations"/>
+                                <field name="product_uom" options="{'no_open': True, 'no_create': True}" />
+                                <field name="location_id" groups="stock.group_stock_multi_locations" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Rules">
+                                <field name="product_min_qty" />
+                                <field name="product_max_qty" />
+                                <field name="qty_multiple" string="Quantity Multiple"/>
+                            </group>
+                            <group string="Misc" invisible="1">
+                                <label for="lead_days"/>
+                                <div class="o_row">
+                                    <field name="lead_days" invisible="1"/>
+                                    <field name="lead_type" invisible="1"/>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_branch_orderpoint_form" model="ir.actions.act_window">
+            <field name="name">Branch Reordering Rules</field>
+            <field name="res_model">stock.branch.orderpoint</field>
+            <!-- <field name="type">ir.actions.act_window</field> -->
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_branch_orderpoint_tree"/>
+            <field name="search_view_id" ref="branch_orderpoint_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a branch reordering rule.
+              </p>
+            </field>
+        </record>
+        <record id="act_stock_warehouse_2_stock_warehouse_orderpoint" model="ir.actions.act_window">
+            <field name="name">Warehouse Reordering Rules</field>
+            <field name="res_model">stock.warehouse.orderpoint</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_warehouse_id': active_id, 'default_warehouse_id': active_id}</field>
+            <field name="domain">[]</field>
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]"/>
+        </record>
+        <record id="act_stock_warehouse_2_stock_branch_orderpoint" model="ir.actions.act_window">
+            <field name="name">Branch Reordering Rules</field>
+            <field name="res_model">stock.branch.orderpoint</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_warehouse_id': active_id, 'default_warehouse_id': active_id}</field>
+            <field name="domain">[]</field>
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]"/>
+        </record>
+        <menuitem
+            id="menu_reordering_rules_config"
+            action="stock.action_orderpoint"
+            name="Warehouse Reordering Rules" parent="stock.menu_stock_inventory_control" sequence="10"/>
+        <menuitem
+            id="menu_branch_reordering_rules_config"
+            action="action_branch_orderpoint_form"
+            name="Branch Reordering Rules" parent="stock.menu_stock_inventory_control" sequence="10"/>
+        <!-- <act_window
+            context="{'search_default_warehouse_id': active_id, 'default_warehouse_id': active_id}"
+            id="stock.act_stock_warehouse_2_stock_warehouse_orderpoint"
+            name="Warehouse Reordering Rules"
+            res_model="stock.warehouse.orderpoint"
+            src_model="stock.warehouse"
+            groups="stock.group_stock_user"/> -->
+        <!--             
+        <act_window
+            context="{'search_default_warehouse_id': active_id, 'default_warehouse_id': active_id}"
+            id="act_stock_warehouse_2_stock_branch_orderpoint"
+            name="Branch Reordering Rules"
+            res_model="stock.branch.orderpoint"
+            src_model="stock.warehouse"
+            groups="stock.group_stock_user"/> -->
+    </data>
+</odoo>

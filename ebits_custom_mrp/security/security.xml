@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+    
+        <record model="ir.rule" id="sf_manufacturing_order_stock_warehouse_rule">
+            <field name="name">SF MO: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_mrp.model_sf_manufacturing_order"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="raw_materials_line_stock_warehouse_rule">
+            <field name="name">SF Raw Materials: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_mrp.model_raw_materials_line"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="materials_scrap_line_stock_warehouse_rule">
+            <field name="name">Production Scrap: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_mrp.model_materials_scrap_line"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="mrp_production_stock_warehouse_rule">
+            <field name="name">MO: read access on my warehouse</field>
+            <field name="model_id" ref="mrp.model_mrp_production"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="mrp_workorder_stock_warehouse_rule">
+            <field name="name">Work Order: read access on my warehouse</field>
+            <field name="model_id" ref="mrp.model_mrp_workorder"/>
+            <field name="domain_force">['|',('production_id.warehouse_id','in', [ p.id for p in user ]),('production_id.warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="inter_process_production_stock_warehouse_rule">
+            <field name="name">Inter Process Production: read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_mrp.model_inter_process_production"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="production_line_detail_stock_warehouse_rule">
+            <field name="name">Production Line : read access on my warehouse</field>
+            <field name="model_id" ref="ebits_custom_mrp.model_production_line_detail"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="mrp_bom_stock_warehouse_rule">
+            <field name="name">BOM: read access on my warehouse</field>
+            <field name="model_id" ref="mrp.model_mrp_bom"/>
+            <field name="domain_force">['|', '|', ('warehouse_id','in', [ p.id for p in user ]), ('warehouse_id','=', False), ('addl_warehouse_ids', 'in', [ p.id for p in user ])]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="mrp_bom_line_stock_warehouse_rule">
+            <field name="name">BOM: read access on my warehouse</field>
+            <field name="model_id" ref="mrp.model_mrp_bom_line"/>
+            <field name="domain_force">['|', '|', ('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False), ('bom_id.addl_warehouse_ids', 'in', [ p.id for p in user ])]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="mrp_unbuild_stock_warehouse_rule">
+            <field name="name">MRP Unbuild: read access on my warehouse</field>
+            <field name="model_id" ref="mrp.model_mrp_unbuild"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+        <record model="ir.rule" id="stock_scrap_stock_warehouse_rule">
+            <field name="name">Stock Scrap: read access on my warehouse</field>
+            <field name="model_id" ref="mrp.model_stock_scrap"/>
+            <field name="domain_force">['|',('warehouse_id','in', [ p.id for p in user ]),('warehouse_id','=', False)]</field>
+            <field name="groups" eval="[(4, ref('warehouse_stock_restrictions.group_stock_picking_type_allowed'))]"/>
+        </record>
+        
+    </data>
+</odoo>

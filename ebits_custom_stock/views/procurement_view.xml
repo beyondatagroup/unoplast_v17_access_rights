@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <!-- NOT AVAILABLE MODEL ### -->
+    <!-- <record id="procurement_form_view_inherit_view" model="ir.ui.view">
+        <field name="name">procurement.order.form</field>
+        <field name="model">procurement.order</field>
+        <field name="inherit_id" ref="procurement.procurement_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group/field[@name='product_id']" position="replace">
+                <field name="product_id" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/div/field[@name='product_uom']" position="replace">
+                <field class="oe_inline" groups="product.group_uom" name="product_uom" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/group/group/field[@name='group_id']" position="replace">
+                <field groups="base.group_no_one" name="group_id" options="{'no_create': True}"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/group/group/field[@name='rule_id']" position="replace">
+                <field name="rule_id" options="{'no_create': True}"/>
+            </xpath></field>
+    </record> -->
+    <!-- NOT AVAILABLE MODEL ### -->
+    <!-- <record id="stock.view_procurement_form_stock_inherit" model="ir.ui.view">
+        <field name="name">procurement.order.form.stock.inherit</field>
+        <field name="model">procurement.order</field>
+        <field name="inherit_id" ref="procurement.procurement_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='scheduling']" position="before">
+                <group>
+                    <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                    <field domain="[('usage', '=', 'internal')]" name="location_id" options="{'no_open': True, 'no_create': True}"/>
+                    <field groups="stock.group_adv_location" name="route_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                </group>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" icon="fa-bars" name="do_view_pickings" string="Group's Pickings" type="object"/>
+            </div>
+            <xpath expr="//field[@name='rule_id']" position="replace">
+                <field domain="['|', ('location_id', '=', False), ('location_id', '=', location_id)]" name="rule_id" options="{'no_create': True}"/>
+                <field name="partner_dest_id" options="{'no_open': True, 'no_create': True}"/>
+            </xpath></field>
+    </record> -->
+     <!-- NOT AVAILABLE MODEL ### -->
+    <!-- <record id="mrp.view_procurement_form_inherit" model="ir.ui.view">
+        <field name="name">procurement.order.form.inherit</field>
+        <field name="model">procurement.order</field>
+        <field name="inherit_id" ref="procurement.procurement_form_view"/>
+        <field name="arch" type="xml">
+            <data>
+                <field name="origin" position="before">
+                    <field domain="[('product_id','=',product_id)]" name="bom_id" options="{'no_create': True}"/>
+                    <field invisible="production_id == False" name="production_id" options="{'no_create': True}"/></field>
+            </data></field>
+    </record> -->
+</odoo>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_config_form_inherit" model="ir.ui.view">
+        <field name="name">pos.config.form.view</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/div/h1" position="after">
+                <group>
+                    <group>
+                        <field name="warehouse_id" options="{'no_create':True, 'no_open':True}" required="1"/>
+                    </group>
+                </group>
+            </xpath>
+            <!--            temp close vaidik-->
+
+<!--            <xpath expr="//field[@name='picking_type_id']" position="replace">-->
+<!--                <field domain="[('warehouse_id', '=', warehouse_id)]" groups="stock.group_stock_multi_locations" name="picking_type_id" options="{'no_create':True, 'no_open':True}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/group/field[@name='stock_location_id']" position="replace">-->
+<!--                <field groups="stock.group_stock_multi_locations" name="stock_location_id" options="{'no_create':True, 'no_open':True}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='pricelist_id']" position="replace">-->
+<!--                <field groups="product.group_sale_pricelist" name="pricelist_id" options="{'no_create':True, 'no_open':True}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='barcode_nomenclature_id']" position="replace">-->
+<!--                <field invisible="1" name="barcode_nomenclature_id" options="{'no_create':True, 'no_open':True}"/>-->
+<!--            </xpath>-->
+            <!--                #***-->
+            <!--                <xpath expr="/form/sheet/group/field[@name='sequence_id']" position="replace">-->
+            <!--                    <field name="sequence_id" groups="base.group_no_one"/>-->
+            <!--                    <field name="refund_sequence_id" groups="base.group_no_one"/>-->
+            <!--                </xpath>--></field>
+    </record>
+    <record id="view_pos_session_form_inherit" model="ir.ui.view">
+        <field name="name">pos.session.form.view</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form" position="attributes">
+                <attribute name="create">
+                    1</attribute>
+            </xpath>
+<!--            <xpath expr="/form/header/button[@name='open_frontend_cb']" position="replace">-->
+<!--                <button class="oe_highlight" invisible="state not in ['opened']" name="open_frontend_cb_custom" string="Continue Selling" type="object"/>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='config_id']" position="replace">
+                <field name="config_id" options="{'no_create':True, 'no_open':True}"/>
+            </xpath></field>
+    </record>
+    <record id="view_pos_session_tree" model="ir.ui.view">
+        <field name="name">pos.session.tree.view</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="/tree" position="attributes">
+                <attribute name="create">
+                    1</attribute>
+            </xpath></field>
+    </record>
+    <record id ="view_pos_order_inherited" model="ir.ui.view">
+        <field name="name">pos.order.form</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_address"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/group[@name='order_total']" position="before">
+                <group name="amount_words">
+                    <field name="total_quantity_based_uom"/>
+                    <field name="amount_to_text"/>
+<!--                    <field invisible="amount_to_text_local_currency == ''" name="amount_to_text_local_currency"/>-->
+                    <field name="amount_to_text_local_currency"/>
+                </group>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/group[@name='order_total']/field[@name='amount_tax']" position="before">
+                <field name="amount_discount" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+                <field name="amount_untaxed" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/group[@name='order_total']/field[@name='amount_tax']" position="after">
+                <field name="amount_roundoff" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+            </xpath>
+
+        </field>
+    </record>
+<!--    vaidik-->
+<!--    <record id="view_pos_pos_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">pos.order.form</field>-->
+<!--        <field name="model">pos.order</field>-->
+<!--        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="/form" position="attributes">-->
+<!--                <attribute name="create">-->
+<!--                    1</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/header" position="inside">-->
+<!--                <button invisible="state not in ['draft']" name="action_pos_order_cancel" string="Cancel" type="object"/>-->
+<!--                <button groups="base.group_user" invisible="state not in ['paid','done']" name="print_pos_report" string="Print Receipt" type="object"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/group/field[@name='partner_id']" position="replace">-->
+<!--                <field context="{'search_default_customer':1}" domain="[('customer', '=', True), ('parent_id', '=', False)]" name="partner_id" options="{'no_create':True, 'no_open': True}" readonly="state != 'draft'" required="state == 'draft'"/>-->
+<!--                <field name="partner_name" readonly="state != draft" required="state == 'draft'"/>-->
+<!--                <field name="partner_address" readonly="state != draft" required="state == 'draft'"/>-->
+<!--                <field invisible="1" name="company_currency_id"/>-->
+<!--                <field invisible="1" name="pos_refund"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/group/field[@name='session_id']" position="replace">-->
+<!--                <field name="session_id" options="{'no_create':True, 'no_open':True}"/>-->
+<!--                <field invisible="1" name="currency_id" options="{'no_create':True, 'no_open':True}"/>-->
+<!--                <field name="currency_id_value"/>-->
+<!--                <field invisible="1" name="line_len"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/group/field[@name='fiscal_position_id']" position="replace">-->
+<!--                <field invisible="1" name="fiscal_position_id" options="{'no_create':True}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/field[@name='lines']/form/group/field[@name='product_id']" position="replace">-->
+<!--                <field name="product_id" options="{'no_create':True, 'no_open': True}" required="1"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/field[@name='lines']/form/group/field[@name='price_unit']" position="replace">-->
+<!--                <field groups="ebits_custom_pos.group_pos_price_unit_edit" name="price_unit" widget="monetary"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/field[@name='lines']/form/group/field[@name='qty']" position="replace">-->
+<!--                <field name="qty" required="1"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/field[@name='lines']/form/group/field[@name='tax_ids']" position="replace">-->
+<!--                <field name="tax_ids" widget="many2many_tags"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/field[@name='lines']/form/group/field[@name='tax_ids_after_fiscal_position']" position="replace">-->
+<!--                <field invisible="1" name="tax_ids_after_fiscal_position" options="{'no_create':True, 'no_open': True}" widget="many2many_tags"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/group/field[@name='user_id']" position="replace">-->
+<!--                <field name="user_id" options="{'no_create':True, 'no_open': True}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/group/field[@name='pricelist_id']" position="replace">-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/group" position="after">-->
+<!--                <group>-->
+<!--                    <group groups="point_of_sale.group_pos_manager">-->
+<!--                        <field groups="point_of_sale.group_pos_manager" name="pricelist_id" options="{'no_create':True, 'no_open': True}"/>-->
+<!--                    </group>-->
+<!--                    <group>-->
+<!--                        <label for="discount_available" style="color: #ef041c;"/>-->
+<!--                        <div>-->
+<!--                            <strong>-->
+<!--                                <field name="discount_available" style="color: #ef041c;"/>-->
+<!--                            </strong>-->
+<!--                            <button class="oe_link" invisible="state != 'draft' or discount_available == 'not_available'" name="action_apply_global_discount" string="=> Apply" type="object"/>-->
+<!--                        </div>-->
+<!--                    </group>-->
+<!--                </group>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/group[@name='order_total']" position="before">-->
+<!--                <group name="amount_words">-->
+<!--                    <field name="total_quantity_based_uom"/>-->
+<!--                    <field name="amount_to_text"/>-->
+<!--                    <field invisible="amount_to_text_local_currency == ''" name="amount_to_text_local_currency"/>-->
+<!--                </group>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/group[@name='order_total']/field[@name='amount_tax']" position="before">-->
+<!--                <field name="amount_discount" options="{'currency_field': 'currency_id'}" widget="monetary"/>-->
+<!--                <field name="amount_untaxed" options="{'currency_field': 'currency_id'}" widget="monetary"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/form/sheet/notebook/page/group[@name='order_total']/field[@name='amount_tax']" position="after">-->
+<!--                <field name="amount_roundoff" options="{'currency_field': 'currency_id'}" widget="monetary"/>-->
+<!--            </xpath></field>-->
+<!--    </record>-->
+<!--    <record id="view_pos_order_tree" model="ir.ui.view">-->
+<!--        <field name="name">pos.order.tree</field>-->
+<!--        <field name="model">pos.order</field>-->
+<!--        <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="/tree" position="attributes">-->
+<!--                <attribute name="create">-->
+<!--                    1</attribute>-->
+<!--            </xpath></field>-->
+<!--    </record>-->
+<!--    <record id="view_pos_order_filter" model="ir.ui.view">-->
+<!--        <field name="name">pos.order.list.selec</field>-->
+<!--        <field name="model">pos.order</field>-->
+<!--        <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="/search/filter[3]" position="replace">-->
+<!--                <filter domain="[('state', '=', 'invoiced')]" invisible="1" string="Invoiced"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/search/filter[4]" position="after">-->
+<!--                <filter domain="[('pos_refund', '=', True)]" string="Refund(s)"/>-->
+<!--            </xpath></field>-->
+<!--    </record>-->
+<!--    <record id="view_report_pos_order_search" model="ir.ui.view">-->
+<!--        <field name="name">report.pos.order.search</field>-->
+<!--        <field name="model">report.pos.order</field>-->
+<!--        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_search"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="/search/filter[1]" position="replace">-->
+<!--                <filter domain="[('state', '=', ('invoiced'))]" invisible="1" string="Invoiced"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="/search/filter[2]" position="replace">-->
+<!--                <filter domain="[('state', '=', ('paid'))]" invisible="1" string="Not Invoiced"/>-->
+<!--            </xpath></field>-->
+<!--    </record>-->
+    <menuitem groups="ebits_custom_pos.group_pos_high_manager" id="point_of_sale.menu_point_config_product" name="Configuration" parent="point_of_sale.menu_point_root" sequence="100"/>
+    <menuitem action="point_of_sale.action_pos_config_kanban" groups="ebits_custom_pos.group_pos_high_manager" id="point_of_sale.menu_pos_config_pos" parent="point_of_sale.menu_point_config_product"/>
+    <menuitem action="barcodes.action_barcode_nomenclature_form" id="point_of_sale.menu_pos_barcode_nomenclature_all" parent="point_of_sale.menu_point_config_product" sequence="30"/>
+<!--    <menuitem action="point_of_sale.action_account_journal_form" id="point_of_sale.menu_action_account_journal_form_open" parent="point_of_sale.menu_point_config_product" sequence="20"/>-->
+    <menuitem action="point_of_sale.product_pos_category_action" id="point_of_sale.menu_product_pos_category" parent="point_of_sale.menu_point_config_product" sequence="20"/>
+</odoo>

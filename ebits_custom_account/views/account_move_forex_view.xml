@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_move_forex_tree" model="ir.ui.view">
+            <field name="name">Unrealised Exchange Gain/Loss Entry</field>
+            <field name="model">account.move.forex</field>
+            <field name="arch" type="xml">
+                <tree string="Unrealised Exchange Gain/Loss Entry">
+                    <field name="name"/>
+                    <field name="date_created"/>
+                    <field name="date"/>
+                    <field name="reverse_date"/>
+                    <field name="currency_exchange_journal_id"/>
+                    <field invisible="1" name="company_id"/>
+                    <field name="state"/>
+                </tree></field>
+        </record>
+        <record id="account_move_forex_form" model="ir.ui.view">
+            <field name="name">Unrealised Exchange Gain/Loss Entry</field>
+            <field name="model">account.move.forex</field>
+            <field name="arch" type="xml">
+                <form string="Unrealised Exchange Gain/Loss Entry">
+                    <header>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_check_forex" string="Get Open Items" type="object"/>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_post" string="Post" type="object"/>
+                        <button class="oe_highlight" invisible="state not in ['post']" name="action_reverse_post" string="Reverse Entry" type="object"/>
+                        <button invisible="state not in ['draft','post']" name="action_cancel" string="Cancel" type="object"/>
+                        <field name="state" statusbar_visible="draft,post,reverse" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <h3>
+                            <label for="Entry No"/>
+                        </h3>
+                        <div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field domain="[('type', '=', 'general')]" name="currency_exchange_journal_id"
+                                       readonly="state not in ['draft']"
+                                       options="{'no_open':True, 'no_create':True}"/>
+                                <field invisible="1" name="company_id" readonly="state not in ['draft']"
+                                       options="{'no_open':True, 'no_create':True}"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="state not in ['draft']"/>
+                                <field name="date_created"/>
+                                <field name="reverse_date" readonly="state not in ['draft']"/>
+                                <field name="move_id" options="{'no_create':True}"/>
+                                <field name="reverse_move_id" options="{'no_create':True}"/>
+                            </group>
+                        </group>
+                        <newline/>
+                        <notebook>
+                            <page string="Customer/Vendor Open Items">
+                                <separator string="Customer Open Items"/>
+                                <field name="customer_forex_lines" readonly="1" widget="one2many_list">
+                                    <form create="false" delete="false" string="Customer Open Items">
+                                        <group>
+                                            <group>
+                                                <field name="partner_id" options="{'no_open':True, 'no_create':True}" string="Customer"/>
+                                                <field name="name"/>
+                                                <field invisible="1" name="move_id" options="{'no_open':True, 'no_create':True}"/>
+                                                <field name="date" readonly="state not in ['draft']"/>
+                                                <field invisible="1" name="type"/>
+                                                <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                            <group>
+                                                <field name="original_balance"/>
+                                                <field name="open_balance"/>
+                                                <field invisible="1" name="exchanged_rate"/>
+                                                <field name="local_balance"/>
+                                                <field name="currency_rate"/>
+                                                <field name="expected_local_balance"/>
+                                                <field name="gain_loss"/>
+                                                <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree create="false" delete="false" editable="bottom" string="Customer Open Items">
+                                        <field name="partner_id" options="{'no_open':True, 'no_create':True}" string="Customer"/>
+                                        <field invisible="1" name="move_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field name="name"/>
+                                        <field name="date" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="type"/>
+                                        <field name="debit_credit"/>
+                                        <field name="original_balance"/>
+                                        <field name="open_balance"/>
+                                        <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field invisible="1" name="exchanged_rate"/>
+                                        <field name="local_balance" sum="Local"/>
+                                        <field name="currency_rate"/>
+                                        <field name="expected_local_balance" sum="Expected"/>
+                                        <field name="gain_loss" sum="Gain"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                    </tree></field>
+                                <separator string="Vendor Open Items"/>
+                                <field name="vendor_forex_lines" readonly="1" widget="one2many_list">
+                                    <form create="false" delete="false" string="Vendor Open Items">
+                                        <group>
+                                            <group>
+                                                <field name="partner_id" options="{'no_open':True, 'no_create':True}" string="Vendor"/>
+                                                <field name="name"/>
+                                                <field invisible="1" name="move_id" options="{'no_open':True, 'no_create':True}"/>
+                                                <field name="date" readonly="state not in ['draft']"/>
+                                                <field invisible="1" name="type"/>
+                                                <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                            <group>
+                                                <field name="original_balance"/>
+                                                <field name="open_balance"/>
+                                                <field invisible="1" name="exchanged_rate"/>
+                                                <field name="local_balance"/>
+                                                <field name="currency_rate"/>
+                                                <field name="expected_local_balance"/>
+                                                <field name="gain_loss"/>
+                                                <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree create="false" delete="false" editable="bottom" string="Vendor Open Items">
+                                        <field name="partner_id" options="{'no_open':True, 'no_create':True}" string="Vendor"/>
+                                        <field invisible="1" name="move_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field name="name"/>
+                                        <field name="date" readonly="state not in ['draft']"/>
+                                        <field invisible="1" name="type"/>
+                                        <field name="debit_credit"/>
+                                        <field name="original_balance"/>
+                                        <field name="open_balance"/>
+                                        <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field invisible="1" name="exchanged_rate"/>
+                                        <field name="local_balance" sum="Local"/>
+                                        <field name="currency_rate"/>
+                                        <field name="expected_local_balance" sum="Expected"/>
+                                        <field name="gain_loss" sum="Gain"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                    </tree></field>
+                            </page>
+                            <page string="Bank Account(s) Open Items">
+                                <separator string="Asset Bank Account(s) Open Items"/>
+                                <field name="payment_forex_lines" readonly="1" widget="one2many_list">
+                                    <form create="false" delete="false" string="Asset Bank Payment Open Items">
+                                        <group>
+                                            <group>
+                                                <field name="account_id" options="{'no_open':True, 'no_create':True}"/>
+                                                <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                            <group>
+                                                <field name="open_balance"/>
+                                                <field name="local_balance"/>
+                                                <field name="currency_rate"/>
+                                                <field name="expected_local_balance"/>
+                                                <field name="gain_loss"/>
+                                                <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree create="false" delete="false" editable="bottom" string="Asset Bank Payment Open Items">
+                                        <field name="account_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field name="open_balance"/>
+                                        <field name="local_balance" sum="Local"/>
+                                        <field name="currency_rate"/>
+                                        <field name="expected_local_balance" sum="Expected"/>
+                                        <field name="gain_loss" sum="Gain"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                    </tree></field>
+                                <separator string="Liability Bank Account(s) Open Items"/>
+                                <field name="liability_payment_forex_lines" readonly="1" widget="one2many_list">
+                                    <form create="false" delete="false" string="Liability Bank Payment Open Items">
+                                        <group>
+                                            <group>
+                                                <field name="account_id" options="{'no_open':True, 'no_create':True}"/>
+                                                <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                            <group>
+                                                <field name="open_balance"/>
+                                                <field name="local_balance"/>
+                                                <field name="currency_rate"/>
+                                                <field name="expected_local_balance"/>
+                                                <field name="gain_loss"/>
+                                                <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree create="false" delete="false" editable="bottom" string="Liability Bank Payment Open Items">
+                                        <field name="account_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field name="currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field name="open_balance"/>
+                                        <field name="local_balance" sum="Local"/>
+                                        <field name="currency_rate"/>
+                                        <field name="expected_local_balance" sum="Expected"/>
+                                        <field name="gain_loss" sum="Gain"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                    </tree></field>
+                            </page>
+                            <page string="Unrealised Exchange Gain/Loss Summary">
+                                <separator string="Customer Unrealised Gain/Loss"/>
+                                <field name="customer_gain_loss_lines" readonly="1" widget="one2many_list">
+                                    <tree create="false" delete="false" editable="bottom">
+                                        <field name="partner_id" options="{'no_open':True, 'no_create':True}" string="Customer"/>
+                                        <field invisible="1" name="type"/>
+                                        <field name="gain_loss"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="debit_account_id"/>
+                                        <field name="debit" sum="Debit"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="credit_account_id"/>
+                                        <field name="credit" sum="Credit"/>
+                                    </tree></field>
+                                <separator string="Vendor Unrealised Gain/Loss"/>
+                                <field name="vendor_gain_loss_lines" readonly="1" widget="one2many_list">
+                                    <tree create="false" delete="false" editable="bottom">
+                                        <field name="partner_id" options="{'no_open':True, 'no_create':True}" string="Vendor"/>
+                                        <field invisible="1" name="type"/>
+                                        <field name="gain_loss"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="debit_account_id"/>
+                                        <field name="debit" sum="Debit"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="credit_account_id"/>
+                                        <field name="credit" sum="Credit"/>
+                                    </tree></field>
+                                <separator string="Asset Bank Unrealised Gain/Loss"/>
+                                <field name="bank_gain_loss_lines" readonly="1" widget="one2many_list">
+                                    <tree create="false" delete="false" editable="bottom">
+                                        <field invisible="1" name="type"/>
+                                        <field name="gain_loss"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="debit_account_id"/>
+                                        <field name="debit" sum="Debit"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="credit_account_id"/>
+                                        <field name="credit" sum="Credit"/>
+                                    </tree></field>
+                                <separator string="Liability Bank Unrealised Gain/Loss"/>
+                                <field name="liability_bank_gain_loss_lines" readonly="1" widget="one2many_list">
+                                    <tree create="false" delete="false" editable="bottom">
+                                        <field invisible="1" name="type"/>
+                                        <field name="gain_loss"/>
+                                        <field name="company_currency_id" options="{'no_open':True, 'no_create':True}"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="debit_account_id"/>
+                                        <field name="debit" sum="Debit"/>
+                                        <field domain="[('internal_type', '!=', 'view')]" name="credit_account_id"/>
+                                        <field name="credit" sum="Credit"/>
+                                    </tree></field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form></field>
+        </record>
+        <record id="account_move_forex_search" model="ir.ui.view">
+            <field name="name">Unrealised Exchange Gain/Loss Entry</field>
+            <field name="model">account.move.forex</field>
+            <field name="arch" type="xml">
+                <search string="Search Unrealised Exchange Gain/Loss Entry">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="currency_exchange_journal_id"/>
+                    <field name="date"/>
+                    <field name="date_created"/>
+                    <field name="reverse_date"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                        <filter context="{'group_by': 'date'}" domain="[]" string="Date"/>
+                        <filter context="{'group_by': 'reverse_date'}" domain="[]" string="Reversal Date"/>
+                        <filter context="{'group_by': 'user_id'}" domain="[]" string="Created User"/>
+                        <filter context="{'group_by': 'state'}" domain="[]" string="state"/>
+                    </group>
+                </search></field>
+        </record>
+        <record id="action_account_move_forex" model="ir.actions.act_window">
+            <field name="name">Unrealised Exchange Gain/Loss</field>
+            <field name="res_model">account.move.forex</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="account_move_forex_search"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Welcome!
+                </p>
+                <p>
+                    Click to create unrealised exchange gain/loss entry
+                </p></field>
+        </record>
+        <menuitem groups="account.group_account_user" id="menu_account_move_forex" name="Unrealised Exchange Gain/Loss" parent="account.menu_finance" sequence="3"/>
+        <menuitem action="action_account_move_forex" groups="account.group_account_user" id="menu_action_account_move_forex" parent="menu_account_move_forex" sequence="1"/>
+    </data>
+</odoo>

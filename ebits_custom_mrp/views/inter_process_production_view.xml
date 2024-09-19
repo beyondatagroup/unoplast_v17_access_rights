@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="labour_group_tree" model="ir.ui.view">
+        <field name="name">Labour.Group</field>
+        <field name="model">labour.group</field>
+        <field name="arch" type="xml">
+            <tree string="Labour  Group">
+                <field name="name"/>
+                <field name="code"/>
+            </tree></field>
+    </record>
+    <record id="labour_group_form" model="ir.ui.view">
+        <field name="name">Labour.Group</field>
+        <field name="model">labour.group</field>
+        <field name="arch" type="xml">
+            <form string="Labour Group form">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Labour Group Rates">
+                            <field name="rate_lines" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="date"/>
+                                    <field name="nssf"/>
+                                    <field name="rate"/>
+                                </tree>
+                                <form>
+                                    <field name="date"/>
+                                    <field name="nssf"/>
+                                    <field name="rate"/>
+                                </form></field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form></field>
+    </record>
+    <record id="labour_group_filter" model="ir.ui.view">
+        <field name="name">Labour.Group</field>
+        <field name="model">labour.group</field>
+        <field name="arch" type="xml">
+            <search string="Labour Group Search">
+                <field name="name"/>
+                <field name="code"/>
+            </search></field>
+    </record>
+    <record id="action_labour_group" model="ir.actions.act_window">
+        <field name="name">Labour Group</field>
+        <field name="res_model">labour.group</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="search_view_id" ref="labour_group_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                WELCOME!.. Click here to create
+            </p></field>
+    </record>
+    <record id="labour_labour_tree" model="ir.ui.view">
+        <field name="name">Labour.labour</field>
+        <field name="model">labour.labour</field>
+        <field name="arch" type="xml">
+            <tree string="Labour tree">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="group_id" options="{'no_create': True, 'no_open': True}"/>
+            </tree></field>
+    </record>
+    <record id="labour_labour_form" model="ir.ui.view">
+        <field name="name">Labour.labour</field>
+        <field name="model">labour.labour</field>
+        <field name="arch" type="xml">
+            <form string="Labour form">
+                <group>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="group_id" options="{'no_create': True, 'no_open': True}"/>
+                </group>
+            </form></field>
+    </record>
+    <record id="labour_labour_filter" model="ir.ui.view">
+        <field name="name">Labour.labour</field>
+        <field name="model">labour.labour</field>
+        <field name="arch" type="xml">
+            <search string="Labour Search">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="group_id" options="{'no_create': True, 'no_open': True}"/>
+            </search></field>
+    </record>
+    <record id="action_labour_labour" model="ir.actions.act_window">
+        <field name="name">Labour</field>
+        <field name="res_model">labour.labour</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="search_view_id" ref="labour_labour_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                WELCOME!.. Click here to create
+            </p></field>
+    </record>
+    <record id="inter_process_production_tree" model="ir.ui.view">
+        <field name="name">Inter Process Production</field>
+        <field name="model">inter.process.production</field>
+        <field name="arch" type="xml">
+            <tree string="Inter Process Production">
+                <field name="date"/>
+                <field name="warehouse_id"/>
+                <field name="user_id"/>
+                <field name="mrp_production_id"/>
+                <field name="shift_type"/>
+                <field name="state"/>
+            </tree></field>
+    </record>
+    <record id="inter_process_production_form" model="ir.ui.view">
+        <field name="name">Inter Process Production</field>
+        <field name="model">inter.process.production</field>
+        <field name="arch" type="xml">
+            <form string="Inter Process Production">
+                <header>
+                    <button class="oe_highlight" invisible="state not in ['draft']" name="move_to_done" string="Confirm" type="object"/>
+                    <field name="state" statusbar_visible="draft,done" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state not in ['draft']"/>
+                            <field name="shift_type" readonly="state not in ['draft']"/>
+                        </group>
+                        <group>
+                            <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="warehouse_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Production Line">
+                            <field context="{'default_date':date}" name="production_line" widget="one2many_list" readonly="state == 'done'">
+                                <tree editable="bottom">
+                                    <field name="process_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_qty"/>
+                                    <field name="labour_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                                </tree>
+                                <form>
+                                    <field invisible="1" name="date"/>
+                                    <field invisible="1" name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="process_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_qty"/>
+                                    <field name="labour_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                                    <field invisible="1" name="mrp_production_id"/>
+                                    <field invisible="1" name="state"/>
+                                </form></field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form></field>
+    </record>
+    <record id="inter_process_production_filter" model="ir.ui.view">
+        <field name="name">Inter Process Production</field>
+        <field name="model">inter.process.production</field>
+        <field name="arch" type="xml">
+            <search string="Inter Process Production">
+                <field name="date"/>
+                <field name="warehouse_id"/>
+                <field name="user_id"/>
+                <field name="shift_type"/>
+                <field name="mrp_production_id"/>
+                <field name="state"/>
+                <group expand="0" string="Group By">
+                    <filter name="warehouse_id" context="{'group_by':'warehouse_id'}" domain="[]" string="Warehouse/Branch"/>
+                    <filter name="shift_type" context="{'group_by':'shift_type'}" domain="[]" string="Shift"/>
+                    <filter name="mrp_production_id" context="{'group_by':'mrp_production_id'}" domain="[]" string="Manufacturing Order"/>
+                    <filter name="state" context="{'group_by':'state'}" domain="[]" string="Status"/>
+                </group>
+            </search></field>
+    </record>
+    <record id="production_line_tree" model="ir.ui.view">
+        <field name="name">Production Line</field>
+        <field name="model">production.line.detail</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" string="Production Line">
+                <field name="date" readonly="state == 'done'"/>
+                <field name="product_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                <field name="uom_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                <field name="process_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                <field name="product_qty" readonly="state == 'done'"/>
+                <field name="labour_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                <field name="mrp_production_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                <field name="state"/>
+                <field invisible="1" name="warehouse_id"/>
+                <button invisible="state not in ['draft']" name="action_done" string="Done" type="object"/>
+            </tree></field>
+    </record>
+    <record id="production_line_search" model="ir.ui.view">
+        <field name="name">Production Line</field>
+        <field name="model">production.line.detail</field>
+        <field name="arch" type="xml">
+            <search string="Production Line">
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="uom_id"/>
+                <field name="process_id"/>
+                <field name="labour_id"/>
+                <field name="mrp_production_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="warehouse_id" context="{'group_by':'warehouse_id'}" domain="[]" string="Warehouse/Branch"/>
+                    <filter name="product_id" context="{'group_by':'product_id'}" domain="[]" string="Product"/>
+                    <filter name="process_id" context="{'group_by':'process_id'}" domain="[]" string="Process"/>
+                    <filter name="labour_id" context="{'group_by':'labour_id'}" domain="[]" string="Labour"/>
+                    <filter name="mrp_production_id" context="{'group_by':'mrp_production_id'}" domain="[]" string="Manufacturing Order"/>
+                    <filter name="state" context="{'group_by':'state'}" domain="[]" string="Status"/>
+                </group>
+            </search></field>
+    </record>
+    <record id="action_inter_process_production" model="ir.actions.act_window">
+        <field name="name">Inter Process Production</field>
+        <field name="res_model">inter.process.production</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="search_view_id" ref="inter_process_production_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                WELCOME!!!!!
+            </p></field>
+    </record>
+    <record id="action_production_line" model="ir.actions.act_window">
+        <field name="name">Production Line</field>
+        <field name="res_model">production.line.detail</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="search_view_id" ref="production_line_search"/>
+    </record>
+    <menuitem id="inter_process_production_menu" name="Inter Process Production" parent="mrp.menu_mrp_root" sequence="12"/>
+    <menuitem action="action_inter_process_production" id="inter_process_production_sub_menu" name="Inter Process Production" parent="inter_process_production_menu" sequence="1"/>
+    <menuitem action="action_production_line" id="production_line_sub_menu" name="Production Line" parent="inter_process_production_menu" sequence="2"/>
+    <menuitem action="action_labour_group" id="labour_group_sub_menu" name="Labour Group" parent="mrp.menu_mrp_bom" sequence="11"/>
+    <menuitem action="action_labour_labour" id="labour_labour_sub_menu" name="Labour" parent="mrp.menu_mrp_bom" sequence="12"/>
+    <!--        <menuitem id="inter_process_production_report_sub_menu" name="Inter Process Production Report" sequence="30" parent="mrp.menu_mrp_reporting" action="action_inter_process_production_report_wizard"/>-->
+
+<!--    OPEN COMMENT AFTER WIZARD OPEN ##############################################-->
+    <menuitem action="action_ip_process_report_wizard" id="ip_process_register_sub_menu" name="Inter Process Production Register" parent="mrp.menu_mrp_reporting" sequence="30"/>
+</odoo>

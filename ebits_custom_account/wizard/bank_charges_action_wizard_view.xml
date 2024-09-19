@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_bank_charges_reconciliation_wizard_form" model="ir.ui.view">
+            <field name="name">Bank Charges</field>
+            <field name="model">bank.charges.reconciliation.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="statement_id" options="{'no_open': True, 'no_create':True}"/>
+                            <field name="reconcile_id" options="{'no_open': True, 'no_create':True}"/>
+                            <field name="debit"/>
+                            <field name="credit"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="journal_id" options="{'no_open': True, 'no_create':True}" domain="[('type', '=', 'bank')]"/>
+                            <field name="currency_id" options="{'no_open': True, 'no_create':True}"/>
+                            <field name="reference"/>
+                            <field name="currency_id_rate" invisible="1"/>
+                            <field name="currency_id_value"/>
+                            <field name="company_id" options="{'no_open': True, 'no_create':True}" invisible="1"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <footer>
+                        <button name="action_update" string="Update" type="object" class="btn-primary"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_bank_charges_reconciliation_wizard" model="ir.actions.act_window">
+            <field name="name">Bank Charges</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bank.charges.reconciliation.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bank_charges_reconciliation_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+        
+</odoo>

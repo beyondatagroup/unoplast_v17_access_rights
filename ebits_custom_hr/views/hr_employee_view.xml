@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <menuitem
+            id="hr.menu_hr_root"
+            name="Employees"
+            groups="hr.group_hr_manager,hr.group_hr_user"
+            web_icon="hr,static/description/icon.png"
+            sequence="75"/>
+            
+        <record id="view_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='passport_id']" position="after">
+                    <field name="ppf_no"/>
+                    <field name="nssf_no"/>
+                    <!-- <field name="create_user_button_status" invisible="1"/> -->
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[3]" position="after">
+                    <page string="Earnings &amp; Deductions">
+                        <group>
+                            <group string="Earnings">
+                                <field name="is_usr_button_visible" invisible="1"/>
+                                <field name="basic"/>
+                                <field name="transp"/>
+                                <field name="hra_earnings"/>
+                                <field name="prof_all"/>
+                                <field name="misc_earnings"/>
+                                <field name="over_time"/>
+                                <field name="child_education_earnings"/>
+                                <field name="bonus_earnings"/>
+                                <field name="night_allowance"/>
+                                <field name="arres"/>
+                                <field name="leave_allowance"/>
+                            </group>
+                            <group string="Deductions">
+                                <field name="child_education_deductions"/>
+                                <field name="hra_deductions"/>
+                                <field name="coin_adjustment"/>
+                                <field name="pf_type"/>
+                                <label for="pf_value"/>
+                                <div>
+                                    <field name="pf_value"/>
+                                    <span class="oe_edit_only"><p>Ex:- 12%</p></span>
+                                </div>
+                                <field name="tuico"/>
+                                <label for="tuico_value" invisible="tuico == False"/>
+
+                                <div invisible="tuico == False">
+                                    <field name="tuico_value" invisible="tuico == False" required="tuico == True"/>
+                                    <span class="oe_edit_only"><p>Ex:- 12%</p></span>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='department_id']" position="before">
+                    <field name="doj"/>
+                </xpath>
+
+                <!-- <xpath expr="/form/sheet/div/label" position="before">
+                    <label for="production_unit_id" class="oe_edit_only"/>
+                    <h3>
+                        <field name="production_unit_id" placeholder="Employee's Unit" required="1" options="{'no_create': True, 'no_open': True}"/>
+                        </h3>
+                        </xpath>
+                -->
+
+                <!-- adding production unit id -->
+                <xpath expr="/form/sheet/div/div/h1" position="before">
+
+                    <label for="production_unit_id" class="oe_edit_only"/>
+
+                    <h2>
+                        <field name="production_unit_id" placeholder="Employee's Unit" required="1" options="{'no_create': True, 'no_open': True}"/>
+                    </h2>
+
+                </xpath>
+
+
+
+                <!-- <xpath expr="/form/sheet/div/h1" position="after">
+                    <label for="employee_code" class="oe_edit_only"/>
+                    <h3>
+                        <field name="employee_code" placeholder="Employee's Code" required="1"/>
+                    </h3>
+                </xpath> -->
+
+
+
+                <!-- adding employee code -->
+                <xpath expr="//field[@name='job_title']" position="replace">
+                    <label for="employee_code" class="oe_edit_only"/>
+                    <h2>
+                        <field name="employee_code" placeholder="Employee's Code" required="1"/>
+                    </h2>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='bank_account_id']" position="after">
+                    <field name="loan_balance"/>
+                </xpath>
+
+                <!-- <xpath expr="/form/sheet/notebook/page/group/group/field[@name='address_id']" position="replace">
+                    <field name="address_id"
+                        context="{'show_address': 1}"
+                        options='{"always_reload": True, "highlight_first_line": True}'
+                        domain="[('customer', '!=', True), ('supplier', '!=', True),('parent_id', '=', False)]"/>
+                </xpath> -->
+
+                <!-- replacing address id -->
+                <!-- <xpath expr="//field[@name='address_id']" position="replace">
+                    <field name="address_id"
+                        context="{'show_address': 1}"
+                        options='{"always_reload": True, "highlight_first_line": True}'
+                        domain="[('customer', '!=', True), ('supplier', '!=', True),('parent_id', '=', False)]"/>
+                </xpath> -->
+
+                <xpath expr="//field[@name='address_id']" position="replace">
+                    <field name="address_id"
+                        context="{'show_address': 1}"
+                        options='{"always_reload": True, "highlight_first_line": True}'
+                        domain="[('customer', '!=', True), ('parent_id', '=', False)]"/>
+                </xpath>
+
+                
+                <!-- <xpath expr="/form/sheet/notebook/page/group/group/field[@name='address_home_id']" position="replace">
+                    <field name="address_home_id"
+                        context="{'show_address': 1}"
+                        options='{"always_reload": True, "highlight_first_line": True}'
+                        domain="[('customer', '=', False), ('supplier', '=', False),('parent_id', '=', False)]"/>
+                </xpath> -->
+
+
+                <!-- replacing address home id -->
+                <!-- <xpath expr="/form/sheet/notebook/page/group/group/field[@name='address_home_id']" position="replace">
+                    <field name="address_home_id"
+                        context="{'show_address': 1}"
+                        options='{"always_reload": True, "highlight_first_line": True}'
+                        domain="[('customer', '=', False), ('supplier', '=', False),('parent_id', '=', False)]"/>
+                </xpath> -->
+
+
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='work_email']" position="replace">-->
+<!--                    <field name="work_email" widget="email" required="1"/>-->
+<!--                </xpath>-->
+
+                <!-- <xpath expr="/form/sheet" position="before">
+                    <header>
+                        <button name="create_user" string="Create User" type="object" class="oe_highlight"
+                                invisible="user_id != False" groups="base.group_erp_manager,base.group_system"/>
+                        <button name="create_partner" string="Create Partner" type="object" class="oe_highlight"
+                                invisible="address_home_id != False" groups="base.group_erp_manager,base.group_system"/>
+                    </header>
+                </xpath> -->
+
+                <xpath expr="/form/sheet" position="before">
+                    <header>
+                        
+                        <!-- <button name="bd_create_user" string="Create User" type="object" class="oe_highlight"
+                                invisible="is_usr_button_visible == True" groups="base.group_erp_manager,base.group_system"/> -->
+
+
+                        <!-- <button name="create_partner" string="Create Partner" type="object" class="oe_highlight"
+                             groups="base.group_erp_manager,base.group_system"/> -->
+                    </header>
+                </xpath>
+
+                
+            </field>
+        </record>
+        
+        <record id="view_employee_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="employee_code"/>
+                </field>
+                
+                <field name="work_email" position="after">
+                    <field name="production_unit_id"/>
+                </field>
+
+            </field>
+        </record>
+        
+        <record id="view_employee_filter_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="name" string="Employees" filter_domain="['|', '|', ('work_email','ilike',self), ('name','ilike',self),('employee_code', 'ilike', self)]"/>
+                </field>
+            </field>
+        </record>
+        
+        <!-- <record id="hr_kanban_view_employees_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.kanban</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <field name="arch" type="xml">
+                <xpath expr="/kanban/templates/t/div/div[@class='oe_kanban_details']/strong/field[@name]" position="replace">
+                    <div>
+                        <t t-if="record.employee_code.raw_value">[<field name="employee_code"/>] </t>
+                        <field name="name"/>
+                    </div>
+                </xpath>
+            </field>
+        </record> -->
+
+
+        <record id="hr_kanban_view_employees_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.kanban</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <span>
+                        <t t-if="record.employee_code.raw_value">[<field name="employee_code"/>] </t>
+                    </span>
+                </xpath>
+            </field>
+        </record>
+
+        
+</odoo>

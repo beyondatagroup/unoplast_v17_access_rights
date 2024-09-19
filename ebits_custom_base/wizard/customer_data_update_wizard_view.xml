@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="customer_data_update_wizard_form" model="ir.ui.view">
+        <field name="name">Customer Sales Detail Update</field>
+        <field name="model">customer.data.update.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Customer Sales Detail Update">
+                <group>
+                    <group>
+                        <field name="type" required="1"/>
+                    </group>
+                </group>
+                <group>
+                    <group invisible="type != 'manager'">
+                        <field name="existing_manager_id" options="{'no_open': True, 'no_create':True}"
+                               required="type == 'manager'"/>
+                        <field name="new_manager_id" options="{'no_open': True, 'no_create':True}"
+                               required="type == 'manager'"/>
+                    </group>
+                    <group invisible="type != 'user'">
+                        <field name="existing_sales_person_id" options="{'no_open': True, 'no_create':True}"
+                               required="type == 'user'"/>
+                        <field name="new_sales_person_id" options="{'no_open': True, 'no_create':True}"
+                               required="type == 'user'"/>
+                    </group>
+                </group>
+                <footer>
+                    <button class="oe_highlight" invisible="type != 'manager'" name="action_update_sales_manager"
+                            string="Update" type="object"/>
+                    <button class="oe_highlight" invisible="type != 'user'" name="action_update_sales_person"
+                            string="Update" type="object"/>
+                    or
+                    <button class="btn-default, oe_highlight" special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="customer_data_update_wizard_action" model="ir.actions.act_window">
+        <field name="name">Customer Sales Detail Update</field>
+        <field name="res_model">customer.data.update.wizard</field>
+<!--        <field name="view_type">form</field>-->
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="customer_data_update_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="customer_data_update_wizard_action" id="menu_sale_update" name="Customer Sales Detail Update"
+              parent="sale.menu_sale_config" sequence="10"/>
+</odoo>

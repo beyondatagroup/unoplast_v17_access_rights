@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <record id="view_sale_advance_payment_inv_inherit" model="ir.ui.view">
+  <field name="name">Invoice Orders</field>
+  <field name="model">sale.advance.payment.inv</field>
+  <field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
+  <field name="arch" type="xml">
+   <xpath expr="/form/group/field[@name='advance_payment_method']" position="replace">
+    <field class="oe_inline" invisible="count > 1" name="advance_payment_method" readonly="1"/>
+   </xpath>
+   <xpath expr="/form/group" position="after">
+    <field invisible="advance_payment_method != 'all'" name="refund_reason" required="advance_payment_method == 'all'"/>
+   </xpath></field>
+ </record>
+</odoo>

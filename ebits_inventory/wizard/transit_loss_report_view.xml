@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="transit_loss_report_wizard_form" model="ir.ui.view">
+        <field name="name">Transit Loss Report Wizard</field>
+        <field name="model">transit.loss.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group col="4">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="warehouse_ids" options="{'no_open':True,'no_create':True}" widget="many2many_tags"/>
+                    <field domain=" [('stock_warehouse_ids', 'in', warehouse_ids and warehouse_ids[0][2])]" name="product_ids" options="{'no_open':True,'no_create':True}" widget="many2many_tags"/>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_transit_loss_report_wizard" model="ir.actions.act_window">
+        <field name="name">Intransit Loss Report</field>
+        <field name="res_model">transit.loss.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="transit_loss_report_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_transit_loss_report_wizard" id="menu_transit_loss_report" name="Intransit Loss Report" parent="material_move_reporting_menu" sequence="150"/>
+</odoo>

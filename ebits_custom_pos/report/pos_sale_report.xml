@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            id="report_pos_sale_order_rml"
+            string="Receipt(RML)"
+            model="pos.order" 
+            report_type="pdf"
+            rml="ebits_custom_pos/report/pos_sale_rml_report.rml" 
+            name="pos.sale.rml.report" 
+            menu="False"
+        />
+    </data>    
+</odoo>

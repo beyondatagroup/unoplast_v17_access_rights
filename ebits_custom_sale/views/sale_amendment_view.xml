@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_amendment_tree" model="ir.ui.view">
+        <field name="name">sale.order.amendment.tree</field>
+        <field name="model">sale.order.amendment</field>
+        <!--            <field name="priority">2</field>-->
+        <field name="arch" type="xml">
+            <tree string="Sales Order Amendment History">
+                <field name="sale_id" invisible="1"/>
+                <field name="name" string="Order Number"/>
+                <field name="date_order"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="warehouse_id"/>
+                <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="invoice_status"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_order_amendment_form" model="ir.ui.view">
+        <field name="name">sale.order.amendment.form</field>
+        <field name="model">sale.order.amendment</field>
+        <field name="arch" type="xml">
+            <form string="Sales Order Amendment" class="o_sale_order">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sale_id" readonly="1"/>
+                            <field name="partner_id" domain="[('customer','=',True)]"/>
+                            <field name="partner_invoice_id"/>
+                            <field name="partner_shipping_id"/>
+                            <field name="warehouse_id"/>
+                        </group>
+                        <group>
+                            <field name="date_order"/>
+                            <field name="validity_date"/>
+                            <field name="confirmation_date"/>
+                            <field name="pricelist_id" groups="product.group_sale_pricelist"/>
+                            <field name="currency_id"/>
+                            <field name="payment_term_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="credit_limit"/>
+                            <field name="avail_credit_limit"/>
+                            <field name="approved_so_value"/>
+                            <field name="invoice_due"/>
+                            <field name="credit_limit_check"/>
+                            <field name="payment_term_check"/>
+                        </group>
+                        <group>
+                            <field name="sale_revision_no"/>
+                            <field name="sale_amendment_no"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Order Lines">
+                            <!--                            <field name="order_line" mode="tree,kanban" readonly="1">-->
+                            <field name="order_line" readonly="1">
+                                <!--                                <form string="Sales Order Amendment Lines">-->
+                                <!--                                    <group>-->
+                                <!--                                        <group>-->
+                                <!--                                            <field name="product_id"/>-->
+                                <!--                                            &lt;!&ndash;                                    removed as layout_category_id is not in v17&ndash;&gt;-->
+                                <!--                                            &lt;!&ndash;                                            <field name="layout_category_id" groups="sale.group_sale_layout"/>&ndash;&gt;-->
+                                <!--                                            <field name="price_subtotal" invisible="1"/>-->
+                                <!--                                            <label for="product_uom_qty" string="Ordered Quantity"/>-->
+                                <!--                                            <div>-->
+                                <!--                                                &lt;!&ndash;        removed context 'uom':product_uom,'pricelist':parent.pricelist_id,'company_id': parent.company_id&ndash;&gt;-->
+                                <!--                                                <field-->
+                                <!--                                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty,-->
+                                <!--                                                         'uom_qty_change':True, }"-->
+                                <!--                                                        name="product_uom_qty" class="oe_inline"/>-->
+
+                                <!--                                                <field name="product_uom" groups="product.group_uom"-->
+                                <!--                                                       class="oe_inline oe_no_button"/>-->
+                                <!--                                            </div>-->
+                                <!--                                            <field name="price_unit"/>-->
+                                <!--                                            <label for="discount"/>-->
+                                <!--                                            <div name="discount">-->
+                                <!--                                                <field name="discount" class="oe_inline"/>-->
+                                <!--                                                %%-->
+                                <!--                                            </div>-->
+                                <!--                                        </group>-->
+                                <!--                                        <group>-->
+                                <!--                                            &lt;!&ndash;                                            removed from domain ('company_id','=',parent.company_id)&ndash;&gt;-->
+                                <!--                                            <field name="tax_id" widget="many2many_tags"-->
+                                <!--                                                   domain="[('type_tax_use','=','sale'),-->
+                                <!--                                                   ]"/>-->
+                                <!--                                            <label for="customer_lead"/>-->
+                                <!--                                            <div>-->
+                                <!--                                                <field name="customer_lead" class="oe_inline"/>-->
+                                <!--                                                days-->
+                                <!--                                            </div>-->
+                                <!--                                            <label for="analytic_tag_ids"/>-->
+                                <!--                                            <div>-->
+                                <!--                                                <field name="analytic_tag_ids" widget="many2many_tags"/>-->
+                                <!--                                            </div>-->
+                                <!--                                        </group>-->
+                                <!--                                    </group>-->
+                                <!--                                    <label for="name"/>-->
+                                <!--                                    <field name="name"/>-->
+                                <!--                                    <field name="state" invisible="1"/>-->
+                                <!--                                </form>-->
+                                <tree string="Sales Order Lines" editable="bottom"
+                                      decoration-info="invoice_status=='to invoice'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <!--                                    removed as layout_category_id is not in v17-->
+                                    <!--                                    <field name="layout_category_id" groups="sale.group_sale_layout"/>-->
+                                    <field name="name"/>
+                                    <field name="product_uom_qty" string="Ordered Qty"/>
+                                    <field name="product_uom" options='{"no_open": True}'/>
+                                    <!--<field name="analytic_tag_ids" groups="analytic.group_analytic_accounting"
+                                           widget="many2many_tags"/>-->
+                                    <field name="price_unit"/>
+                                    <!--                                    removed ('company_id','=',parent.company_id)-->
+                                    <field name="tax_id" widget="many2many_tags"
+                                           domain="[('type_tax_use','=','sale')]"/>
+                                    <field name="discount"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="invoice_status" invisible="1"/>
+                                    <field name="customer_lead" invisible="1"/>
+                                </tree>
+                                <kanban class="o_kanban_mobile">
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom"/>
+                                    <!--                                    <field name="product_uom" groups="product.group_uom"/>-->
+                                    <field name="price_subtotal"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <strong>
+                                                            <span>
+                                                                <t t-esc="record.product_id.value"/>
+                                                            </span>
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-8 text-muted">
+                                                        <span>
+                                                            <t t-esc="record.product_uom_qty.value"/>
+                                                            <t t-esc="record.product_uom.value"/>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-xs-4 text-muted">
+                                                        <span class="pull-right text-right">
+                                                            <t t-esc="record.price_subtotal.value"/>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="amount_untaxed" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_discounted" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_roundoff" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"
+                                       widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                            <field name="note" class="oe_inline"
+                                   placeholder="Setup default terms and conditions in your company settings."/>
+                            <div class="oe_clear"/>
+                        </page>
+                        <page string="Other Information">
+                            <group>
+                                <group string="Sales Information" name="sales_person">
+                                    <field name="user_id"/>
+                                    <field name="team_id" options="{'no_create': True}"/>
+                                    <field name="client_order_ref"/>
+                                    <field name="company_id" options="{'no_create': True}"
+                                           groups="base.group_multi_company"/>
+                                    <!--                commented as project_id is not in v17-->
+                                    <!--                                    <field name="project_id"-->
+                                    <!--                                           context="{'default_partner_id':partner_invoice_id, 'default_name':name}"-->
+                                    <!--                                           groups="analytic.group_analytic_accounting"/>-->
+                                </group>
+                                <group name="sale_pay" string="Invoicing">
+                                    <field name="fiscal_position_id" options="{'no_create': True}"/>
+                                    <field name="invoice_status"/>
+                                </group>
+                                <group string="Reporting" name="technical" groups="base.group_erp_manager">
+                                    <field groups="base.group_erp_manager" name="origin"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="History">
+                            <label for="higher_reason"/>
+                            <field name="higher_reason"/>
+                            <group>
+                                <field name="approved_date" options="{'no_create': True, 'no_open': True}"
+                                       readonly="1"/>
+                                <field name="approved_user_id" options="{'no_create': True, 'no_open': True}"
+                                       readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="amendment_user_id" options="{'no_create': True, 'no_open': True}"
+                                       readonly="1"/>
+                            </group>
+                            <label for="amendment_reason"/>
+                            <field name="amendment_reason"/>
+                            <group>
+                                <field name="revision_user_id" options="{'no_create': True, 'no_open': True}"
+                                       readonly="1"/>
+                            </group>
+                            <label for="revision_reason"/>
+                            <field name="revision_reason"/>
+                            <group>
+                                <field name="cancel_user_id" options="{'no_create': True, 'no_open': True}"
+                                       readonly="1"/>
+                            </group>
+                            <label for="cancel_reason"/>
+                            <field name="cancel_reason"/>
+                        </page>
+                    </notebook>
+                    <label for="sale_remarks"/>
+                    <field name="sale_remarks" nolabel="1"/>
+                    <div class="oe_clear"/>
+                    <label for="sale_history"/>
+                    <field name="sale_history" nolabel="1"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!--    add in v17 removed -->
+
+    <record id="view_sales_order_amendment_filter" model="ir.ui.view">
+        <field name="name">sale.order.amendment.list.select</field>
+        <field name="model">sale.order.amendment</field>
+        <field name="arch" type="xml">
+            <search string="Search Sales Order Amendment">
+                <field name="sale_id"/>
+                <field name="name" string="Sales Order"
+                       filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="user_id"/>
+                <field name="team_id" string="Sales Team"/>
+                <!--                commented as project_id is not in v17-->
+                <!--                <field name="project_id"/>-->
+
+                <field name="product_id"/>
+                <!--                <group expand="0" string="Group By">-->
+                <!--                    <filter string="Salesperson" context="{'group_by':'user_id'}"/>-->
+                <!--                    <filter name="customer" string="Customer" context="{'group_by':'partner_id'}"/>-->
+                <!--                    <filter string="Order Month" context="{'group_by':'date_order'}"/>-->
+                <!--                </group>-->
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_orders_amendment" model="ir.actions.act_window">
+        <field name="name">Sales Orders Amendment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.amendment</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="view_mode">tree,form</field>
+        <!--        <field name="search_view_id" ref="view_sales_order_amendment_filter"/>-->
+        <!--        <field name="context">{}</field>-->
+        <!--        <field name="domain">[]</field>-->
+    </record>
+
+
+    <record id="action_orders_amendment_new" model="ir.actions.act_window">
+        <field name="name">Sales Orders Amendment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.amendment</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="ebits_custom_sale.view_order_amendment_tree"/>
+        <field name="domain">[('sale_id', '=', active_id)]</field>
+         <field name="context">{'search_default_sale_id':active_id}</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+    </record>
+
+
+<!--    <menuitem action="action_orders_amendment" id="menu_action_orders_amendment"-->
+<!--              parent="sale.sale_order_menu" sequence="15"/>-->
+
+    <!--    <act_window-->
+    <!--            id="act_menu_sale_order_to_amendment"-->
+    <!--            name="Amendment History"-->
+    <!--            res_model="sale.order.amendment"-->
+    <!--            context="{'search_default_sale_id':[active_id]}"-->
+    <!--            domain="[('sale_id', '=', active_id)]"-->
+    <!--            src_model="sale.order"/>-->
+
+
+
+</odoo>

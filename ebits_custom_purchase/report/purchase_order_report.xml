@@ -1,0 +1,288 @@
+<odoo>
+    <record id="paperformat_report_purchase" model="report.paperformat">
+        <field name="name">Custom Purchase Order</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">10</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_purchase_order_report" model="ir.actions.report">
+        <field name="name">Purchase Order</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ebits_custom_purchase.purchase_order_report_data</field>
+        <field name="report_file">ebits_custom_purchase.purchase_order_report_data</field>
+        <field name="binding_model_id" ref="model_purchase_order"/>
+        <field name="paperformat_id" ref="ebits_custom_purchase.paperformat_report_purchase"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_headersss">
+        <div class="header" style="width:100%;float:left;">
+
+
+        </div>
+
+    </template>
+<!--    <template id="custom_header_footer"-->
+
+<!--              inherit_id="web.external_layout_standard">-->
+
+<!--        <xpath expr="//div[1]" position="replace">-->
+
+<!--            <div t-attf-class="header o_company_#{company.id}_layout"-->
+<!--                 t-att-style="report_header_style" style="margin-bottom">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-12">-->
+<!--                        <div class="float-end">-->
+<!--                            <img t-if="company.logo"-->
+<!--                                 t-att-src="image_data_uri(company.logo)"-->
+<!--                                 style="max-width:260px;max-height:89px;"-->
+<!--                                 alt="Logo"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-9 text-end" style="margin-top:22px;"-->
+<!--                         t-field="company.report_header" name="moto"/>-->
+<!--                </div>-->
+<!--                <div t-if="company.logo or company.report_header" class="row zero_min_height">-->
+<!--                    <div class="col-12">-->
+<!--                        <div style="border-bottom: 1px solid black;"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="row">-->
+<!--                    <div class="float-left">-->
+<!--                        <div class="details">-->
+<!--                            <table class="table_partner" style="width:120%;">-->
+<!--                                <tr>-->
+<!--                                    <td>-->
+<!--                                        <b style="color:black;">CLIENT Details:</b>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+
+<!--                                    <td>-->
+<!--                                        <b>-->
+<!--                                            <span style="color:black;"-->
+<!--                                                  t-if="company" t-esc="o.partner_id.name"/>-->
+<!--                                        </b>-->
+<!--                                        <br></br>-->
+
+<!--                                        <t t-if="o.partner_id.street">-->
+<!--                                            <span t-esc="o.partner_id.street"/>-->
+<!--                                            <br></br>-->
+
+<!--                                        </t>-->
+<!--                                        <t t-if="o.partner_id">-->
+<!--                                            <span t-esc="o.partner_id.city"/>-->
+<!--                                            <br></br>-->
+
+<!--                                        </t>-->
+
+<!--                                    </td>-->
+
+<!--                                </tr>-->
+
+<!--                            </table>-->
+
+<!--                        </div>-->
+
+<!--                    </div>-->
+
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--        </xpath>-->
+
+<!--        <xpath expr="//div[hasclass('text-center')]" position="replace">-->
+
+<!--            <center>-->
+
+<!--                <h5 style="color:black;">-->
+
+<!--                    <b>-->
+<!--                        <t t-esc="o.company_id.name"/>-->
+<!--                    </b>-->
+
+<!--                </h5>-->
+
+<!--                <h6 style="color:black;">Your company details</h6>-->
+
+<!--                Page:-->
+
+<!--                <span class="page"/>/-->
+<!--                <span class="topage"/>-->
+
+<!--            </center>-->
+
+<!--        </xpath>-->
+
+<!--    </template>-->
+
+
+    <template id="purchase_order_report_data">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <!--                <t t-call="ebits_custom_purchase.report_headersss"/>-->
+                    <div class="page">
+                    <div style="width:100%;float:left;margin-top:10%;">
+                        <table style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Particulars</th>
+                                    <th>Exp Delivery Date</th>
+                                    <th>QTY</th>
+                                    <th>UOM</th>
+                                    <th>Rate</th>
+                                    <th>Tax</th>
+                                    <th>Total (Tsh)</th>
+                                </tr>
+                            </thead>
+                            <t t-set="s" t-value="1"/>
+                            <t t-foreach="doc.order_line" t-as="line">
+
+                                <tbody>
+                                    <tr>
+                                        <td id="th_sr_no" style="text-align:center;" width="5%">
+                                            <t t-esc="s"/>
+                                            <t t-set="s" t-value="s+1"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.product_id.name" style="margin-left:5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.date_planned.strftime('%d-%m-%y')"
+                                                  style="margin-left:5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.product_qty" style="margin-left:5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.product_uom.name" style="margin-left:5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.price_unit" style="margin-left:5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.taxes_id.name" style="margin-left:5px;"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.price_total" style="margin-left:5px;"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+
+
+                    <div class=" justify-between items-center mb-4 "
+                         style="width:100%;float:left;padding: 1%;">
+                        <div style="width:50%;float:left;">
+                            <div class="mb-4">
+                                <p>
+                                    <b>Total Quantity:</b>
+                                    <t t-if="doc.total_quantity_based_uom">
+                                        <span t-field="doc.total_quantity_based_uom"
+                                              style="margin-left:5px;"/>
+                                    </t>
+                                </p>
+
+                                <p>
+                                    <b>Amount in Words:</b>
+                                    <t t-if="doc.amount_to_text">
+                                        <span t-field="doc.amount_to_text" style="margin-left:5px;"/>
+                                    </t>
+                                </p>
+
+                            </div>
+                            <div class="mb-4">
+                                <p>
+                                    <b>Terms &amp; Conditions:</b>
+                                </p>
+                                <t t-if="doc.notes">
+                                    <span t-field="doc.notes" style="margin-left:5px;"/>
+                                </t>
+
+                            </div>
+                            <div class="mb-4">
+                                <p>
+                                    <b>Remarks:</b>
+                                </p>
+                                <t t-if="doc.purchase_remarks">
+                                    <span t-field="doc.purchase_remarks" style="margin-left:5px;"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div style="width:50%;float:left;">
+                            <div class="items-center mb-4">
+
+                                <div class="text-right">
+                                    <div style="width:100%;float:left;">
+                                        <div style="width:75%;float:left;padding:2%;">Sub Total</div>
+                                        <div style="width:25%;float:left;border-top:2px solid #000;text-align:right;">
+                                            <span t-field="doc.amount_untaxed"
+                                                  style="margin-left:5px;"/>
+                                        </div>
+                                    </div>
+                                    <!--                                                 <div style="width:100%;float:left;">-->
+                                    <!--                                                    <div style="width:75%;float:left;">Sub Total</div>-->
+                                    <!--                                                    <div style="width:25%;float:left;border-top:1px solid #000;">-->
+                                    <!--                                                        <span t-field="doc.amount_untaxed" style="margin-left:5px;"/></div>-->
+                                    <!--                                                </div>-->
+
+                                    <!--                                                <p>Sub Total-->
+                                    <!--                                                    <span t-field="doc.amount_untaxed" style="margin-left:5px;"/>-->
+                                    <!--                                                </p>-->
+                                    <div style="width:100%;float:left;">
+                                        <div style="width:75%;float:left;padding:2%;">Tax Total</div>
+                                        <div style="width:25%;float:left;border-top:2px solid #000;">
+                                            <span t-field="doc.amount_tax" style="margin-left:5px;"/>
+                                        </div>
+                                    </div>
+                                    <!--                                                <p>Tax Total-->
+                                    <!--                                                    <span t-field="doc.amount_tax" style="margin-left:5px;"/>-->
+                                    <!--                                                </p>-->
+
+                                    <div style="width:100%;float:left;">
+                                        <div style="width:75%;float:left;padding:2%;">Grand Total</div>
+                                        <div style="width:25%;float:left;border-top:2px solid #000;">
+                                            <span t-field="doc.amount_total" style="margin-left:5px;"/>
+                                        </div>
+                                    </div>
+                                    <!--                                                <b>-->
+                                    <!--                                                    <p>Grand Total-->
+                                    <!--                                                        <span t-field="doc.amount_total" style="margin-left:5px;"/>-->
+                                    <!--                                                    </p>-->
+                                    <!--                                                </b>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+
+
+ <p style="page-break-before:always;"> </p>
+
+                </t>
+            </t>
+        </t>
+
+
+    </template>
+
+</odoo>

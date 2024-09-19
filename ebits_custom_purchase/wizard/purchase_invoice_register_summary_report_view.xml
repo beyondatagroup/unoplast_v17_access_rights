@@ -1,0 +1,51 @@
+<odoo>
+        <record id="purchase_invoice_register_summary_report_form" model="ir.ui.view">
+            <field name="name">Purchase Register Summary Report</field>
+            <field name="model">purchase.invoice.register.summary.report</field>
+            <field name="arch" type="xml">
+                <form string="Generate Report">
+                    <group>
+                        <group> 
+                            <field name="date_from"/>
+                            <field name="warehouse_ids" widget="many2many_tags" options="{'no_open':True, 'no_create':True}"/>
+                            <field name="partner_ids" widget="many2many_tags" domain="[('supplier', '=', True), ('parent_id', '=', False)]" options="{'no_open':True, 'no_create':True}"/>
+                        </group>
+                        <group>
+                            <field name="date_to"/>
+                            <field name="currency_ids" widget="many2many_tags" options="{'no_open':True, 'no_create':True}"/>
+                            <field name="type_account"/>
+                        </group>
+                    </group>
+                      <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+
+                    <footer>
+                        <button name="action_print_report" string="Generate Report" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_purchase_invoice_register_summary_report" model="ir.actions.act_window">
+            <field name="name">Purchase Register Summary Report</field>
+             <field name="res_model">purchase.invoice.register.summary.report</field>
+             <field name="view_mode">form</field>
+             <field name="view_id" ref="purchase_invoice_register_summary_report_form"/>
+             <field name="context">{}</field>
+             <field name="target">new</field>
+        </record>
+
+        <menuitem 
+            id="menu_purchase_invoice_register_summary_report" 
+            name=" Purchase Register Summary"
+            sequence="1" 
+            parent="purchase.purchase_report" 
+            action="action_purchase_invoice_register_summary_report"
+            />
+</odoo>

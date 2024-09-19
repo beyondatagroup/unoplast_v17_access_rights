@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_stock_register_location_wizard" model="ir.ui.view">
+            <field name="name">Stock Register Warehouse, Product and Location Wise</field>
+            <field name="model">stock.register.product.warehouse.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Stock Register Warehouse, Product and Location Wise">
+                    <group>
+                        <field name="report_type"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field invisible="1" name="company_id" widget="selection"/>
+                            <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field invisible="report_type == 'product'" name="date_from" required="report_type in ['product_details', 'product_summary', 'location_summary']"/>
+                            <field name="date_to" required="1"/>
+                            <field name="show_value"/>
+                        </group>
+                    </group>
+                    <group string="Filter Product Category">
+                        <!-- ('type', '=', 'product') remove domain ### -->
+<!--                        <field domain="[ ('warehouse_ids', 'in', warehouse_id)]" name="categ_ids" nolabel="1" options="{'no_open': True, 'no_create': True}" />-->
+                        <field domain="[ ('warehouse_ids', 'in', warehouse_id)]" name="categ_ids"  />
+<!--                        <p class="oe_grey">-->
+<!--                            Takes all categories, if left empty-->
+<!--                        </p>-->
+                    </group>
+                    <group string="Filter Product">
+                        <!-- domain="[('stock_warehouse_ids', 'in', warehouse_id)] " remove domain ### -->
+<!--                        <field  name="product_ids" nolabel="1" options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>-->
+                        <field  name="product_ids"  options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>
+<!--                        <p class="oe_grey">-->
+<!--                            If you keep this as empty it will take all the product(s)-->
+<!--                        </p>-->
+                    </group>
+                    <newline/>
+                    <group string="Filter Location">
+                        <field invisible="1" name="view_location_id"/>
+<!--                        <field domain="['|', ('id', 'child_of', view_location_id), ('location_id', '=', view_location_id), ('usage', '=', 'internal')]" name="location_ids" nolabel="1" options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>-->
+                        <field domain="['|', ('id', 'child_of', view_location_id), ('location_id', '=', view_location_id), ('usage', '=', 'internal')]" name="location_ids"  options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>
+<!--                        <p class="oe_grey">-->
+<!--                            If you keep this as empty it will take all the location(s)-->
+<!--                        </p>-->
+                    </group>
+                    <group invisible="output == False">
+                        <field invisible="1" name="name"/>
+                        <h1>
+<!--                            <field filename="name" name="output" nolabel="1"/>-->
+                            <field filename="name" name="output" />
+                        </h1>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" default_focus="1" invisible="1" name="action_print_report_pdf" string="Print PDF Report" type="object"/>
+                        <button class="oe_highlight" name="action_report_excel" string="Print Excel Report" type="object"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form></field>
+        </record>
+        <record id="action_stock_register_location_wizard" model="ir.actions.act_window">
+            <field name="name">Stock Register Warehouse, Product and Location Wise</field>
+            <field name="res_model">stock.register.product.warehouse.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_stock_register_location_wizard" id="menu_stock_register_location_wizard" parent="stock.menu_warehouse_report" sequence="250"/>
+    </data>
+</odoo>

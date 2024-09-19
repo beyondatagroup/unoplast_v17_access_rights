@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <data>-->
+        <menuitem groups="account.group_account_user" id="account.menu_finance_legal_statement" name="Reports" parent="account.menu_finance_reports"/>
+        <record id="view_account_form_inherit" model="ir.ui.view">
+            <field name="name">account.account.form</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+<!--                    <field domain="[('internal_type', '=', 'view')]" name="parent_id"/>-->
+                    <label for="parent_id">Parent Account</label>
+                    <field name="parent_id" string="Parent Account"/>
+                </xpath>
+<!--                account_type is removed -->
+<!--                <xpath expr="/form/sheet/group/group/field[@name='user_type_id']" position="replace">-->
+<!--                    <field name="user_type_id"/>-->
+<!--                </xpath>-->
+<!--                not in v17 -->
+<!--                <xpath expr="/form/sheet/group/group/field[@name='internal_type']" position="replace">-->
+<!--                    <field name="internal_type"/>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='currency_id']" position="after">
+<!--                    <field invisible="internal_type in ['view', 'receivable', 'payable']" name="forex_required"/>-->
+<!--                    <field invisible="internal_type in ['view', 'receivable', 'payable']" name="liability_forex_required"/>-->
+<!--                    changed due to internal_type not present -->
+
+                    <field invisible="account_type in ['view', 'receivable', 'payable']" name="forex_required"/>
+                    <field invisible="account_type in ['view', 'receivable', 'payable']" name="liability_forex_required"/>
+
+                    <!--                    <field name="credit"/>-->
+                    <!--                    <field name="debit"/>-->
+                    <!--                    <field name="balance"/>-->
+                </xpath>
+                <!--                <xpath expr="/form/sheet/group" position="after">-->
+                <!--                    <field name="children_ids">-->
+                <!--                        <tree>-->
+                <!--                            <field name="name"/>-->
+                <!--                            <field name="internal_type"/>-->
+                <!--                            <field name="credit"/>-->
+                <!--                            <field name="debit"/>-->
+                <!--                            <field name="balance"/>-->
+                <!--                        </tree>-->
+                <!--</field>-->
+                <!--                </xpath>-->
+            </field>
+        </record>
+        <record id="view_account_tree" model="ir.ui.view">
+            <field name="name">account.account.tree</field>
+            <field name="model">account.account</field>
+<!--            <field name="field_parent">children_ids</field>-->
+            <field name="arch" type="xml">
+<!--                <tree colors="blue:internal_type == 'view';black:internal_type in ('other', 'receivable', 'payable', 'liquidity');" string="Chart of accounts" toolbar="1">-->
+                <tree string="Chart of accounts">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="debit"/>
+                    <field name="credit"/>
+                    <field name="balance"/>
+<!--                    <field name="user_type_id"/>-->
+                    <field name="account_type"/>
+                    <field groups="base.group_multi_currency" name="currency_id" options="{'no_create': True}"/>
+                    <field groups="base.group_multi_company" name="company_id" options="{'no_create': True}"/>
+<!--                    <field invisible="1" name="internal_type"/>-->
+                    <field invisible="1" name="parent_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_account_search_inherit" model="ir.ui.view">
+            <field name="name">account.account.search</field>
+            <field name="model">account.account</field>
+            <field name="inherit_id" ref="account.view_account_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="parent_id"/></field>
+<!--                <xpath expr="/search/group/filter[1]" position="after">-->
+<!--                    <filter context="{'group_by': 'parent_id'}" domain="" string="Parent Account"/>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+        <record id="action_account_tree_custom" model="ir.actions.act_window">
+            <field name="name">COA - Hierarchy</field>
+            <field name="res_model">account.account</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_account_tree"/>
+            <field name="domain">[('parent_id', '=', False)]</field>
+        </record>
+        <menuitem action="account.action_account_form" id="account.menu_action_account_form" parent="account.menu_finance_entries" sequence="20"/>
+
+    <record id="action_account_move_line_account_items" model="ir.actions.act_window">
+            <field name="name">Journal Items</field>
+            <field name="res_model">account.move.line</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_account_id': [active_id], 'date_from':  context.get('date_from'), 'date_to':  context.get('date_to'),}</field>
+            <field name="domain">[('date', '>=', context.get('date_from')),('date', '&lt;', context.get('date_to'))]</field>
+        </record>
+<!--        <record id="ir_action_account_move_account" model="ir.values">-->
+<!--            <field eval="'tree_but_open'" name="key2"/>-->
+<!--            <field eval="'account.account'" name="model"/>-->
+<!--            <field name="name">Account Items</field>-->
+<!--            <field eval="'ir.actions.act_window,%d'%action_account_move_line_account_items" name="value"/>-->
+<!--        </record>-->
+        <record id="view_account_journal_tree_inherit" model="ir.ui.view">
+            <field name="name">account.journal.tree</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_tree"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="stock_warehouse_ids" options="{'no_create': True, 'no_open': True}"/></field></field>
+        </record>
+        <record id="view_account_journal_search_inherit" model="ir.ui.view">
+            <field name="name">account.journal.search</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="stock_warehouse_ids"/>
+                    <field name="active"/></field>
+                <xpath expr="/search/filter[@name='dashboard']" position="after">
+                    <filter domain="[('active', '!=', True)]" name="inactive" string="Inactive"/>
+                </xpath></field>
+        </record>
+        <record id="view_account_journal_form_inherit" model="ir.ui.view">
+            <field name="name">account.journal.form</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='company_id']" position="after">
+                    <field name="stock_warehouse_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+                </xpath>
+<!--                commented due to show_on_dashboard is not in v17-->
+<!--                <xpath expr="//field[@name='show_on_dashboard']" position="before">-->
+                <xpath expr="//page[@name='advanced_settings']" position="inside">
+                    <div>
+                        <label for="journal_entry_approval">Journal Entry Approval Before Posting</label>
+                        <field name="journal_entry_approval" string="Journal Entry Approval Before Posting"/>
+                    </div>
+                    <div>
+                        <label for="allow_future_date_entry">Posting On Journal Entry </label>
+                        <field groups="base.group_system" name="allow_future_date_entry"/>
+                    </div>
+
+                    <div>
+                        <label for="is_opening_journal">Is Opening Journal</label>
+                        <field groups="base.group_no_one" name="is_opening_journal"/>
+                    </div>
+
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='show_on_dashboard']" position="after">-->
+<!--                    <field groups="base.group_system" name="allow_future_date_entry"/>-->
+<!--                    <field groups="base.group_no_one" name="is_opening_journal"/>-->
+<!--                </xpath>-->
+                <xpath expr="/form/sheet/group" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-archive" name="toggle_active" type="object">
+                            <field name="active" options='{"terminology": "archive"}' widget="boolean_button"/>
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+<!--  view_account_bank_journal_form view not present in v17  -->
+<!--        <record id="view_account_bank_journal_form_inherit" model="ir.ui.view">-->
+<!--            <field name="name">account.bank.journal.form</field>-->
+<!--            <field name="model">account.journal</field>-->
+<!--            <field name="inherit_id" ref="account.view_account_bank_journal_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="/form/sheet/group/field[@name='bank_id']" position="before">-->
+<!--                    <field name="stock_warehouse_ids" options="{'no_create': True, 'no_open': True}"-->
+<!--                           widget="many2many_tags"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/group" position="before">-->
+<!--                    <div class="oe_button_box" name="button_box">-->
+<!--                        <button class="oe_stat_button" icon="fa-archive" name="toggle_active" type="object">-->
+<!--                            <field name="active" options='{"terminology": "archive"}' widget="boolean_button"/>-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                </xpath></field>-->
+<!--        </record>-->
+
+        <record id="view_move_form_inherit" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="/form/header/button[@name='post']" position="replace">-->
+                <xpath expr="/form/header/button[@name='action_post']" position="after">
+                    <button class="oe_highlight" groups="account.group_account_invoice"
+                            invisible="state != 'draft' or requested_approval == True or approval_required != True"
+                            name="action_requested_approval" string="Request for Approval" type="object"/>
+
+<!--                    <button class="oe_highlight" groups="account.group_account_invoice"-->
+<!--                            invisible="state == 'draft' or requested_approval == True or approval_required == True"-->
+<!--                            name="action_post" string="Post" type="object"/>-->
+
+<!--                    <button class="oe_highlight" groups="account.group_account_invoice"-->
+<!--                            invisible="move_type in ['in_invoice','in_refund'] and state == 'draft'"-->
+<!--                            name="action_post" string="Post" type="object"/>-->
+
+                    <button class="oe_highlight" groups="ebits_custom_account.group_account_move_approval"
+                            invisible="state != 'draft' or requested_approval != True or approval_required != True"
+                            name="action_post" string="Approve &amp; Post" type="object"/>
+                </xpath>
+
+
+
+
+                <xpath expr="/form/header/button[@name='button_cancel']" position="replace">
+<!--                    will open once action_account_move_cancel_wizard-->
+<!--                    <button groups="account.group_account_invoice" invisible="state != 'posted' or-->
+<!--                    cancel_approval == True" name="%(action_account_move_cancel_wizard)d"-->
+<!--                            string="Cancellation Request" type="action"/>-->
+<!--                    <button invisible="state != 'posted' or cancel_approval == True"-->
+<!--                            name="%(action_account_move_cancel_wizard)d"-->
+<!--                            string="Cancellation Request" type="action"/>-->
+                    <button groups="account.group_account_manager"
+                            invisible="state != 'posted' or cancel_approval != True"
+                            name="button_cancel" string="Cancel Entry" type="object"/>
+                    <button class="oe_highlight" groups="base.group_user"
+                            invisible="state == 'draft' or cancel_approval == True"
+                            name="journal_print" string="Print" type="object"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='date']" position="after">
+                    <field invisible="1" name="approval_required"/>
+                    <field invisible="1" name="requested_approval"/>
+                    <field invisible="1" name="cancel_approval"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page/field[@name='narration']" position="after">-->
+<!--                    <div class="oe_clear"/>-->
+<!--                    <label for="cancel_reason"/>-->
+<!--                    <field name="cancel_reason"/>-->
+<!--                </xpath>-->
+                <xpath expr="/form/sheet/group/group/field[@name='ref']" position="after">
+<!--                    <field name="lc_no_id" readonly="state not in ['posted']"/>-->
+<!--                    <field name="lc_no_id"/>-->
+<!--                    <field name="cheque_no" readonly="state not in ['posted']"/>-->
+                    <field name="cheque_no" invisible="1"/>
+<!--                    <field name="cheque_date" readonly="state not in ['posted']"/>-->
+                    <field name="cheque_date" invisible="1"/>
+
+                    <field name="despatch_through" readonly="state not in ['draft']" invisible="move_type != 'out_invoice'"/>
+                    <field name="destination" readonly="state not in ['draft']" invisible="move_type != 'out_invoice'"/>
+                    <field name="despatch_document" readonly="state not in ['draft']" invisible="move_type != 'out_invoice'"/>
+                    <field name="despatch_date" readonly="state not in ['draft']" invisible="move_type != 'out_invoice'"/>
+
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='date']" position="after">
+                    <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='account_id']" position="replace">
+<!--                    <field domain="[('company_id', '=', parent.company_id), ('deprecated', '=', False), ('internal_type', '!=', 'view')]" name="account_id" options="{'no_create': True, 'no_open': True}"/>-->
+                    <field domain="[('company_id', '=', parent.company_id), ('deprecated', '=', False)]" name="account_id" options="{'no_create': True, 'no_open': True}"/>
+<!--                    <field invisible="1" name="lc_no_id" readonly="state not in ['posted']"/>-->
+                    <field invisible="1" name="lc_no_id"/>
+                    <field invisible="1" name="area_id"/>
+                    <field invisible="1" name="region_id"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='amount_currency']" position="replace">
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='currency_id']" position="replace">
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='date_maturity']" position="after">
+                    <field groups="base.group_multi_currency" name="amount_currency"/>
+                    <field groups="base.group_multi_currency" name="currency_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='partner_id']" position="replace">
+                    <field domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]" name="partner_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="History">
+                        <group>
+                            <field name="history"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="view_move_tree_inherit" model="ir.ui.view">
+            <field name="name">account.move.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_tree"/>
+            <field name="arch" type="xml">
+<!--                <field name="amount" position="after">-->
+                <field name="amount_total_signed" position="after">
+                    <field invisible="1" name="lc_no_id"/>
+                    <field invisible="1" name="approval_required"/>
+                    <field invisible="1" name="requested_approval"/>
+                    <field invisible="1" name="cancel_approval"/>
+                    <button class="oe_highlight" groups="account.group_account_manager"
+                            invisible="state != 'draft' or requested_approval != True or approval_required != True"
+                            name="post" string="Approve &amp; Post" type="object"/>
+                </field>
+                <field name="state" position="after">
+                    <button groups="account.group_account_manager" invisible="state != 'posted' or cancel_approval != True" name="button_cancel" string="Cancel Entry" type="object"/>
+                </field>
+            </field>
+        </record>
+<!--    commneted due to filter issue-->
+<!--        <record id="view_account_move_filter_inherit" model="ir.ui.view">-->
+<!--            <field name="name">account.move.select</field>-->
+<!--            <field name="model">account.move</field>-->
+<!--            <field name="inherit_id" ref="account.view_account_move_filter"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <field name="name" position="after">-->
+<!--                    <field name="ref"/>-->
+<!--                    <field name="user_id"/>-->
+<!--                    <field name="lc_no_id"/>-->
+<!--                    <field name="cheque_no"/>-->
+<!--                    <field name="cheque_date"/>-->
+<!--                </field>-->
+<!--                <xpath expr="/search/filter[2]" position="replace">-->
+<!--                    <filter domain="[('state', '=', 'posted'),('cancel_approval', '=', False)]"-->
+<!--                            help="Posted Journal Entries" string="Posted"/>-->
+<!--                    <filter domain="[('state', '=', 'posted'),('cancel_approval', '=', True)]"-->
+<!--                            help="Pending for Cancellation of Posted Journal Entries"-->
+<!--                            string="Pending for Cancellation"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/search/filter[1]" position="after">-->
+<!--                    <filter domain="[('state', '=', 'draft'),('requested_approval', '=', True),('approval_required', '=', True)]"-->
+<!--                            help="Pending for Higher Approval Journal Entries"-->
+<!--                            string="Pending for Approval &amp; Posting"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/search/group/filter[3]" position="after">-->
+<!--                    <filter context="{'group_by': 'lc_no_id'}" domain="[]" string="LC No"/>-->
+<!--                    <filter context="{'group_by': 'user_id'}" domain="[]" string="Created User"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--    commented as not having form view in account.move.line-->
+
+        <record id="view_move_line_form2_inherit" model="ir.ui.view">
+            <field name="name">account.move.line.form2</field>
+            <field name="model">account.move.line</field>
+<!--            <field name="inherit_id" ref="account.view_move_line_form2"/>-->
+            <field name="inherit_id" ref="account.view_move_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form" position="attributes">
+                    <attribute name="create">
+                        0</attribute>
+                </xpath>
+                <xpath expr="/form" position="attributes">
+                    <attribute name="edit">
+                        0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='account_id']" position="replace">
+<!--                    <field domain="[('company_id', '=', company_id),('internal_type', '!=', 'view')]" name="account_id"/>-->
+                    <field domain="[('company_id', '=', company_id)]" name="account_id"/>
+                    <field invisible="1" name="area_id"/>
+                    <field invisible="1" name="region_id"/>
+                </xpath>
+            </field>
+        </record>
+
+    <record id="view_move_line_form_inherit" model="ir.ui.view">
+            <field name="name">account.move.line.form</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_move_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form" position="attributes">
+                    <attribute name="create">
+                        0</attribute>
+                </xpath>
+                <xpath expr="/form" position="attributes">
+                    <attribute name="edit">
+                        0</attribute>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='account_id']" position="replace">
+<!--                    <field domain="[('company_id', '=', company_id),('internal_type', '!=', 'view')]" name="account_id"/>-->
+                    <field domain="[('company_id', '=', company_id)]" name="account_id"/>
+                </xpath>
+<!--                as not in v17 view -->
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='statement_id']" position="after">-->
+                <xpath expr="//field[@name='statement_line_id']" position="after">
+                    <field name="bank_acc_rec_statement_id"/>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="after">
+<!--                    <field name="lc_no_id" readonly="state not in ['posted']"/>-->
+                    <field name="lc_no_id"/>
+<!--                    <field name="cheque_no" readonly="state not in ['posted']"/>-->
+                    <field name="cheque_no"/>
+<!--                    <field name="cheque_date" readonly="state not in ['posted']"/>-->
+                    <field name="cheque_date"/>
+                    <field name="clearing_date"/>
+                    <field invisible="1" name="area_id"/>
+                    <field invisible="1" name="region_id"/>
+                </xpath>
+                <xpath expr="//field[@name='blocked']" position="after">
+                    <field name="cleared_bank_account"/>
+                </xpath>
+            </field>
+        </record>
+
+<!--        <record id="view_move_line_tree_inherit" model="ir.ui.view">-->
+<!--            <field name="name">account.move.line.tree</field>-->
+<!--            <field name="model">account.move.line</field>-->
+<!--            <field name="inherit_id" ref="account.view_move_line_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="/tree" position="attributes">-->
+<!--                    <attribute name="create">-->
+<!--                        0</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/tree" position="attributes">-->
+<!--                    <attribute name="edit">-->
+<!--                        0</attribute>-->
+<!--                </xpath>-->
+<!--&lt;!&ndash;                <field name="full_reconcile_id" position="after">&ndash;&gt;-->
+<!--                <field name="matching_number" position="after">-->
+<!--                    <field name="reconcilation_check"/></field>-->
+<!--                <field name="name" position="after">-->
+<!--                    <field invisible="1" name="lc_no_id"/>-->
+<!--                    <field invisible="1" name="cheque_no"/>-->
+<!--                    <field invisible="1" name="cheque_date"/>-->
+<!--                </field>-->
+<!--            </field>-->
+<!--        </record>-->
+        <record id="view_move_line_tree_inherit" model="ir.ui.view">
+            <field name="name">account.move.line.tree</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="field[@name='date_maturity']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_account_move_line_bank_acc_rec_statement_id" model="ir.ui.view">
+            <field name="name">account.move.line.bank.acc.rec.statement.id</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="area_id"/>
+                    <field name="region_id"/>
+                    <field name="reconcilation_check"/>
+                    <field name="user_id"/>
+                    <field name="lc_no_id"/>
+                    <field name="cheque_no"/>
+                    <field name="cheque_date"/></field>
+                <field name="tax_line_id" position="after">
+                    <field name="bank_acc_rec_statement_id"/></field>
+<!--                <field name="move_id" position="before">-->
+<!--                    <filter domain="[('cleared_bank_account', '=', False)]" help="Journal Entries not cleared" string="Uncleared Bank Account"/>-->
+<!--                    <separator orientation="vertical"/>-->
+<!--                </field>-->
+<!--                <xpath expr="/search/filter[@name='unreconciled']" position="replace">-->
+<!--                    <filter domain="[('reconcilation_check', 'in', ['unreconciled', 'partial_reconciled'])]" help="Journal items where matching number isn't set" name="unreconciled" string="Unreconciled and Partially Reconciled"/>-->
+<!--                    <filter domain="[('reconcilation_check', '=', 'unreconciled')]" help="Journal items where matching number isn't set" name="xunreconciled" string="Unreconciled"/>-->
+<!--                    <filter domain="[('reconcilation_check', '=', 'partial_reconciled')]" help="Journal items where partially reconciled" name="xpartialreconciled" string="Partially Reconciled"/>-->
+<!--                    <filter domain="[('reconcilation_check', '=', 'reconciled')]" help="Journal items where matching number set" name="xreconciled" string="Reconciled"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/search/group/filter[3]" position="after">-->
+<!--                    <filter context="{'group_by': 'area_id'}" domain="[]" string="Area"/>-->
+<!--                    <filter context="{'group_by': 'region_id'}" domain="[]" string="Region"/>-->
+<!--                    <filter context="{'group_by': 'reconcilation_check'}" domain="[]" string="Reconcile Status"/>-->
+<!--                    <filter context="{'group_by': 'lc_no_id'}" domain="[]" string="LC No"/>-->
+<!--                    <filter context="{'group_by': 'user_id'}" domain="[]" string="Created User"/>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
+<!--    not needed in v17 -->
+<!--        <record id="view_account_reconcile_model_form" model="ir.ui.view">-->
+<!--            <field name="name">account.reconcile.model.form</field>-->
+<!--            <field name="model">account.reconcile.model</field>-->
+<!--            <field name="inherit_id" ref="account.view_account_reconcile_model_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--&lt;!&ndash;                no need in v17 &ndash;&gt;-->
+<!--&lt;!&ndash;                <xpath expr="/form/sheet/group/group/field[@name='amount_type']" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <field name="amount_type" readonly="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <field invisible="1" name="has_second_line"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;                <xpath expr="/form/sheet/group/group/label[@for='amount']" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
+<!--&lt;!&ndash;                <xpath expr="/form/sheet/group/group/div" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
+<!--&lt;!&ndash;                <xpath expr="/form/sheet/group/group/field[@name='tax_id']" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <field domain="[('company_id', '=', company_id)]" invisible="1" name="tax_id" widget="selection"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
+<!--&lt;!&ndash;                <xpath expr="/form/sheet/group/group/field[@name='journal_id']" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <field domain="[('company_id', '=', company_id)]" name="journal_id" required="1" widget="selection"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                </xpath>&ndash;&gt;-->
+<!--                <xpath expr="/form/sheet/div[@class='oe_edit_only']/field[@name='has_second_line']" position="replace">-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/div[@class='oe_edit_only']/label[@for='has_second_line']" position="replace">-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        model not found-->
+<!--        <record id="view_account_financial_report_form_inherit" model="ir.ui.view">-->
+<!--            <field name="name">account.financial.report.form</field>-->
+<!--            <field name="model">account.financial.report</field>-->
+<!--            <field name="inherit_id" ref="account.view_account_financial_report_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="/form/group/field[@name='style_overwrite']" position="after">-->
+<!--                    <field invisible="1" name="credit"/>-->
+<!--                    <field invisible="1" name="debit"/>-->
+<!--                    <field invisible="1" name="balance"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/group/field[@name='style_overwrite']" position="after">-->
+<!--                    <field invisible="parent_id != False" name="hierarchy_type" required="type == 'sum' and parent_id == False"/>-->
+<!--                </xpath></field>-->
+<!--        </record>-->
+<!--        <record id="view_account_financial_report_tree_inherit" model="ir.ui.view">-->
+<!--            <field name="name">account.financial.report.tree</field>-->
+<!--            <field name="model">account.financial.report</field>-->
+<!--            <field name="inherit_id" ref="account.view_account_financial_report_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <field name="type" position="after">-->
+<!--                    <field name="hierarchy_type"/></field>-->
+<!--            </field>-->
+<!--        </record>-->
+<!--    </data>-->
+</odoo>

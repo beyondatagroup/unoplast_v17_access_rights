@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_internal_stock_transfer_request" model="ir.sequence">
+            <field name="name">Internal Stock Transfer Request Sequence</field>
+            <field name="code">internal.stock.transfer.request</field>
+            <field name="prefix">STR/</field>
+            <field name="padding">4</field>
+        </record>
+        <record id="seq_internal_stock_transfer_issue" model="ir.sequence">
+            <field name="name">Internal Stock Transfer Issue Sequence</field>
+            <field name="code">internal.stock.transfer.issue</field>
+            <field name="prefix">STI/</field>
+            <field name="padding">4</field>
+        </record>
+        <record id="seq_internal_stock_transfer_receipt" model="ir.sequence">
+            <field name="name">Internal Stock Transfer Receipt Sequence</field>
+            <field name="code">internal.stock.transfer.receipt</field>
+            <field name="prefix">STRPT/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<document filename="internal_transfer_report_rml.pdf">
+  <template title="Internal Transfer" author="EBITS TechCon" allowSplitting="20">
+        <pageTemplate id="first">
+             <pageGraphics>
+                <stroke color="#cccccc"/>
+                <lines>0.85cm 21.00cm 0.85cm 28.35cm</lines>
+                <lines>19.90cm 21.00cm 19.90cm 28.35cm</lines>
+            </pageGraphics>
+            <frame id="first" x1="0.5cm" y1="3.0" width="560" height="29cm"/>
+            <frame id="second" x1="0.5cm" y1="-50.0" width="560" height="26cm"/>
+        </pageTemplate>
+    </template>
+    <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table3">
+      <blockAlignment value="LEFT"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="2,0" stop="2,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="3,0" stop="3,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="4,0" stop="4,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="5,0" stop="5,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="5,-1" stop="5,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="6,0" stop="6,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="6,-1" stop="6,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="7,-1" stop="7,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="8,0" stop="8,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="8,-1" stop="8,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="9,0" stop="9,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="9,0" stop="9,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="9,0" stop="9,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="9,-1" stop="9,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="10,0" stop="10,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="10,0" stop="10,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="10,0" stop="10,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="10,-1" stop="10,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="11,0" stop="11,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="11,0" stop="11,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="11,0" stop="11,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="11,-1" stop="11,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="12,0" stop="12,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="12,0" stop="12,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#cccccc" start="12,0" stop="12,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="12,-1" stop="12,-1"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table7">
+    <blockAlignment value="LEFT"/>
+      <lineStyle kind="LINEBEFORE" colorName="#cccccc" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#cccccc" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#cccccc" start="1,-1" stop="1,-1"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <paraStyle name="A1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="B1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="C1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="D1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="E1" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="F1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="G1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="H1" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="I1" fontName="Helvetica-Bold" fontSize="9.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="J2" fontName="Helvetica-Bold" fontSize="9.0" leading="10" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
+    <images>
+    </images>
+    </stylesheet>
+    <story>
+    <blockTable colWidths="540.0" style="Table1">
+        <tr>
+            <td>
+                <para style="J2">Contra Voucher</para>
+            </td>
+        </tr>
+    </blockTable>
+    <para style="B1">[[repeatIn(objects,'o')]]</para>
+    <blockTable colWidths="100.0,190.0,250.0" style="Table3">
+        <tr>
+            <td>
+                <illustration height="60.0" width="70.0">
+                    <image x="1" y="-1" height="60.0" width="70">[[ company.logo or removeParentNode('image') ]]</image>
+                </illustration>
+            </td>
+            <td>
+                <para style="I1">[[ company.partner_id.name and company.partner_id.name or '']]</para>
+                <para style="F1">[[ company.partner_id.street and company.partner_id.street + ', ' or '']] [[ company.partner_id.street2 and company.partner_id.street2 or '']]</para>
+                <para style="F1">[[ company.partner_id.city and company.partner_id.city or '']] [[ company.partner_id.zip and ' Po.Box-' + company.partner_id.zip + ', ' or '']]</para>
+                <para style="F1">[[ company.partner_id.area_id and company.partner_id.area_id.name or '']] [[ company.partner_id.region_id and company.partner_id.region_id.name or '']] [[ company.partner_id.country_id and company.partner_id.country_id.name or '']]</para>
+                <para style="F1">TIN : [[ company.partner_id.vat and company.partner_id.vat or '']] VAT : [[ company.partner_id.vrn_no and company.partner_id.vrn_no or '']]</para>
+            </td>
+            <td>
+                <blockTable colWidths="120.0,120.0" style="Table1">
+                    <tr>
+                        <td>
+                            <para style="A1">Payment No</para>
+                            <para style="F1">[[ o.name ]]</para>
+                        </td>
+                        <td>
+                            <para style="A1">Payment Date</para>
+                            <para style="F1">[[ formatLang(o.payment_date, date=True) ]]</para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                </blockTable>
+            </td>
+        </tr>
+    </blockTable>
+    <blockTable colWidths="100.0,190.0,250.0" style="Table3">
+        <tr>
+            <td>
+                <blockTable colWidths="120.0,120.0" style="Table1">
+                    <tr>
+                        <td>
+                            <para style="A1">Payment Journal </para>
+                            <para style="F1">[[ o.journal_id and o.journal_id.name or "" ]]</para>
+                        </td>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="A1">Currency</para>
+                            <para style="F1">[[ o.currency_id and o.currency_id.name or "" ]]</para>
+                        </td>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                </blockTable>
+            </td>
+            <td>
+                <blockTable colWidths="120.0,120.0" style="Table1">
+                    <tr>
+                        <td>
+                            <para style="A1">Payment Amount </para>
+                            <para style="F1">[[ formatLang(o.amount) ]] [[o.currency_id and o.currency_id.symbol or "" ]]</para>
+                        </td>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="A1">Transfer To</para>
+                            <para style="F1">[[o.destination_journal_id and o.destination_journal_id.name or ""]]</para>
+                        </td>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                </blockTable>
+            </td>
+            <td>
+                <blockTable colWidths="120.0,120.0" style="Table1">
+                    <tr>
+                        <td>
+                            <para style="A1">Created By</para>
+                            <para style="F1">[[o.user_id and o.user_id.name or ""]]</para>
+                        </td>
+                        <td>
+                            <para style="A1">Approved By</para>
+                            <para style="F1">[[o.approved_id and o.approved_id.name or ""]]</para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                        <td>
+                            <para style="A1"> </para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                </blockTable>
+                <blockTable colWidths="120.0,120.0" style="Table1">
+                    <tr>
+                        <td>
+                            <para style="A1">Approved Date</para>
+                            <para style="F1">[[ formatLang(o.approved_date, date=True) ]]</para>
+                        </td>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                        <td>
+                            <para style="A1"></para>
+                            <para style="F1"></para>
+                        </td>
+                    </tr>
+                </blockTable>
+            </td>
+        </tr>
+    </blockTable>
+    <para style="A1"><font color="white">.</font></para>
+    <blockTable colWidths="540" style="Table1">
+        <tr>
+            <td>
+                <para style="A1">Amount in Words:</para>
+                <para style="F1">[[ o.amount_to_text_pay_currency ]]</para>
+                <para style="F1">Local Currency : [[ o.currency_id != company.currency_id and o.amount_to_text_local_currency or removeParentNode('para') ]]</para>
+            </td>
+            
+        </tr>
+    </blockTable>
+
+    <nextFrame/>
+    <blockTable colWidths="300.0,240.0" style="Table7">
+        <tr>
+            <td>
+                <para style="A1"><b></b></para>
+                <para style="F1"></para>
+            </td>
+            <td>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1">For <b>[[ company.partner_id.name ]]</b></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1"><font color="white">....</font></para>
+                <para style="G1">Authorised Signature</para>
+            </td>
+        </tr>
+    </blockTable>
+    </story>
+</document>

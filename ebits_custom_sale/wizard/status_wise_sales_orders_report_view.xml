@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <data>-->
+        <record id="status_wise_sales_report_wizard_form" model="ir.ui.view">
+            <field name="name">Status Wise Sales Report Wizard</field>
+            <field name="model">status.wise.sales.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Generate Report">
+                    <group col="4">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="warehouse_ids" options="{'no_open': True,'no_create': True}"
+                               widget="many2many_tags"/>
+                        <field domain="[('customer', '=', True), ('parent_id', '=', False)]" name="partner_ids"
+                               options="{'no_open': True,'no_create': True}" widget="many2many_tags"/>
+                        <field name="user_ids" options="{'no_open': True,'no_create': True}" widget="many2many_tags"/>
+                        <field name="currency_ids" options="{'no_open': True,'no_create': True}"
+                               widget="many2many_tags"/>
+                        <field name="team_ids" options="{'no_open': True,'no_create': True}" widget="many2many_tags"/>
+                        <field name="state"/>
+                        <field name="invoice_status"/>
+                    </group>
+                    <group invisible="output == False">
+                        <field invisible="1" name="name"/>
+                        <h1>
+                            <field filename="name" name="output" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_status_wise_sales_report_wizard" model="ir.actions.act_window">
+            <field name="name">Sales Orders List</field>
+            <field name="res_model">status.wise.sales.report.wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <!--   <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ebits_custom_sale.status_wise_sales_report_wizard_form"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_status_wise_sales_report_wizard" id="sub_menu_status_wise_sales_report"
+                  name="Sales Orders List"
+                  parent="sale.menu_sale_report" sequence="11"/>
+<!--    </data>-->
+</odoo>

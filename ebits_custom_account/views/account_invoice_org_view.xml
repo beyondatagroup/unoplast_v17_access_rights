@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        <record id="account.invoice_form" model="ir.ui.view">-->
+<!--            <field name="name">account.invoice.form</field>-->
+<!--            <field name="model">account.invoice</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Invoice">-->
+<!--                    <header>-->
+<!--                        <button class="oe_highlight" groups="base.group_user" invisible="sent == True or state != 'open'" name="action_invoice_sent" string="Send by Email" type="object"/>-->
+<!--                        <button class="oe_highlight" groups="base.group_user" invisible="sent == True or state != 'open'" name="invoice_print" string="Print" type="object"/>-->
+<!--                        <button groups="base.group_user" invisible="sent == False or state != 'open'" name="action_invoice_sent" string="Send by Email" type="object"/>-->
+<!--                        <button groups="base.group_user" invisible="state not in ['open','paid']" name="invoice_print" string="Print Invoice" type="object"/>-->
+<!--                        <button class="oe_highlight" groups="account.group_account_invoice" invisible="state not in ['open']" name="%(account.action_account_invoice_payment)d" string="Register Payment" type="action"/>-->
+<!--                        <button class="oe_highlight" groups="account.group_account_invoice" invisible="state != 'draft' or type != 'out_invoice'" name="action_invoice_open" string="Validate" type="object"/>-->
+<!--                        <button groups="account.group_account_invoice" invisible="state not in ['proforma2']" name="action_invoice_open" string="Approve &amp; Validate" type="object"/>-->
+<!--                        <button groups="account.group_proforma_invoices" invisible="state != 'draft' or type != 'out_refund'" name="action_invoice_proforma2" string="Send For Approval" type="object"/>-->
+<!--                        <button groups="account.group_account_invoice" invisible="type == 'out_refund' or state not in ('open', 'proforma2', 'paid')" name="%(account.action_account_invoice_refund)d" string="Refund Invoice" type="action"/>-->
+<!--                        <button groups="ebits_custom_account.group_customer_supplier_invoice_cancel" invisible="state not in ['draft','proforma2','open']" name="action_invoice_cancel" string="Cancel Invoice" type="object"/>-->
+<!--                        <button groups="account.group_account_invoice" invisible="state not in ['cancel']" name="action_invoice_draft" string="Reset to Draft" type="object"/>-->
+<!--                        <field name="state" nolabel="1" statusbar_visible="draft,open,paid" widget="statusbar"/>-->
+<!--                    </header>-->
+<!--                    <div class="alert alert-info" invisible="has_outstanding == False" role="alert" style="margin-bottom:0px;">-->
+<!--                        You have-->
+<!--                        <bold>-->
+<!--                            <a class="alert-link" href="#outstanding" role="button">-->
+<!--                                outstanding payments-->
+<!--                            </a>-->
+<!--                        </bold>-->
+<!--                        for this customer. You can allocate them to mark this invoice as paid.-->
+<!--                    </div>-->
+<!--                    <field invisible="1" name="has_outstanding"/>-->
+<!--                    <sheet string="Invoice">-->
+<!--                        <label invisible="state not in 'proforma'" string="Pro Forma Invoice"/>-->
+<!--                        <label invisible="state in ('draft', 'proforma') or type in 'out_refund'" string="Refund"/>-->
+<!--                        <h1 class="mt0">-->
+<!--                            <label invisible="state not in ('draft',) or type in 'out_invoice'" string="Draft Invoice"/>-->
+<!--                            <label invisible="state not in ('draft',) or type in 'out_refund'" string="Draft Refund"/>-->
+<!--                            <field class="oe_inline" invisible="state in ('draft',)" name="number" readonly="1"/>-->
+<!--                        </h1>-->
+<!--                        <field invisible="1" name="type"/>-->
+<!--                        <field invisible="1" name="from_sale_order"/>-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field context="{'search_default_customer':1, 'show_address': 1}" domain="[('customer', '=', True), ('parent_id', '=', False)]" name="partner_id" options='{"always_reload": True, "no_create": True}' readonly="from_sale_order == True or state != 'draft'" string="Customer"/>-->
+<!--                                <field name="payment_term_id" options='{"no_create": True}' readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <field name="date_invoice" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                <field invisible="1" name="move_name"/>-->
+<!--                                <field groups="base.group_user" name="user_id" options='{"no_create": True, "no_open": True}' readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                <label for="currency_id" groups="base.group_multi_currency" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                <div groups="base.group_multi_currency">-->
+<!--                                    <field class="oe_inline" name="currency_id" options="{'no_create': True, 'no_open': True}" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                    <field invisible="1" name="company_currency_id"/>-->
+<!--                                </div>-->
+<!--                                <field invisible="1" name="currency_id_rate"/>-->
+<!--                                <field name="currency_id_value"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+<!--                        <field invisible="1" name="sent"/>-->
+<!--                        <notebook colspan="4">-->
+<!--                            <page string="Invoice Lines">-->
+<!--                                <field context="{'type': type, 'journal_id': journal_id, 'default_invoice_id': id}" mode="tree,kanban" name="invoice_line_ids" nolabel="1" widget="one2many_list">-->
+<!--                                    <tree editable="bottom" string="Invoice Lines">-->
+<!--                                        <field name="sequence" readonly="from_sale_order == True" widget="handle"/>-->
+<!--                                        <field name="product_id" options="{'no_create': True}" readonly="from_sale_order == True"/>-->
+<!--                                        <field invisible="1" name="origin" readonly="from_sale_order == True"/>-->
+<!--                                        <field invisible="1" name="from_sale_order"/>-->
+<!--                                        <field name="name" readonly="from_sale_order == True"/>-->
+<!--                                        <field invisible="1" name="company_id" readonly="from_sale_order == True"/>-->
+<!--                                        <field domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]" groups="account.group_account_user" name="account_id" options="{'no_create': True, 'no_open':True}" readonly="from_sale_order == True"/>-->
+<!--                                        <field domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting" name="account_analytic_id" options="{'no_create': True}" readonly="from_sale_order == True"/>-->
+<!--                                        <field groups="analytic.group_analytic_accounting" name="analytic_tag_ids" options="{'no_create': True, 'no_open':True}" readonly="from_sale_order == True" widget="many2many_tags"/>-->
+<!--                                        <field name="quantity" readonly="from_sale_order == True"/>-->
+<!--                                        <field groups="product.group_uom" name="uom_id" options="{'no_create': True, 'no_open':True}" readonly="from_sale_order == True"/>-->
+<!--                                        <field name="price_unit" readonly="from_sale_order == True"/>-->
+<!--                                        <field groups="ebits_custom_sale.group_sale_discount_edit" name="discount" readonly="from_sale_order == True"/>-->
+<!--                                        <field context="{'type':parent.type}" domain="[('type_tax_use', '=', 'sale'), ('company_id', '=', parent.company_id)]" name="invoice_line_tax_ids" options="{'no_create': True}" readonly="from_sale_order == True" widget="many2many_tags"/>-->
+<!--                                        <field name="price_subtotal" readonly="from_sale_order == True"/>-->
+<!--                                        <field invisible="1" name="currency_id" readonly="from_sale_order == True"/>-->
+<!--                                    </tree>-->
+<!--                                    <kanban class="o_kanban_mobile">-->
+<!--                                        <field name="product_id"/>-->
+<!--                                        <field name="price_subtotal"/>-->
+<!--                                        <field name="quantity"/>-->
+<!--                                        <field groups="product.group_uom" name="uom_id"/>-->
+<!--                                        <templates>-->
+<!--                                            <t t-name="kanban-box">-->
+<!--                                                <div t-attf-class="oe_kanban_card oe_kanban_global_click">-->
+<!--                                                    <div class="row">-->
+<!--                                                        <div class="col-xs-12">-->
+<!--                                                            <strong>-->
+<!--                                                                <span>-->
+<!--                                                                    <t t-esc="record.product_id.value or 'None'"/>-->
+<!--                                                                </span>-->
+<!--                                                            </strong>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="row">-->
+<!--                                                        <div class="col-xs-8 text-muted">-->
+<!--                                                            <span>-->
+<!--                                                                <t t-esc="record.quantity.value"/>-->
+<!--                                                                <t t-esc="record.uom_id.value"/>-->
+<!--                                                            </span>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="col-xs-4 text-muted">-->
+<!--                                                            <span class="text-right">-->
+<!--                                                                <t t-esc="record.price_subtotal.value"/>-->
+<!--                                                            </span>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </t>-->
+<!--                                        </templates>-->
+<!--                                    </kanban></field>-->
+<!--                                <group>-->
+<!--                                    <group>-->
+<!--                                        <field name="total_quantity_based_uom"/>-->
+<!--                                        <field name="amount_untaxed_company_currency"/>-->
+<!--                                        <field name="amount_discounted_company_currency"/>-->
+<!--                                        <field name="amount_tax_company_currency"/>-->
+<!--                                        <field name="amount_roundoff_company_currency"/>-->
+<!--                                        <field class="oe_subtotal_footer_separator" name="amount_total_company_currency"/>-->
+<!--                                        <field class="oe_subtotal_footer_separator" invisible="state == 'draft'" name="residual_company_currency"/>-->
+<!--                                    </group>-->
+<!--                                    <group class="oe_subtotal_footer oe_right">-->
+<!--                                        <field name="amount_untaxed"/>-->
+<!--                                        <field name="amount_discounted"/>-->
+<!--                                        <field name="amount_tax"/>-->
+<!--                                        <field name="amount_roundoff"/>-->
+<!--                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">-->
+<!--                                            <label for="amount_total"/>-->
+<!--                                            <button class="oe_edit_only oe_link" invisible="state not in ['draft','proforma','proforma2']" name="compute_taxes" string="(update)" type="object"/>-->
+<!--                                        </div>-->
+<!--                                        <field class="oe_subtotal_footer_separator" name="amount_total" nolabel="1"/>-->
+<!--                                        <field colspan="2" name="payments_widget" nolabel="1" widget="payment"/>-->
+<!--                                        <field class="oe_subtotal_footer_separator" invisible="state == 'draft'" name="residual"/>-->
+<!--                                        <field invisible="1" name="reconciled"/>-->
+<!--                                        <field colspan="2" invisible="state not in 'open'" name="outstanding_credits_debits_widget" nolabel="1" widget="payment"/>-->
+<!--                                    </group>-->
+<!--                                </group>-->
+<!--                                <field name="comment" placeholder="Terms and conditions..."/>-->
+<!--                            </page>-->
+<!--                            <page name="other_info" string="Other Info">-->
+<!--                                <group>-->
+<!--                                    <group>-->
+<!--                                        <field name="fiscal_position_id" options="{'no_create': True}" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                        <field groups="account.group_account_user" name="journal_id" options="{'no_create': True}" readonly="move_name != False or from_sale_order == True"/>-->
+<!--                                        <field domain="[('company_id', '=', company_id), ('internal_type', '=', 'receivable'), ('deprecated', '=', False)]" groups="account.group_account_manager" name="account_id" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                        <field groups="base.group_multi_company" name="company_id" options="{'no_create': True}" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                        <field domain="[('partner_id.ref_company_ids', 'in', [company_id])]" invisible="1" name="partner_bank_id"/>-->
+<!--                                        <field groups="base.group_no_one" name="date_due"/>-->
+<!--                                    </group>-->
+<!--                                    <group>-->
+<!--                                        <field groups="account.group_account_manager" invisible="move_id == False" name="move_id" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                        <field groups="base.group_user" invisible="origin == False" name="origin" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                        <field name="name" readonly="from_sale_order == True or state != 'draft'"/>-->
+<!--                                    </group>-->
+<!--                                </group>-->
+<!--                                <field name="tax_line_ids"><tree create="0" editable="bottom" string="Taxes">-->
+<!--                                        <field name="name"/>-->
+<!--                                        &lt;!&ndash;Need invisible fields for on_change to create all necessary info &ndash;&gt;-->
+<!--                                        <field invisible="1" name="tax_id"/>-->
+<!--                                        <field invisible="1" name="account_analytic_id"/>-->
+<!--                                        <field invisible="1" name="sequence"/>-->
+<!--                                        <field invisible="1" name="manual"/>-->
+<!--                                        <field groups="account.group_account_user" name="account_id"/>-->
+<!--                                        <field name="amount"/>-->
+<!--                                        <field invisible="1" name="currency_id"/>-->
+<!--                                    </tree></field>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
+<!--                    </sheet>-->
+<!--                    <div class="oe_chatter">-->
+<!--                        <field groups="base.group_user" name="message_follower_ids" widget="mail_followers"/>-->
+<!--                        <field name="message_ids" widget="mail_thread"/>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
+
+
+
+
+
+
+
+
+<!--        <record id="account.invoice_supplier_form" model="ir.ui.view">-->
+<!--            <field name="name">account.invoice.supplier.form</field>-->
+<!--            <field name="model">account.invoice</field>-->
+<!--            <field name="priority">2</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Vendor Bill">-->
+<!--                    <header>-->
+<!--                        <button groups="account.group_proforma_invoices" invisible="state not in ['draft']" name="action_invoice_proforma2" string="Send For Approval" type="object"/>-->
+<!--                        <button class="oe_highlight" groups="ebits_custom_account.group_supplier_invoice_approval" invisible="state not in ['proforma2']" name="action_invoice_open" string="Approve &amp; Validate" type="object"/>-->
+<!--                        <button groups="base.group_user" invisible="state not in ['open','paid']" name="invoice_print" string="Print Invoice" type="object"/>-->
+<!--                        <button class="oe_highlight" context="{'lc_no_id': lc_no_id, 'default_lc_no_id': lc_no_id}" groups="account.group_account_invoice" invisible="state not in ['open']" name="%(account.action_account_invoice_payment)d" string="Register Payment" type="action"/>-->
+<!--                        <button groups="account.group_account_invoice" invisible="type in ['in_refund', 'out_refund'] or state not in ('open', 'paid')" name="%(account.action_account_invoice_refund)d" string="Ask Refund" type="action"/>-->
+<!--                        <button groups="ebits_custom_account.group_customer_supplier_invoice_cancel" invisible="state not in ['draft','proforma2']" name="action_invoice_cancel" string="Cancel Bill" type="object"/>-->
+<!--                        <button groups="account.group_account_invoice" invisible="state not in ['cancel']" name="action_invoice_draft" string="Set to Draft" type="object"/>-->
+<!--                        <field name="state" statusbar_visible="draft,open,paid" widget="statusbar"/>-->
+<!--                    </header>-->
+<!--                    <div class="alert alert-info" invisible="has_outstanding == False" role="alert" style="margin-bottom:0px;">-->
+<!--                        You have-->
+<!--                        <bold>-->
+<!--                            <a class="alert-link" href="#outstanding" role="button">-->
+<!--                                outstanding debits-->
+<!--                            </a>-->
+<!--                        </bold>-->
+<!--                        for this supplier. You can allocate them to mark this bill as paid.-->
+<!--                    </div>-->
+<!--                    <field invisible="1" name="has_outstanding"/>-->
+<!--                    <sheet string="Vendor Bill">-->
+<!--                        <div>-->
+<!--                            <label invisible="state in 'draft' or type in 'in_invoice'" string="Draft Bill"/>-->
+<!--                            <label invisible="state in 'draft' or type in 'in_refund'" string="Draft Refund"/>-->
+<!--                            <label invisible="state == 'draft' or type in 'in_invoice'" string="Bill "/>-->
+<!--                            <label invisible="state == 'draft' or type in 'in_refund'" string="Refund "/>-->
+<!--                            <h1 class="mt0">-->
+<!--                                <field class="oe_inline" invisible="state == 'draft'" name="number"/>-->
+<!--                            </h1>-->
+<!--                        </div>-->
+<!--                        <field invisible="1" name="type"/>-->
+<!--                        <field invisible="1" name="from_purchase_order"/>-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}" domain="[('supplier', '=', True), ('parent_id', '=', False)]" name="partner_id" options="{'no_create': True, 'no_open': True}" string="Vendor"/>-->
+<!--                                <field name="reference" string="Vendor Reference"/>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <field invisible="origin == False" name="origin"/>-->
+<!--                                <field name="date_invoice" string="Bill Date"/>-->
+<!--                                <field name="date_due"/>-->
+<!--                                <field invisible="1" name="move_name"/>-->
+<!--                                <field name="currency_id" options="{'no_create': True}"/>-->
+<!--                                <field invisible="1" name="currency_id_rate"/>-->
+<!--                                <field name="currency_id_value"/>-->
+<!--                                <field invisible="1" name="company_currency_id"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+<!--                        <notebook>-->
+<!--                            <page string="Bill">-->
+<!--                                <field context="{'type': type, 'journal_id': journal_id}" name="invoice_line_ids">-->
+<!--                                    <tree editable="bottom" string="Bill lines">-->
+<!--                                        <field name="sequence" widget="handle"/>-->
+<!--                                        <field context="{'partner_id': parent.partner_id}" name="product_id" options="{'no_create': True, 'no_open': True}" readonly="from_purchase_order == True"/>-->
+<!--                                        <field name="name" readonly="from_purchase_order == True"/>-->
+<!--                                        <field invisible="1" name="company_id"/>-->
+<!--                                        <field domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]" groups="account.group_account_user" name="account_id" options="{'no_create': True, 'no_open': True}" readonly="from_purchase_order == True"/>-->
+<!--                                        <field domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting" name="account_analytic_id" options="{'no_create': True, 'no_open': True}" readonly="from_purchase_order == True"/>-->
+<!--                                        <field groups="analytic.group_analytic_accounting" name="analytic_tag_ids" options="{'no_create': True, 'no_open': True}" readonly="from_purchase_order == True" widget="many2many_tags"/>-->
+<!--                                        <field name="quantity"/>-->
+<!--                                        <field groups="product.group_uom" name="uom_id" options="{'no_create': True, 'no_open': True}" readonly="from_purchase_order == True"/>-->
+<!--                                        <field name="price_unit"/>-->
+<!--                                        <field groups="base.group_no_one" name="discount" readonly="from_purchase_order == True"/>-->
+<!--                                        <field context="{'type':parent.type}" domain="[('type_tax_use', '=', 'purchase'), ('company_id', '=', parent.company_id)]" name="invoice_line_tax_ids" options="{'no_create': True}" widget="many2many_tags"/>-->
+<!--                                        <field name="price_subtotal"/>-->
+<!--                                        <field invisible="1" name="currency_id"/>-->
+<!--                                        <field invisible="1" name="from_purchase_order"/>-->
+<!--                                    </tree></field>-->
+<!--                                <group>-->
+<!--                                    <group>-->
+<!--                                        <field name="total_quantity_based_uom"/>-->
+<!--                                        <field name="amount_untaxed_company_currency"/>-->
+<!--                                        <field name="amount_tax_company_currency"/>-->
+<!--                                        <field class="oe_subtotal_footer_separator" name="amount_total_company_currency"/>-->
+<!--                                        <field class="oe_subtotal_footer_separator" invisible="state == 'draft'" name="residual_company_currency"/>-->
+<!--                                    </group>-->
+<!--                                    <group class="oe_subtotal_footer oe_right">-->
+<!--                                        <field name="amount_untaxed"/>-->
+<!--                                        <field name="amount_tax"/>-->
+<!--                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">-->
+<!--                                            <label for="amount_total"/>-->
+<!--                                            <button class="oe_edit_only oe_link" invisible="state not in ['draft','proforma','proforma2']" name="compute_taxes" string="(update)" type="object"/>-->
+<!--                                        </div>-->
+<!--                                        <field class="oe_subtotal_footer_separator" name="amount_total" nolabel="1"/>-->
+<!--                                        <field colspan="2" name="payments_widget" nolabel="1" widget="payment"/>-->
+<!--                                        <field class="oe_subtotal_footer_separator" invisible="state == 'draft'" name="residual"/>-->
+<!--                                        <field invisible="1" name="reconciled"/>-->
+<!--                                        <field colspan="2" invisible="state not in 'open'" name="outstanding_credits_debits_widget" nolabel="1" widget="payment"/>-->
+<!--                                    </group>-->
+<!--                                </group>-->
+<!--                                <group>-->
+<!--                                    <group>-->
+<!--                                        <div class="oe_inline">-->
+<!--                                            <field name="tax_line_ids"><tree editable="bottom" string="Taxes">-->
+<!--                                                    <field name="name"/>-->
+<!--                                                    &lt;!&ndash;Need invisible fields for on_change to create all necessary info &ndash;&gt;-->
+<!--                                                    <field invisible="1" name="tax_id"/>-->
+<!--                                                    <field invisible="1" name="sequence"/>-->
+<!--                                                    <field invisible="1" name="manual"/>-->
+<!--                                                    <field groups="account.group_account_invoice" name="account_id"/>-->
+<!--                                                    <field domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting" name="account_analytic_id"/>-->
+<!--                                                    <field name="amount"/>-->
+<!--                                                    <field invisible="1" name="currency_id"/>-->
+<!--                                                </tree></field>-->
+<!--                                        </div>-->
+<!--                                    </group>-->
+<!--                                </group>-->
+<!--                                <div>-->
+<!--                                    <field name="comment" placeholder="Additional notes..."/>-->
+<!--                                </div>-->
+<!--                            </page>-->
+<!--                            <page string="Other Info">-->
+<!--                                <group>-->
+<!--                                    <group>-->
+<!--                                        <field groups="account.group_account_user" name="journal_id" options="{'no_create': True}" readonly="move_name != False"/>-->
+<!--                                        <field domain="[('partner_id', '=', partner_id)]" invisible="1" name="partner_bank_id"/>-->
+<!--                                        <field name="user_id" string="Responsible"/>-->
+<!--                                        <field domain="[('company_id', '=', company_id), ('internal_type', '=', 'payable'), ('deprecated', '=', False)]" groups="account.group_account_manager" name="account_id"/>-->
+<!--                                        <field invisible="1" name="name"/>-->
+<!--                                        <field invisible="payment_term_id == False" name="payment_term_id" options="{'no_create': True}"/>-->
+<!--                                    </group>-->
+<!--                                    <group>-->
+<!--                                        <field name="fiscal_position_id" options="{'no_create': True}" placeholder="Auto-detect"/>-->
+<!--                                        <field groups="account.group_account_manager" invisible="move_id == False" name="move_id"/>-->
+<!--                                        <field domain="[('state', '=', 'draft'), ('company_id', '=', company_id)]" groups="account.group_account_user" name="date"/>-->
+<!--                                        <field groups="base.group_multi_company" name="company_id" options="{'no_create': True}"/>-->
+<!--                                    </group>-->
+<!--                                </group>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
+<!--                    </sheet>-->
+<!--                    <div class="oe_chatter">-->
+<!--                        <field name="message_follower_ids" widget="mail_followers"/>-->
+<!--                        <field name="message_ids" widget="mail_thread"/>-->
+<!--                    </div>-->
+<!--                </form></field>-->
+<!--        </record>-->
+
+
+
+
+
+    </data>
+</odoo>

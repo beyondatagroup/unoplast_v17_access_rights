@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        <record id="view_custom_invoice_line_form" model="ir.ui.view">-->
+<!--            <field name="name">account.move.line.form</field>-->
+<!--            <field name="model">account.move.line</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Invoice Line">-->
+<!--                    <sheet>-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--&lt;!&ndash;                                <field invisible="1" name="invoice_id"/>&ndash;&gt;-->
+<!--                                <field invisible="1" name="move_id"/>-->
+<!--                                <field domain="[('type', '=', 'service')]" name="product_id"-->
+<!--                                       options="{'no_create': True, 'no_open': True}" required="1"/>-->
+<!--                                <field name="quantity"/>-->
+<!--&lt;!&ndash;                                <field name="uom_id" options="{'no_create': True, 'no_open': True}" required="1"/>&ndash;&gt;-->
+<!--                                <field name="product_uom_id" options="{'no_create': True, 'no_open': True}" required="1"/>-->
+<!--                                <field name="price_unit"/>-->
+<!--                                <field groups="ebits_custom_sale.group_sale_discount_edit" name="discount"/>-->
+<!--                                <field invisible="1" name="currency_id"/>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--&lt;!&ndash;                                <field domain="[('company_id', '=', company_id), ('internal_type', '!=', 'view')]" groups="account.group_account_user" name="account_id" options="{'no_create': True, 'no_open': True}"/>&ndash;&gt;-->
+<!--                                <field domain="[('company_id', '=', company_id)]" groups="account.group_account_user" name="account_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--&lt;!&ndash;                                <field context="{'type': parent.get('type')}" domain="[('type_tax_use', '=', 'sale'), &ndash;&gt;-->
+<!--&lt;!&ndash;                                ('company_id', '=', parent.company_id)]" name="invoice_line_tax_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>&ndash;&gt;-->
+
+
+<!--                                <field context="{'type': parent.get('type')}" domain="[('type_tax_use', '=', 'sale'),-->
+<!--                                ('company_id', '=', parent.company_id)]" name="tax_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>-->
+
+<!--&lt;!&ndash;                                <field domain="[('company_id', '=', company_id)]" groups="analytic.group_analytic_accounting"&ndash;&gt;-->
+<!--&lt;!&ndash;                                       name="account_analytic_id"/>&ndash;&gt;-->
+
+<!--                                <field name="company_id" readonly="1"/>-->
+<!--                                <field name="sales_user_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--                                <field groups="base.group_multi_company" invisible="1" name="from_sale_order"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+<!--                        <label for="name"/>-->
+<!--                        <field name="name"/>-->
+<!--                        <footer>-->
+<!--                            <button class="btn-primary" name="action_update_invoice_line" string="Add" type="object"/>-->
+<!--                            or-->
+<!--                            <button class="btn-default" special="cancel" string="Cancel"/>-->
+<!--                        </footer>-->
+<!--                    </sheet>-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
+
+
+
+
+<!--        <record id="action_custom_invoice_line_tree" model="ir.actions.act_window">-->
+<!--            <field name="name">Invoices Lines</field>-->
+<!--            <field name="type">ir.actions.act_window</field>-->
+<!--            <field name="res_model">account.move.line</field>-->
+<!--            <field name="view_type">form</field>-->
+<!--            <field name="view_mode">form</field>-->
+<!--            <field name="view_id" ref="view_custom_invoice_line_form"/>-->
+<!--            <field name="context">{'default_invoice_id': active_id,-->
+<!--                'default_company_id': context.get('company_id', False),-->
+<!--                'default_type': context.get('type', False),-->
+<!--                'default_journal_id': context.get('journal_id', False), 'create_service': True}</field>-->
+<!--            <field name="target">new</field>-->
+<!--        </record>-->
+
+
+        <record id="view_invoice_line_form_inherited" model="ir.ui.view">
+            <field name="name">account.move.line.form</field>
+            <field name="model">account.move.line</field>
+<!--            <field name="inherit_id" ref="account.view_invoice_line_form"/>-->
+            <field name="inherit_id" ref="account.view_move_line_form"/>
+
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="sales_user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+<!--                    <field invisible="1" name="from_sale_order"/>-->
+                </xpath>
+<!--                <xpath expr="/form/group" position="attributes">-->
+                <xpath expr="/form/sheet" position="attributes">
+                    <attribute name="readonly">[('from_sale_order', '=', 'True')]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="invoice_supplier_form_inherited" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+<!--            as not having Vendor Bill view merged in Invoice and Bill-->
+<!--            <field name="inherit_id" ref="account.invoice_supplier_form"/>-->
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='discount']" position="replace">
+<!--                    <field name="discount" readonly="from_purchase_order == True"/>-->
+                    <field name="discount" />
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='journal_id']" position="replace">-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='account_id']" position="replace">-->
+<!--                </xpath>-->
+                <xpath expr="/form/sheet/group/group/field[@name='currency_id']" position="after">
+<!--                    <field groups="account.group_account_user" name="journal_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--                    <field domain="[('company_id', '=', company_id), ('internal_type', '=', 'payable'), ('deprecated', '=', False)]" groups="account.group_account_manager" name="account_id" options="{'no_create': True, 'no_open': True}"/>-->
+                    <field domain="[('company_id', '=', company_id), ('account_type', '=', 'payable'),
+                    ('deprecated', '=', False)]" groups="account.group_account_manager"
+                           name="account_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page[2]" position="before">-->
+<!--                    <page name="refund" string="Refund Info">-->
+<!--                        <label for="refund_reason"/>-->
+<!--                        <field name="refund_reason" nolabel="1" readonly="state not in ['draft']"/>-->
+<!--                    </page>-->
+<!--                    <page name="Cancel" string="Cancel Info">-->
+<!--                        <label for="cancel_reason"/>-->
+<!--                        <field name="cancel_reason" nolabel="1"/>-->
+<!--                    </page>-->
+<!--                </xpath>-->
+
+                <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="replace">
+                    <field context="{'partner_id': parent.partner_id}" domain="[('purchase_ok', '=', True)]" name="product_id"/>
+                </xpath>
+            </field>
+        </record>
+<!--not in v17 view not present-->
+<!--        <record id="account_asset.view_invoice_asset_category" model="ir.ui.view">-->
+<!--            <field name="name">account.move.supplier.form</field>-->
+<!--            <field name="model">account.move</field>-->
+<!--&lt;!&ndash;            <field name="inherit_id" ref="account.invoice_supplier_form"/>&ndash;&gt;-->
+<!--            <field name="inherit_id" ref="account.view_move_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="before">-->
+<!--                    <field context="{'default_type': 'purchase'}" domain="[('type', '=', 'purchase')]"-->
+<!--                           name="asset_category_id" readonly="from_purchase_order == True" string="Asset Category"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+
+        <record id="invoice_form_inherited" model="ir.ui.view">
+            <field name="name">account.move.form</field>
+            <field name="model">account.move</field>
+<!--            <field name="inherit_id" ref="account.invoice_form"/>-->
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form" position="attributes">
+<!--                    <attribute name="create">0</attribute>-->
+                    <attribute name="create">1</attribute>
+                </xpath>
+                <!--                        <button groups="ebits_custom_account.group_customer_supplier_invoice_cancel" invisible="state not in ['draft','proforma2','open']" name="action_invoice_cancel" string="Cancel Invoice" type="object"/>-->
+
+
+                <xpath expr="//button[@name='button_draft']" position="after">
+<!--                    <attribute name="create">0</attribute>-->
+                    <button groups="ebits_custom_account.group_customer_supplier_invoice_cancel"
+                            invisible="state not in ['draft','proforma2','open']"
+                            name="action_invoice_cancel" string="Cancel Invoice" type="object"/>
+                    <button groups="ebits_custom_account.group_supplier_invoice_approval"
+                            invisible="move_type in ['out_invoice','out_refund','entry']"
+                            name="action_invoice_proforma2" string="Send For Approval" type="object"/>
+                    <button class="oe_highlight"
+                            groups="ebits_custom_account.group_supplier_invoice_approval"
+                            invisible="state not in ['proforma2']" name="action_invoice_open"
+                            string="Approve &amp; Validate" type="object"/>
+                </xpath>
+                 <xpath expr="/form/header/button[@name='action_post']" position="attributes">
+                    <attribute name="invisible"> 1 </attribute>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page/group" position="after">
+                    <group>
+                        <field name="amount_to_text_inv_currency"/>
+                        <field name="amount_to_text_local_currency"/>
+                        <field name="total_quantity_based_uom"/>
+<!--                        <field name="company_amount_untaxed"/>-->
+<!--                        <field name="company_amount_tax"/>-->
+<!--                        <field name="company_amount_residual"/>-->
+<!--                        <field name="company_amount_total"/>-->
+
+                         <field name="amount_untaxed_company_currency"/>
+                         <field name="amount_tax_company_currency"/>
+                         <field name="residual_company_currency"/>
+                         <field name="amount_total_company_currency"/>
+
+                    </group>
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='journal_id']" position="replace">-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='account_id']" position="replace">-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/group/group/field[@name='payment_term_id']" position="before">-->
+                <xpath expr="//field[@name='journal_id']" position="before">
+
+                    <!--                    removed readonly="from_sale_order == True -->
+                    <!-- <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"
+                           readonly="state != 'draft'" required="state == 'draft'" invisible="1"/> -->
+                    <!--                    removed readonly="from_sale_order == True or move_name != False" -->
+                    <field groups="account.group_account_user" name="journal_id" options="{'no_create': True,
+                    'no_open': True}" invisible="1"/>
+<!--                    removed readonly="from_sale_order == True -->
+                    <field domain="[('company_id', '=', company_id), ('account_type', '=', 'receivable'),
+                    ('deprecated', '=', False)]" groups="account.group_account_manager"
+                           name="account_id" options="{'no_create': True, 'no_open': True}"
+                           readonly="state != 'draft'"/>
+                </xpath>
+<!--                moved to account.xml file  -->
+<!--                <xpath expr="/form/sheet/group/group/div" position="after">-->
+<!--                <xpath expr="//field[@name='delivery_date']" position="after">-->
+<!--                    <field name="despatch_through" readonly="state not in ['draft']"/>-->
+<!--                    <field name="destination" readonly="state not in ['draft']"/>-->
+<!--                    <field name="despatch_document" readonly="state not in ['draft']"/>-->
+<!--                    <field name="despatch_date" readonly="state not in ['draft']"/>-->
+<!--                </xpath>-->
+
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='fiscal_position_id']" position="replace">
+<!--                    <field invisible="1" name="fiscal_position_id" options="{'no_create': True}"/>-->
+                    <field name="fiscal_position_id" options="{'no_create': True}"/>
+<!--                    <field name="salesman_name"/>-->
+                    <field name="user_id" string="Responsible"/>
+<!--                    removed from_sale_order == True or -->
+                    <field name="sales_manager_id" options="{'no_create': True, 'no_open': True}"
+                           readonly="state != 'draft'"/>
+                </xpath>
+
+<!--                <xpath expr="/form/sheet/notebook/page/group/group/field[@id='company_id']" position="after">-->
+<!--                    <field name="user_id"/>-->
+<!--                    <field name="fiscal_position_id"/>-->
+<!--                </xpath>-->
+
+                <xpath expr="/form/sheet/notebook/page[@name='other_info']" position="before">
+                    <page name="refund" string="Refund Info">
+                        <label for="refund_reason"/>
+                        <field name="refund_reason" nolabel="1" readonly="state not in ['draft']"/>
+                    </page>
+                    <page name="Cancel" string="Cancel Info">
+                        <label for="cancel_reason"/>
+                        <field name="cancel_reason" nolabel="1"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+<!--        <record id="invoice_form_inherited_for_single_group" model="ir.ui.view">-->
+<!--            <field name="name">account.move.form</field>-->
+<!--            <field name="model">account.move</field>-->
+<!--            <field eval="[(4, ref('ebits_custom_account.group_account_invoice_creation'))]" name="groups_id"/>-->
+<!--&lt;!&ndash;            <field name="inherit_id" ref="account.invoice_form"/>&ndash;&gt;-->
+<!--            <field name="inherit_id" ref="account.view_move_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="/form" position="attributes">-->
+<!--                    <attribute name="create">-->
+<!--                        1</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+        <record id="invoice_tree_inherited" model="ir.ui.view">
+            <field name="name">account.move.tree</field>
+            <field name="model">account.move</field>
+<!--            <field name="inherit_id" ref="account.invoice_tree"/>-->
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="/tree" position="attributes">
+                    <attribute name="create">
+                        1</attribute>
+                </xpath>
+<!--                <field name="partner_id" position="after">-->
+                <field name="invoice_partner_display_name" position="after">
+                    <field name="warehouse_id"/>
+                </field>
+<!--                <field name="date_due" position="after">-->
+                <field name="invoice_date_due" position="after">
+                    <field name="due_diff_days"/>
+                </field>
+<!--                <field name="user_id" position="after">-->
+                <field name="invoice_user_id" position="after">
+                    <field name="salesman_name"/>
+                    <field name="sales_manager_id"/>
+                </field>
+            </field>
+        </record>
+<!--        not in v17-->
+<!--        <record id="invoice_tree_inherited_single_group" model="ir.ui.view">-->
+<!--            <field name="name">account.move.tree</field>-->
+<!--            <field name="model">account.move</field>-->
+<!--            <field eval="[(4, ref('ebits_custom_account.group_account_invoice_creation'))]" name="groups_id"/>-->
+<!--&lt;!&ndash;            <field name="inherit_id" ref="account.invoice_tree"/>&ndash;&gt;-->
+<!--            <field name="inherit_id" ref="account.view_out_invoice_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="/tree" position="attributes">-->
+<!--                    <attribute name="create">-->
+<!--                        1</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="invoice_supplier_tree_inherited" model="ir.ui.view">
+            <field name="name">account.move.supplier.tree</field>
+            <field name="model">account.move</field>
+<!--            <field name="inherit_id" ref="account.invoice_supplier_tree"/>-->
+            <field name="inherit_id" ref="account.view_in_invoice_bill_tree"/>
+            <field name="arch" type="xml">
+<!--                <field name="partner_id" position="after">-->
+                <field name="invoice_partner_display_name" position="after">
+                    <field name="warehouse_id"/>
+                </field>
+            </field>
+        </record>
+
+<!--        view not in v17-->
+<!--        <record id="account.filter_invoice_salespersons" model="ir.filters">-->
+<!--            <field name="name">By Created Person</field>-->
+<!--            <field name="model_id">account.move</field>-->
+<!--            <field eval="False" name="user_id"/>-->
+<!--            <field name="context">{'group_by': ['date_invoice:month', 'user_id']}</field>-->
+<!--        </record>-->
+
+        <record id="view_account_invoice_filter_inherit" model="ir.ui.view">
+            <field name="name">account.move.select</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+<!--                <field name="user_id" position="after">-->
+                <field name="invoice_user_id" position="after">
+                    <field name="warehouse_id" string="Warehouse/Branch"/>
+                    <field name="user_id" string="Created Person" context="{'group_by': 'user_id'}" />
+                </field>
+<!--                <xpath expr="/search/group/filter[2]" position="replace">-->
+<!--                    <filter context="{'group_by': 'user_id'}" string="Created Person"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//filter[@name='proforma']" position="after">-->
+                <xpath expr="//filter[@name='draft']" position="after">
+                    <filter domain="[('state', '=', 'proforma2')]" groups="account.group_proforma_invoices"
+                            name="Proforma" string="Pending For Approval"/>
+                </xpath>
+                <xpath expr="//filter[@name='group_by_sequence_prefix']" position="after">
+                    <filter context="{'group_by': 'warehouse_id'}" name="warehouse_id" string="Warehouse/Branch"/>
+                </xpath>
+            </field>
+        </record>
+
+
+<!--        <record id="sale.account_invoice_form" model="ir.ui.view">-->
+        <record id="account_invoice_form_inherit_move" model="ir.ui.view">
+            <field name="name">Account Invoice</field>
+            <field name="model">account.move</field>
+<!--            <field name="inherit_id" ref="account.invoice_form"/>-->
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <!--     readonly="from_sale_order == True or   removed                -->
+                    <xpath expr="//field[@name='user_id']" position="after">
+                        <field name="team_id" readonly="state != 'draft'"/>
+                    </xpath>
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                        <field invisible="1" name="cash_sale"/>
+                        <field invisible="cash_sale != True" name="billing_info" readonly="state not in ['draft']"/>
+                        <field invisible="cash_sale != True" name="shipping_info" readonly="state not in ['draft']"/>
+<!--     readonly="from_sale_order == True or   removed                -->
+                        <field context="{'search_default_customer':1, 'show_address': 1}"
+                               groups="sale.group_delivery_invoice_address"
+                               name="partner_shipping_id"
+                               options='{"always_reload": True, "no_create": True}'
+                               readonly="state != 'draft'"/>
+                    </xpath>
+
+<!--         layout_category_id is not in v17           -->
+<!--                    <xpath expr="//page/field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">-->
+<!--                        <field groups="sale.group_sale_layout" name="layout_category_id" readonly="from_sale_order == True"/>-->
+<!--                    </xpath>-->
+
+
+
+                </data>
+            </field>
+        </record>
+
+        <record id="view_invoice_supplier_purchase_form_inherit" model="ir.ui.view">
+            <field name="name">account.move.supplier.purchase</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="purchase.view_move_form_inherit_purchase"/>
+<!--            <field name="inherit_id" ref="account.view_move_form"/>-->
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="before">
+                    <field name="warehouse_id" readonly="state != 'draft'"
+                           options="{'no_create': True, 'no_open': True}" invisible="state != 'draft' or move_type != 'in_invoice'"/>
+                    <field domain="[('partner_id', '=', partner_id)]"
+                           invisible="state != 'draft' or move_type != 'in_invoice'" name="purchase_id"
+                           options="{'no_create': True}"/>
+                    <field name="lc_no_id" readonly="state not in ['draft'] and move_type in ['in_invoice','in_refund','in_receipt']"
+                           options="{'no_create': True, 'no_open': True}" invisible="state != 'draft' or move_type != 'in_invoice'"/>
+                </xpath>
+            </field>
+        </record>
+
+
+<!--        <menuitem id="sale.menu_sale_invoicing" name="Invoicing" parent="account.menu_finance" sequence="3"/>-->
+        <menuitem id="sale.menu_sale_invoicing" name="Invoicing" parent="account_accountant.menu_accounting" sequence="3"/>
+        <menuitem action="sale.action_orders_to_invoice" id="sale.menu_sale_order_invoice" parent="sale.menu_sale_invoicing" sequence="2"/>
+        <menuitem action="sale.action_orders_upselling" groups="base.group_erp_manager" id="sale.menu_sale_order_upselling" parent="sale.menu_sale_invoicing" sequence="5"/>
+    </data>
+</odoo>

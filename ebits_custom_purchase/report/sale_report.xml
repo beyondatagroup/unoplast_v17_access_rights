@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="paperformat_sale_order" model="report.paperformat">
+        <field name="name">Custom Sale Order</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">90</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">80</field>
+        <field name="dpi">90</field>
+    </record>
+
+
+    <record id="sale_order_report" model="ir.actions.report">
+        <field name="name">Custom Template</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ebits_custom_sale.sale_order_report_template</field>
+        <field name="report_file">ebits_custom_sale.sale_order_report_template</field>
+        <field name="paperformat_id" ref="ebits_custom_sale.paperformat_sale_order"/>
+        <field name="print_report_name">'Sale Order - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_headers">
+        <div class="header">
+            <div class=" justify-between items-center mb-2 "
+                 style="background:;width:100%;text-align:center; font-family: sans-serif;">
+                <b>Sale Order</b>
+            </div>
+            <table style="border: 1px solid lightgrey; width: 100%; float: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid lightgrey;">
+                        <td style="width: 50%; padding: 1%; border-right: 1px solid lightgray;">
+                            <div style="width: 40%; float: left;">
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 100px; display: inline; vertical-align: middle;" alt="Logo" />
+                            </div>
+                            <div style="width: 60%; float: left; text-align: left; font-size: 13px; font-family: sans-serif;">
+                                <p>
+                                    <t t-foreach="doc.company_id.partner_id" t-as="do">
+                                        <t t-if="doc.company_id.name">
+                                            <b><span t-field="doc.company_id.name" style="margin-left: 5px; font-size: 15px;"></span></b>
+                                        </t>
+                                        <br />
+                                        <t t-if="do.street">
+                                            <span t-field="do.street" style="margin-left: 5px;"></span>
+                                        </t>
+                                        <br />
+                                        <t t-if="do.city">
+                                            <span t-field="do.city" style="margin-left: 5px;"></span>
+                                        </t>
+                                        <t t-if="do.country_id">
+                                            <span t-field="do.country_id" style="margin-left: 5px;"></span>
+                                        </t>
+                                        <br />
+                                        <t t-if="doc.company_id.email"><span style="margin-left: 5px;">Email: </span><span t-field="doc.company_id.email"/></t>
+                                        <t t-if="doc.company_id.mobile"><span style="margin-left: 5px;">Mobile: </span><span t-field="doc.company_id.mobile"/></t>
+                                        <t t-if="doc.company_id.phone"><span style="margin-left: 5px;">Phone: </span><span t-field="doc.company_id.phone"/></t>
+                                        <t t-if="doc.company_id.vat"><span style="margin-left: 5px;">TIN: </span><span t-field="doc.company_id.vat"/></t>
+                                    </t>
+                                </p>
+                            </div>
+                        </td>
+                        <td style="width: 50%; padding: 1%; font-size: 13px; font-family: sans-serif;">
+                            <div style="width: 50%; float: left;">
+                                <p>
+                                    <b>Order No</b>
+                                    <br/>
+                                    <span t-field="doc.name"/>
+                                    <br/>
+                                    <b>Customer's Ref</b>
+                                    <br/>
+                                    <span t-field="doc.client_order_ref"/>
+
+                                </p>
+                            </div>
+                            <div style="width: 50%; float: left;">
+                                <p>
+                                    <b>Dated</b>
+                                    <br/>
+                                    <t t-esc="doc.date_order.strftime('%d-%m-%y')"
+                                       style="margin-left:5px;"/><br/>
+                                    <b>Terms of Payment</b>
+                                    <br/>
+                                    <span t-field="doc.payment_term_id.name" style="margin-left:5px;"/>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                     <tr style="border-bottom: 1px solid lightgrey; font-family: sans-serif;">
+                        <td style="width: 50%; padding: 1%; border-right: 1px solid lightgray; font-family: sans-serif;">
+                            <div style="width: 50%; float: left; font-size: 13px; font-family: sans-serif;">
+                                <p>
+                                          <span>Customer</span>
+                                          <br/>
+                                          <b>
+                                              <t t-if="doc.partner_id">
+                                                  <span t-field="doc.partner_id.name" style="margin-left:5px;"/>
+                                              </t>
+                                          </b>
+                                          </p>
+                                <p>
+                                            <b style="margin-left:5px;">Billing Address</b>
+                                            <br/>
+                                            <b>
+                                                <t t-if="doc.partner_id">
+                                                    <span t-field="doc.partner_id.name" style="margin-left:5px;"/>
+                                                </t>
+                                            </b>
+                                            <br/>
+
+                                            <t t-if="doc.partner_id.street">
+                                                <span t-field="doc.partner_id.street" style="margin-left:5px;"/>
+                                            </t>
+
+                                              <t t-if="doc.partner_id.street2">
+                                                <span t-field="doc.partner_id.street2" style="margin-left:5px;"/>
+                                            </t>
+                                            <br/>
+
+                                            <t t-if="doc.partner_id.city">
+                                                <span t-field="doc.partner_id.city" style="margin-left:5px;"/>
+                                            </t>
+
+<!--                                            <t t-if="doc.partner_id.zip">-->
+<!--                                                <span t-field="doc.partner_id.zip" style="margin-left:5px;"/>-->
+<!--                                            </t>-->
+<!--                                            <br/>-->
+<!--                                            <t t-if="doc.partner_id.state_id">-->
+<!--                                                <span t-field="doc.partner_id.state_id" style="margin-left:5px;"/>-->
+<!--                                                <span t-field="doc.partner_id.state_id.code" style="margin-left:5px;"/>-->
+<!--                                            </t>-->
+<!--                                            <br/>-->
+                                            <t t-if="doc.partner_id.country_id">
+                                                <span t-field="doc.partner_id.country_id.name"
+                                                      style="margin-left:5px;"/>
+                                            </t>
+                                              <br/>
+                                                <span>VAT:</span>
+                                                <t t-if="doc.partner_id.vrn_no">
+                                                <span t-field="doc.partner_id.vrn_no"
+                                                      style="margin-left:5px;"/>
+                                                </t>
+
+                                                    <span>TIN:</span>
+                                                <t t-if="doc.partner_id.vat">
+                                                <span t-field="doc.partner_id.vat"
+                                                      style="margin-left:5px;"/>
+                                            </t>
+
+
+                                        </p>
+
+                            </div>
+                            <div style="width: 50%; float: left; text-align: left; font-size: 13px; font-family: sans-serif;">
+                                <p style="padding-top: 50px; position: relative;">
+                                            <b style="margin-left:5px;">Shipping Address</b>
+                                            <br/>
+                                            <b>
+                                                <t t-if="doc.partner_id">
+                                                    <span t-field="doc.partner_id.name" style="margin-left:5px;"/>
+                                                </t>
+                                            </b>
+                                            <br/>
+
+                                            <t t-if="doc.partner_id.street">
+                                                <span t-field="doc.partner_id.street" style="margin-left:5px;"/>
+                                            </t>
+
+                                              <t t-if="doc.partner_id.street2">
+                                                <span t-field="doc.partner_id.street2" style="margin-left:5px;"/>
+                                            </t>
+                                            <br/>
+
+                                            <t t-if="doc.partner_id.city">
+                                                <span t-field="doc.partner_id.city" style="margin-left:5px;"/>
+                                            </t>
+
+<!--                                            <t t-if="doc.partner_id.zip">-->
+<!--                                                <span t-field="doc.partner_id.zip" style="margin-left:5px;"/>-->
+<!--                                            </t>-->
+<!--                                            <br/>-->
+<!--                                            <t t-if="doc.partner_id.state_id">-->
+<!--                                                <span t-field="doc.partner_id.state_id" style="margin-left:5px;"/>-->
+<!--                                                <span t-field="doc.partner_id.state_id.code" style="margin-left:5px;"/>-->
+<!--                                            </t>-->
+<!--                                            <br/>-->
+                                            <t t-if="doc.partner_id.country_id">
+                                                <span t-field="doc.partner_id.country_id.name"
+                                                      style="margin-left:5px;"/>
+                                            </t>
+                                              <br/>
+                                                <span>VAT:</span>
+                                                <t t-if="doc.partner_id.vrn_no">
+                                                <span t-field="doc.partner_id.vrn_no"
+                                                      style="margin-left:5px;"/>
+                                                </t>
+
+                                                    <span>TIN:</span>
+                                                <t t-if="doc.partner_id.vat">
+                                                <span t-field="doc.partner_id.vat"
+                                                      style="margin-left:5px;"/>
+                                            </t>
+
+
+                                        </p>
+                            </div>
+                        </td>
+                        <td style="width: 50%;  font-size: 13px;">
+                            <div style="width: 50%; float: left; padding-bottom: 70px;">
+                                <p>
+                                    <b>Warehouse</b>
+                                    <br/>
+                                    <span t-field="doc.name"/>
+                                    <br/>
+
+
+                                </p>
+                            </div>
+                            <div style="width: 50%; float: left;">
+
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </template>
+
+    <template id="report_footer">
+        <div class="footer">
+            <div class="authorized-signatory" style="font-family :Times New Roman;text-align:right;">
+                For
+                <b>
+                    <span t-field="doc.company_id"/>
+                </b>
+                <p>Authorized Signatory</p>
+                <p>______________________</p>
+            </div>
+
+            <div style="border-top: 1px solid black; padding: 5px">
+                <div width="100%"
+                     style="font-family :Times New Roman;text-align:right; font-size:15px;">
+
+                    Page:
+                    <span class="page"/>
+                    of
+                    <span class="topage"/>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+
+
+    <template id="sale_order_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page" >
+                    <t t-call="ebits_custom_sale.report_headers"/>
+
+                        <div class="content" style="top-margin: 0px;">
+
+                            <table width="100%" style="margin-top:50% !important; border: 1px solid lightgrey; font-family: sans-serif; font-size: 14px; text-align: center;">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Description Of Goods</th>
+                                        <th>QTY</th>
+                                        <th>UOM</th>
+                                        <th>Rate</th>
+                                        <th>Discount (%)</th>
+                                        <th>Tax</th>
+                                        <th>Amount (Tsh)</th>
+                                    </tr>
+                                </thead>
+                                <t t-set="s" t-value="1"/>
+                                <t t-foreach="doc.order_line" t-as="line">
+
+                                    <tbody>
+                                        <tr>
+                                            <td id="th_sr_no" >
+                                                <t t-esc="s"/>
+                                                <t t-set="s" t-value="s+1"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.product_id.name" style="margin-left:5px;"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="line.product_uom_qty" style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.product_uom.name" style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.price_unit" style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.discount" style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.tax_id.name" style="margin-left:5px;"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="line.price_subtotal" style="margin-left:5px;"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </t>
+                            </table>
+                            <div class=" justify-between items-center mb-4 "
+                                     style="width:100%;float:left;padding: 1%;">
+                                    <div style="width:50%;float:left;  font-family: sans-serif;">
+                                        <div class="mb-4">
+                                            <p>
+                                                <b>Total Quantity:</b><br/>
+                                                <span t-esc="sum(line.product_uom_qty for line in doc.order_line)" style="margin-left:5px;"/>
+                                            </p>
+                                            <p>
+                                                <b>Amount in Words:</b><br/>
+                                                <span t-field="doc.amount_to_text" style="margin-left:5px;"/>
+                                            </p>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            <div style="width: 50%; float: right; text-align: right;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                            <b style="left: 67.55%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif; transform: scaleX(0.956576);">Discounted Amount:</b>
+                                            <span style="left: 80.31%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif;">&#160; </span>
+
+                                            <span t-field="line.discount" options="{'currency_no_symbol': True}" style=" border-bottom: 2px solid lightgray;">Tsh</span>
+
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;  margin-bottom: 5px;">
+                                            <b style="left: 67.55%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif; transform: scaleX(0.956576);">Vatable Amount:</b>
+                                            <span style="left: 80.31%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif;">&#160; </span>
+
+                                            <span t-field="line.price_subtotal" options="{'currency_no_symbol': True}" style=" border-bottom: 2px solid lightgray;">Tsh</span>
+
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                            <b style="left: 67.55%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif; transform: scaleX(0.956576);">Non Vatable Amount:</b>
+                                            <span style="left: 80.31%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif;">&#160; </span>
+
+
+                                            <span t-field="doc.amount_roundoff" options="{'currency_no_symbol': True}">Tsh</span>
+
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; ">
+                                            <b style="left: 67.55%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif; transform: scaleX(0.956576);">VAT Amount:</b>
+                                            <span style="left: 80.31%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif;">&#160; </span>
+
+                                            <span t-field="doc.amount_tax" options="{'currency_no_symbol': True}" style=" border-bottom: 1px solid lightgray; margin-bottom: 5px;">Tsh</span>
+
+
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;  margin-bottom: 5px;">
+                                            <b style="left: 67.55%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif; transform: scaleX(0.956576);">Total Amount:</b>
+                                            <span style="left: 80.31%; top: 35.85%; font-size: calc(var(--scale-factor)*8.00px); font-family: sans-serif;">&#160; </span>
+
+                                            <span t-field="doc.amount_total" options="{'currency_no_symbol': True}" style="border-bottom: 1px solid lightgray; margin-bottom: 5px;">Tsh</span>
+
+                                        </div>
+                                    </div>
+                        </div>
+
+
+                        <t t-call="ebits_custom_sale.report_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>
+

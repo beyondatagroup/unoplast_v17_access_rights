@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="purchase_order_lc_master_form_view" model="ir.ui.view">
+            <field name="name">purchase.order.lc.master.form.view</field>
+            <field name="model">purchase.order.lc.master</field>
+            <field name="arch" type="xml">
+                <form string="LC Number Master">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="purchase_order_lc_master_tree_view" model="ir.ui.view">
+            <field name="name">purchase.order.lc.master.tree.view</field>
+            <field name="model">purchase.order.lc.master</field>
+            <field name="arch" type="xml">
+                <tree string="LC Number Master">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="purchase_order_lc_master_search_view" model="ir.ui.view">
+            <field name="name">purchase.order.lc.master.search.view</field>
+            <field name="model">purchase.order.lc.master</field>
+            <field name="arch" type="xml">
+                <search string="LC Number Master">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_purchase_order_lc_master" model="ir.actions.act_window">
+            <field name="name">LC Number(s)</field>
+            <field name="res_model">purchase.order.lc.master</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="purchase_order_lc_master_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Click to create LC number</p>
+            </field>
+        </record>
+        
+        <menuitem action="action_purchase_order_lc_master" id="menu_purchase_order_lc_master" groups="purchase.group_purchase_manager"
+            parent="purchase.menu_purchase_config" sequence="8"/>
+            
+        <record id="po_shipping_mode_form_view" model="ir.ui.view">
+            <field name="name">po.shipping.mode.form.view</field>
+            <field name="model">po.shipping.mode</field>
+            <field name="arch" type="xml">
+                <form string="PO Shipping Mode">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="po_shipping_mode_tree_view" model="ir.ui.view">
+            <field name="name">po.shipping.mode.tree.view</field>
+            <field name="model">po.shipping.mode</field>
+            <field name="arch" type="xml">
+                <tree string="PO Shipping Mode">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="po_shipping_mode_search_view" model="ir.ui.view">
+            <field name="name">po.shipping.mode.search.view</field>
+            <field name="model">po.shipping.mode</field>
+            <field name="arch" type="xml">
+                <search string="PO Shipping Mode">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_po_shipping_mode" model="ir.actions.act_window">
+            <field name="name">PO Shipping Mode</field>
+            <field name="res_model">po.shipping.mode</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="po_shipping_mode_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Click to create Shipping Mode</p>
+            </field>
+        </record>
+        
+        <menuitem action="action_po_shipping_mode" id="menu_po_shipping_mode" groups="purchase.group_purchase_manager"
+            parent="purchase.menu_purchase_config" sequence="8"/>
+
+        <record id="view_stock_report_master_tree" model="ir.ui.view">
+            <field name="name">stock.report.master.tree</field>
+            <field name="model">stock.report.master</field>
+            <field name="arch" type="xml">
+                <tree string="Stock Report Master">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_stock_report_master_form" model="ir.ui.view">
+            <field name="name">stock.report.master.form</field>
+            <field name="model">stock.report.master</field>
+            <field name="arch" type="xml">
+                <form string="Stock Report Master">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="categ_ids" widget="one2many_tags" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_stock_report_master_search" model="ir.ui.view">
+            <field name="name">stock.report.master.search</field>
+            <field name="model">stock.report.master</field>
+            <field name="arch" type="xml">
+                <search string="Search Stock Report Master">
+                    <field name="name"/>
+                    <field name="categ_ids"/>
+                </search>
+            </field>
+        </record>
+            
+        <record id="action_stock_report_master" model="ir.actions.act_window">
+            <field name="name">Stock Report Master</field>
+            <field name="res_model">stock.report.master</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="search_view_id" ref="view_stock_report_master_search"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Welcome!. Click to create master data for stock report.
+                </p>
+            </field>
+        </record>
+            
+        <menuitem id="menu_stock_report_master" action="action_stock_report_master" name="Stock Report Config" parent="stock.menu_stock_config_settings" sequence="300" groups="stock.group_stock_manager"/>
+
+
+    </data>
+</odoo>

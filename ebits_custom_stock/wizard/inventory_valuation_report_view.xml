@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inventory_valuation_report_wizard_form" model="ir.ui.view">
+        <field name="name">Inventory Valuation Report Wizard</field>
+        <field name="model">inventory.valuation.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="choose_date"/>
+                        <field invisible="choose_date == False" name="date" required="choose_date == True"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="summary"/>
+                        <field name="warehouse_id" options="{'no_open':True, 'no_create':True}"/>
+                        <field domain="[('type', '=', 'product')]" name="product_id" options="{'no_open':True, 'no_create':True}"/>
+                    </group>
+                    <group>
+                        <field invisible="summary == False" name="report_type" required="summary == True"/>
+                        <field invisible="1" name="view_location_id"/>
+                        <field domain="['|', ('location_id', '=',  view_location_id), ('id', 'child_of',  view_location_id), ('usage', '=', 'internal')]" name="location_id" options="{'no_open':True, 'no_create':True}"/>
+                    </group>
+                </group>
+                <field invisible="1" name="name"/>
+                <h1 invisible="output == False">
+                    <field filename="name" name="output" nolabel="1"/>
+                </h1>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate EXCEL Report" type="object"/>
+                    or
+                    <button class="oe_highlight" name="action_print_report_pdf" string="Generate PDF Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_inventory_valuation_report_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Inventory Valuation Status</field>
+        <field name="res_model">inventory.valuation.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <!--        <menuitem-->
+    <!--            id="root_inventory_report_menu"-->
+    <!--            name="Inventory Report"-->
+    <!--            sequence="0"-->
+    <!--            parent="stock.menu_warehouse_report"-->
+    <!--            />-->
+    <menuitem action="action_inventory_valuation_report_wizard" id="sub_menu_inventory_valuation" name="Inventory Valuation Excel/PDF" parent="stock.menu_warehouse_report" sequence="129"/>
+</odoo>

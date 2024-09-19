@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_stock_register_summary_wizard" model="ir.ui.view">
+            <field name="name">Warehouse Stock Summary</field>
+            <field name="model">stock.register.summary</field>
+            <field name="arch" type="xml">
+                <form string="Warehouse Stock Summary">
+                    <group>
+                        <group>
+                            <field name="master_ids" options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>
+                        </group>
+                        <group invisible="output == False">
+                            <field invisible="1" name="name"/>
+                            <h3>
+                                <field filename="name" name="output" nolabel="1"/>
+                            </h3>
+                        </group>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" default_focus="1" name="print_report" string="Print Report" type="object"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_stock_register_summary_wizard" model="ir.actions.act_window">
+            <field name="name">Warehouse Stock Summary</field>
+            <field name="res_model">stock.register.summary</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_stock_register_summary_wizard" id="menu_stock_register_summary_wizard" parent="stock.menu_warehouse_report" sequence="251"/>
+    </data>
+</odoo>

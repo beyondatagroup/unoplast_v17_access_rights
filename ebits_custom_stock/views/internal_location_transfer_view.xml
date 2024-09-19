@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="internal_location_transfer_tree" model="ir.ui.view">
+            <field name="name">Internal Location Transfer Tree</field>
+            <field name="model">internal.location.transfer</field>
+            <field name="arch" type="xml">
+                <tree string="Internal Location Transfer">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="date_transfer"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="date_approved"/>
+                    <field name="state"/>
+                </tree></field>
+        </record>
+        <record id="internal_location_transfer_form" model="ir.ui.view">
+            <field name="name">Internal Location Transfer Form</field>
+            <field name="model">internal.location.transfer</field>
+            <field name="arch" type="xml">
+                <form string="Internal Location Transfer">
+                    <header>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_send_approval" string="Send For Approval" type="object"/>
+                        <button class="oe_highlight" groups="ebits_custom_stock.group_approve_internal_location_transfers" invisible="state not in ['waiting']" name="action_approve" string="Approve" type="object"/>
+                        <button class="oe_highlight" invisible="state not in ['waiting']" name="action_cancel" string="Cancel" type="object"/>
+                        <field name="state" statusbar_visible="draft,waiting,done" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                                <field invisible="1" name="company_id" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                                <field domain="['|', ('id', 'child_of', view_location_id), ('location_id', '=', view_location_id), ('usage', '=', 'internal')]" name="location_id" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                                <field invisible="1" name="view_location_id" options="{'no_open':True, 'no_create':True}" />
+                                <field domain="['|', ('id', 'child_of', view_location_id), ('location_id', '=', view_location_id), ('usage', '=', 'internal')]" name="location_dest_id" options="{'no_open': True, 'no_create': True}" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="date_transfer"/>
+                                <field name="user_id" options="{'no_open':True, 'no_create':True}"/>
+                                <field name="approver_user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="date_approved"/>
+                            </group>
+                        </group>
+                        <group>
+                            <button class="oe_highlight" invisible="state not in ['draft']" name="action_check_stock" string="Check Stock" type="object"/>
+                        </group>
+                        <newline/>
+                        <notebook>
+                            <page string="Transfer Lines">
+                                <field name="transfer_lines" widget="one2many" readonly="state != 'draft'">
+                                    <tree editable="bottom">
+                                        <field domain="[('type', '=', 'product')]" name="product_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="quantity"/>
+                                        <field name="source_loc_stock"/>
+                                        <field invisible="1" name="location_id"  options="{'no_open': True, 'no_create': True}"/>
+                                        <field invisible="1" name="location_dest_id"  options="{'no_open': True, 'no_create': True}"/>
+                                        <field invisible="1" name="company_id"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field domain="[('type', '=', 'product')]" name="product_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="quantity"/>
+                                            </group>
+                                            <group>
+                                                <field invisible="1" name="location_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field invisible="1" name="location_dest_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="source_loc_stock"/>
+                                                <field invisible="1" name="company_id"/>
+                                            </group>
+                                        </group>
+                                    </form></field>
+                                <group>
+                                    <field name="total_quantity_based_uom"/>
+                                </group>
+                            </page>
+                            <page string="History">
+                                <div>
+                                    <field name="history"/>
+                                </div>
+                            </page>
+                        </notebook>
+                        <group>
+                            <field name="remarks" readonly="state not in ['draft','waiting']"/>
+                        </group>
+                    </sheet>
+                </form></field>
+        </record>
+        <record id="internal_location_transfer_search" model="ir.ui.view">
+            <field name="name">Internal Location Transfer Search</field>
+            <field name="model">internal.location.transfer</field>
+            <field name="arch" type="xml">
+                <search string="Search Internal Location Transfer">
+                    <field name="name"/>
+                    <field name="warehouse_id"/>
+                    <field name="date_transfer"/>
+                    <field name="user_id"/>
+                    <field name="approver_user_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="state"/>
+                    <!-- CURRENTLY NOT WORK DOMAIN ### -->
+                    <!-- <group expand="0" string="Group By">
+                        <filter context="{'group_by': 'user_id'}" domain="[]" string="User"/>
+                        <filter context="{'group_by': 'approver_user_id'}" domain="[]" string="Approver"/>
+                        <filter context="{'group_by': 'warehouse_id'}" domain="[]" string="Warehouse/Branch"/>
+                        <filter context="{'group_by': 'location_id'}" string="Source Location"/>
+                        <filter context="{'group_by': 'location_dest_id'}" string="Destination Location"/>
+                        <filter context="{'group_by': 'state'}" domain="[]" string="state"/>
+                    </group> -->
+                </search></field>
+        </record>
+        <record id="action_internal_location_transfer" model="ir.actions.act_window">
+            <field name="name">Internal Location Transfer</field>
+            <field name="res_model">internal.location.transfer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="search_view_id" ref="internal_location_transfer_search"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    WELCOME!.Click to Create Internal Location Transfer Form
+                </p></field>
+        </record>
+        <menuitem action="action_internal_location_transfer" id="sub_menu_internal_location_transfer" name="Internal Location Transfer" parent="stock.menu_stock_inventory_control" sequence="10"/>
+    </data>
+</odoo>

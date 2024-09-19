@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_budget_report_wizard_form" model="ir.ui.view">
+        <field name="name">Account Budget Report Wizard</field>
+        <field name="model">account.budget.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <field domain="[('state', '=', 'done')]" name="budget_ids" options="{'no_open': True, 'no_create': True}" widget="many2many_tags"/>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_account_budget_report_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Budget vs Actual</field>
+        <field name="res_model">account.budget.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="account_budget_report_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_account_budget_report_wizard" id="sub_menu_accout_budget" name="Budget Vs Actual Report" parent="account.menu_finance_reports" sequence="10"/>
+</odoo>

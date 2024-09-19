@@ -1,0 +1,589 @@
+<odoo>
+    <data>
+        <record id="raw_material_return_line_form" model="ir.ui.view">
+            <field name="name">Cloth Return Line</field>
+            <field name="model">raw.material.return.line</field>
+            <field name="arch" type="xml">
+                <form string='Cloth Return'>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,partial,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="issue_id" invisible="1"/>
+                                <field name="issued_to" invisible="1"/>
+                                <field name="product_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="uom_id" options="{'no_open': True, 'no_create': True}" force_save="1"/>
+                                <field name="expected_qty"/>
+                                <field name="expected_mtrs"/>
+                            </group>
+                            <group>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"
+                                       invisible="1"/>
+                                <field name="location_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="remarks"/>
+                                <field name="company_id" options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="action_update_return_line" string="Add" type="object" class="btn-primary"/>
+                            or
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_raw_material_return_line_add_form" model="ir.actions.act_window">
+            <field name="name">Additional Cloth Items</field>
+            <field name="res_model">raw.material.return.line</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="raw_material_issue_tree" model="ir.ui.view">
+            <field name="name">Cloth Issue</field>
+            <field name="model">raw.material.issue</field>
+            <field name="arch" type="xml">
+                <tree string="Cloth Issue">
+                    <field name="name"/>
+                    <field name="date_issue"/>
+                    <field name="product_id"/>
+                    <field name="issued_qty"/>
+                    <field name="issued_mtrs"/>
+                    <field name="uom_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="user_id"/>
+                    <field name="department_id" invisible="1"/>
+                    <field name="issue_type" invisible="1"/>
+                    <field name="reverse_issue" invisible="1"/>
+                    <field name="issued_to"/>
+                    <field name="state"/>
+                    <field name="closed"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="raw_material_issue_form" model="ir.ui.view">
+            <field name="name">Cloth Issue</field>
+            <field name="model">raw.material.issue</field>
+            <field name="arch" type="xml">
+                <form string="Cloth Issue">
+                    <header>
+                        <button name="action_issued" string="Issue" type="object"
+                                invisible="state not in ['draft']" class="oe_highlight"
+                                groups="ebits_inventory.group_raw_material_issue_user"/>
+                        <button name="%(action_force_close_raw_issue_wizard)d" string="Force Close" type="action"
+                                invisible="state not in ['issued','inprogress']"
+                                class="oe_highlight"/>
+                        <button name="action_reverse_order" string="Reverse" type="object" class="oe_highlight"
+                                invisible="state in ('draft', 'inprogress', 'issued') or reverse_issue"/>
+                        <button name="action_done_issue" type="object" string="Complete" class="oe_highlight"
+                                invisible="state not in ('inprogress') or hide_done"
+                        />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,issued,inprogress,done"/>
+                        <button name="print_raw_material_issue" type="object" string="Print" class="oe_highlight"
+
+                        />
+                    </header>
+                    <sheet>
+                        <h3>
+                            Issue No
+                        </h3>
+                        <div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_issue"/>
+                                <field name="issued_to"/>
+                                <field name="hide_done" invisible="1"/>
+                                <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="picking_type_id" options="{'no_open': True, 'no_create': True}"
+                                       force_save="1" readonly="state != 'draft'"
+                                       domain="[('warehouse_id', '=', warehouse_id),('code', '=', 'internal')]"/>
+                                <field name="department_id" invisible="1"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="issue_type" invisible="1"/>
+                                <label for="reverse_issue_id"
+                                       invisible="state in ('draft', 'inprogress', 'issued') or not reverse_issue"
+                                />
+                                <div>
+                                    <field name="reverse_issue_id"
+                                           invisible="state in ('draft', 'inprogress', 'issued') or not reverse_issue"
+
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <button name="action_open_reverse_issue_link" string="Open" type="object"
+                                            class="oe_highlight"
+                                            invisible="state in ('draft', 'inprogress', 'issued') or not reverse_issue"
+                                    />
+                                </div>
+                            </group>
+                            <group>
+                                <field name="product_id" domain="[('type', '!=', 'service')]"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="uom_id" options="{'no_open': True, 'no_create': True}" force_save="1"/>
+                                <field name="issued_qty"/>
+                                <field name="issued_mtrs"/>
+                                <field name="qty_price_value"/>
+                                <field name="qty_price_unit"/>
+                                <field name="returned_mtrs"/>
+                                <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('usage', '=', 'internal')]"/>
+                                <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('usage', '=', 'internal')]"/>
+                                <field name="closed"/>
+                                <field name="company_id" options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                                <field name="reverse_issue" invisible="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="current_stock"/>
+                                <button name="action_check_stock" string="Check Stock" type="object"
+                                        class="oe_highlight"
+                                        invisible="state not in ('draft', 'inprogress')"
+                                />
+                            </group>
+                            <group>
+                                <button name="action_receive" help="Click here to enter returned quantity" type="object"
+                                        icon="fa-plus" string="Receive" invisible="state in ('issued', 'inprogress')"
+                                        class="oe_highlight"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Return Products">
+                                <button name="%(action_raw_material_return_line_add_form)d" string="Add Additional Item"
+                                        type="action" class="oe_highlight" invisible="state in ('draft','done')"
+                                        context="{'default_issue_id': context.get('active_id'), 'default_location_id': location_dest_id,
+                                'default_location_dest_id': location_id, 'issue_id': context.get('active_id'), 'location_id':
+                                location_dest_id, 'location_dest_id': location_id, 'create_additional': True}"
+                                />
+                                <field name="return_lines" widget="one2many_list"
+                                       readonly="state in ('done')"
+                                       context="{'default_location_id': location_dest_id, 'default_location_dest_id': location_id}">
+                                    <form string='Return Products'>
+                                        <header>
+                                            <field name="state" widget="statusbar"
+                                                   statusbar_visible="draft,waiting,partial,done"/>
+                                        </header>
+                                        <group>
+                                            <group>
+                                                <field name="product_id" domain="[('type', '!=', 'service')]"
+                                                       />
+                                                <field name="uom_id" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="expected_qty"/>
+                                                <field name="expected_mtrs"/>
+                                                <field name="returned_qty"/>
+                                                <field name="total_returned_qty"/>
+                                                <field name="total_returned_mtrs"/>
+                                                <field name="balance_qty"/>
+                                            </group>
+                                            <group>
+                                                <field name="warehouse_id"
+                                                       options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                                                <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                                       domain="[('usage', '=', 'internal')]"/>
+                                                <field name="location_dest_id"
+                                                       options="{'no_open': True, 'no_create': True}"
+                                                       domain="[('usage', '=', 'internal')]"/>
+                                                <field name="remarks"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree editable="bottom">
+                                        <field name="product_id" readonly="state not in 'draft'"/>
+                                        <field name="uom_id" force_save='1' options="{'no_open': True, 'no_create': True}" readonly="state not in 'draft'"/>
+                                        <field name="expected_qty" readonly="state not in 'draft'"/>
+                                        <field name="expected_mtrs" readonly="state not in 'draft'"/>
+                                        <field name="returned_qty"  readonly="state not in ['waiting','partial']"/>
+                                        <field name="total_returned_qty"/>
+                                        <field name="balance_qty"/>
+                                        <field name="total_returned_mtrs"/>
+                                        <field name="balance_mtrs"/>
+                                        <field name="location_id" options="{'no_open': True, 'no_create': True}" force_save='1'
+                                               domain="[('usage', '=', 'internal')]"  readonly="state not in 'draft'"/>
+                                        <field name="location_dest_id" options="{'no_open': True, 'no_create': True}" force_save='1'
+                                               domain="[('usage', '=', 'internal')]"  readonly="state not in 'draft'"/>
+                                        <field name="remarks" readonly="state != 'draft'"/>
+                                        <field name="state"/>
+                                        <field name="company_id" options="{'no_open': True, 'no_create': True}"
+                                               column_invisible="1"/>
+                                    </tree>
+                                </field>
+                                <group>
+                                    <field name="total_quantity_based_uom"/>
+                                    <field name="total_mtrs_based_uom"/>
+                                </group>
+                                <group>
+                                    <field name="expected_mtrs_total"/>
+                                    <field name="balance_mtrs_total"/>
+                                    <field name="balance_mtrs_total_value"/>
+                                </group>
+                            </page>
+                            <page string="Stock Moves">
+                                <field name="move_lines" widget="one2many_list" readonly="1">
+                                    <tree editable="bottom" delete="false" create="false">
+                                        <field name="name"/>
+                                        <field name="picking_id" string="Reference"/>
+                                        <field name="origin"/>
+                                        <field name="picking_type_id" invisible="1"/>
+                                        <field name="create_date" invisible="1" groups="base.group_no_one"/>
+                                        <field name="product_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_uom" options="{'no_open': True, 'no_create': True}"
+                                               string="Unit of Measure"/>
+                                        <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="date" groups="base.group_no_one"/>
+                                        <!--                                        <field name="date_expected" invisible="1"/>-->
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="History">
+                                <h3>
+                                    Reason
+                                </h3>
+                                <div>
+                                    <field name="reason"/>
+                                </div>
+                            </page>
+                        </notebook>
+                        <group>
+                            <field name="remarks"  readonly="state != 'draft'"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="raw_material_issue_search" model="ir.ui.view">
+            <field name="name">Cloth Issue</field>
+            <field name="model">raw.material.issue</field>
+            <field name="arch" type="xml">
+                <search string="Search Issues">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="user_id"/>
+                    <field name="department_id"/>
+                    <field name="issue_type"/>
+                    <field name="issued_to"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" domain="[]" name="product_id" context="{'group_by': 'product_id'}"/>
+                        <filter string="User" domain="[]" name="user_id" context="{'group_by': 'user_id'}"/>
+                        <filter string="Department" domain="[]" name="department_id"
+                                context="{'group_by': 'department_id'}"/>
+                        <filter string="Warehouse/Branch" domain="[]" name="warehouse_id"
+                                context="{'group_by': 'warehouse_id'}"/>
+                        <filter string="Source Location" domain="[]" name="location_id"
+                                context="{'group_by': 'location_id'}"/>
+                        <filter string="Destination Location" domain="[]" name="location_dest_id"
+                                context="{'group_by': 'location_dest_id'}"/>
+                        <filter string="state" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="raw_material_reverse_search" model="ir.ui.view">
+            <field name="name">Unbuild Cloth Issue</field>
+            <field name="model">raw.material.issue</field>
+            <field name="arch" type="xml">
+                <search string="Search Issues">
+                    <field name="name" string="Unbuild Order No"/>
+                    <field name="product_id"/>
+                    <field name="user_id"/>
+                    <field name="department_id"/>
+                    <field name="issue_type"/>
+                    <field name="issued_to" string="Material Returned From"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" domain="[]" name="product_id" context="{'group_by': 'product_id'}"/>
+                        <filter string="User" domain="[]" name="user_id" context="{'group_by': 'user_id'}"/>
+                        <filter string="Department" domain="[]" name="department_id"
+                                context="{'group_by': 'department_id'}"/>
+                        <filter string="Warehouse/Branch" domain="[]" name="warehouse_id"
+                                context="{'group_by': 'warehouse_id'}"/>
+                        <filter string="Source Location" domain="[]" name="location_id"
+                                context="{'group_by': 'location_id'}"/>
+                        <filter string="Destination Location" domain="[]" name="location_dest_id"
+                                context="{'group_by': 'location_dest_id'}"/>
+                        <filter string="state" domain="[]" name="state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ************************************************Reverse Cloth Issues***********************************************       -->
+        <record id="raw_material_issue_reverse_tree_view" model="ir.ui.view">
+            <field name="name">Unbuild Cloth Issue</field>
+            <field name="model">raw.material.issue</field>
+            <field name="arch" type="xml">
+                <tree string="Unbuild Cloth Issue" create="0" edit="0">
+                    <field name="name" string="Unbuild Order No"/>
+                    <field name="date_issue" string="Unbuild Date"/>
+                    <field name="product_id"/>
+                    <field name="issued_qty" string="Returned Date"/>
+                    <field name="issued_mtrs"/>
+                    <field name="uom_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="user_id"/>
+                    <field name="department_id" invisible="1"/>
+                    <field name="issue_type" invisible="1"/>
+                    <field name="source_doc"/>
+                    <field name="issued_to" string="Material Returned From"/>
+                    <field name="state"/>
+                    <field name="closed" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="raw_material_issue_reverse_form_view" model="ir.ui.view">
+            <field name="name">Unbuild Cloth Issue</field>
+            <field name="model">raw.material.issue</field>
+            <field name="arch" type="xml">
+                <form string="Unbuild Cloth Issue" create="0" edit="0">
+                    <header>
+                          <button name="print_raw_material_issue" type="object" string="Print" class="oe_highlight"/>
+                        <!--                        <button name="action_issued" string="Return" type="object" states="draft" class="oe_highlight" groups="ebits_inventory.group_raw_material_issue_user"/>-->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,issued,inprogress,done"/>
+                    </header>
+                    <sheet>
+                        <h3>
+                            Unbuild Order No
+                        </h3>
+                        <div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_issue" string="Unbuild Date"/>
+                                <field name="issued_to" string="Material Returned From"/>
+                                <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="picking_type_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('warehouse_id', '=', warehouse_id),('code', '=', 'internal')]"/>
+                                <field name="department_id" invisible="1"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="issue_type" invisible="1"/>
+                                <field name="source_doc"/>
+                            </group>
+                            <group>
+                                <field name="product_id" domain="[('type', '!=', 'service')]"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="current_stock" invisible="1"/>
+                                <field name="issued_qty" string="Returned Qty"/>
+                                <field name="issued_mtrs"/>
+                                <field name="qty_price_value"/>
+                                <field name="qty_price_unit"/>
+                                <field name="returned_mtrs"/>
+                                <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('usage', '=', 'internal')]"/>
+                                <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('usage', '=', 'internal')]"/>
+                                <field name="closed" invisible="1"/>
+                                <field name="company_id" options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                            </group>
+                        </group>
+                        <!--                        <group>-->
+                        <!--                            <group>-->
+
+                        <!--                                <button name="action_check_stock" string="Check Stock" type="object" states="draft,inprogress" class="oe_highlight"/>-->
+                        <!--                            </group>-->
+                        <!--                            <group>-->
+                        <!--                                <button name="action_receive" help="Click here to enter returned quantity" type="object" icon="fa-plus" states='issued,inprogress' string="Return" class="oe_highlight"/>-->
+                        <!--                            </group>-->
+                        <!--                        </group>-->
+                        <newline/>
+                        <notebook>
+                            <page string="Return Products">
+                                <button name="%(action_raw_material_return_line_add_form)d" string="Add Additional Item"
+                                        invisible="state in ('draft', 'inprogress', 'issued')"
+                                        type="action" class="oe_highlight"
+                                        context="{'default_issue_id': context.get('active_id'), 'default_location_id': location_dest_id, 'default_location_dest_id': location_id, 'issue_id': context.get('active_id'), 'location_id': location_dest_id, 'location_dest_id': location_id, 'create_additional': True}"
+                                />
+                                <field name="return_lines" widget="one2many_list"
+                                       readonly="state in ('done')"
+
+                                       context="{'default_location_id': location_dest_id, 'default_location_dest_id': location_id}"
+                                >
+                                    <form string='Return Products'>
+                                        <header>
+                                            <field name="state" widget="statusbar"
+                                                   statusbar_visible="draft,waiting,partial,done"/>
+                                        </header>
+                                        <group>
+                                            <group>
+                                                <field name="product_id" domain="[('type', '!=', 'service')]"
+                                                       options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <!--                                                <field name="expected_qty"/>-->
+                                                <!--                                                <field name="expected_mtrs"/>-->
+                                                <!--                                                <field name="returned_qty"/>-->
+                                                <field name="total_returned_qty"/>
+                                                <field name="total_returned_mtrs"/>
+                                                <!--                                                <field name="balance_qty"/>-->
+                                            </group>
+                                            <group>
+                                                <field name="warehouse_id"
+                                                       options="{'no_open': True, 'no_create': True}" invisible="1"/>
+                                                <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                                       domain="[('usage', '=', 'internal')]"/>
+                                                <field name="location_dest_id"
+                                                       options="{'no_open': True, 'no_create': True}"
+                                                       domain="[('usage', '=', 'internal')]"/>
+                                                <field name="remarks"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree editable="bottom">
+                                        <field name="product_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <!--                                        <field name="expected_qty"/>-->
+                                        <!--                                        <field name="expected_mtrs"/>-->
+                                        <!--                                        <field name="returned_qty"/>-->
+                                        <field name="total_returned_qty"/>
+                                        <!--                                        <field name="balance_qty"/>-->
+                                        <field name="total_returned_mtrs"/>
+                                        <!--                                        <field name="balance_mtrs"/>-->
+                                        <field name="location_id" options="{'no_open': True, 'no_create': True}"
+                                               domain="[('usage', '=', 'internal')]"/>
+                                        <field name="location_dest_id" options="{'no_open': True, 'no_create': True}"
+                                               domain="[('usage', '=', 'internal')]"/>
+                                        <field name="remarks"/>
+                                        <field name="state"/>
+                                        <field name="company_id" options="{'no_open': True, 'no_create': True}"
+                                               invisible="1"/>
+                                    </tree>
+                                </field>
+                                <group>
+                                    <field name="total_quantity_based_uom"/>
+                                </group>
+                                <group>
+                                    <field name="expected_mtrs_total"/>
+                                    <field name="balance_mtrs_total"/>
+                                    <field name="balance_mtrs_total_value"/>
+                                </group>
+                            </page>
+                            <page string="Stock Moves">
+                                <field name="move_lines" widget="one2many_list" readonly="1">
+                                    <tree editable="bottom" delete="false" create="false">
+                                        <field name="name"/>
+                                        <field name="picking_id" string="Reference"/>
+                                        <field name="origin"/>
+                                        <field name="picking_type_id" invisible="1"/>
+                                        <field name="create_date" invisible="1" groups="base.group_no_one"/>
+                                        <field name="product_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_uom" options="{'no_open': True, 'no_create': True}"
+                                               string="Unit of Measure"/>
+                                        <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
+                                        <field name="date" groups="base.group_no_one"/>
+                                        <!--                                        <field name="date_expected" invisible="1"/>-->
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="History">
+                                <h3>
+                                    Reason
+                                </h3>
+                                <div>
+                                    <field name="reason"/>
+                                </div>
+                            </page>
+                        </notebook>
+                        <group>
+                            <field name="remarks"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_raw_material_issue" model="ir.actions.act_window">
+            <field name="name">Cloth Issues</field>
+            <field name="res_model">raw.material.issue</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('issue_type', '=', 'normal')]</field>
+            <field name="context">{'default_issue_type': 'normal', 'issue_type': 'normal'}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    WELCOME..!
+                </p>
+                <p>
+                    Click To Issue Cloth
+                </p>
+            </field>
+        </record>
+
+        <record id="action_raw_material_issue_tree_view" model="ir.actions.act_window.view">
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="raw_material_issue_tree"/>
+            <field name="act_window_id" ref="action_raw_material_issue"/>
+        </record>
+
+        <record id="action_raw_material_issue_form_view" model="ir.actions.act_window.view">
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="raw_material_issue_form"/>
+            <field name="act_window_id" ref="action_raw_material_issue"/>
+        </record>
+
+        <record id="action_raw_material_issue_reverse" model="ir.actions.act_window">
+            <field name="name">Unbuild Cloth Issues</field>
+            <field name="res_model">raw.material.issue</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('issue_type', '=', 'reverse')]</field>
+            <field name="context">{'default_issue_type': 'reverse', 'issue_type': 'reverse'}</field>
+        </record>
+
+        <record id="action_raw_material_issue_reverse_tree_view" model="ir.actions.act_window.view">
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="raw_material_issue_reverse_tree_view"/>
+            <field name="act_window_id" ref="action_raw_material_issue_reverse"/>
+        </record>
+
+        <record id="action_raw_material_issue_reverse_form_view" model="ir.actions.act_window.view">
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="raw_material_issue_reverse_form_view"/>
+            <field name="act_window_id" ref="action_raw_material_issue_reverse"/>
+        </record>
+
+        <record id="product_normal_form_view_inherited" model="ir.ui.view">
+            <field name="name">product.normal.form.view.inherited</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name='detailed_type' position="after">
+                    <field name='product_mtrs'/>
+                </field>
+            </field>
+        </record>
+
+        <menuitem id="sub_menu_cloth_order"
+                  sequence="1"
+                  parent="menu_cloth_order"
+                  action="action_raw_material_issue"
+                  groups="ebits_inventory.group_raw_material_issue_user,ebits_inventory.group_raw_material_issue_manager"/>
+
+        <menuitem id="sub_menu_cloth_order_reverse"
+                  sequence="3"
+                  name="Unbuild Cloth Issues"
+                  parent="menu_cloth_order"
+                  action="action_raw_material_issue_reverse"/>
+    </data>
+</odoo>

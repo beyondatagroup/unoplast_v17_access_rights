@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_sale_order_split_wizard_form" model="ir.ui.view">
+            <field name="name">Quotation Split Wizard</field>
+            <field name="model">sale.order.line.split.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="order_id" options="{'no_open': True}"/>
+<!--                    <group>-->
+                        <div>
+                            <p>You can reduce the qty or remove the product from below lines. Same will be reflected in current quotation and for the difference product or qty additional quotation will be created in draft state</p>
+                        </div>
+<!--                    </group>-->
+                     <newline/>
+                    <group>
+                        <group>
+                            <field name="backorder"/>
+                        </group>
+                    </group>
+<!--                     <newline/>-->
+<!--                    <notebook>-->
+<!--                        <page string="Order Lines">-->
+                    <group>
+                        <field name="order_line">
+<!--                            <tree editable="top" create="0">-->
+                            <tree editable="top" create="0">
+                                <field name="sequence" invisible="1"/>
+                                <field name="product_id" readonly="1"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="name" readonly="1"/>
+                                <field name="product_uom_qty" readonly="1"/>
+                                <field name="current_qty"/>
+                                <field name="product_uom" readonly="1"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                            </tree>
+                        </field>
+                    </group>
+<!--                        </page>-->
+<!--                    </notebook>-->
+                    <footer>
+                        <button name="create_split" string="Split" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sale_order_split_wizard_form" model="ir.actions.act_window">
+            <field name="name">Quotation Split Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line.split.wizard</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sale_order_split_wizard_form"/>
+            <field name="context">{'default_order_id': context.get('active_id', False)}</field>
+<!--            <field name="target">new</field>-->
+        </record>
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="material_issue_report_wizard_form" model="ir.ui.view">
+        <field name="name">Material Issue Report Wizard</field>
+        <field name="model">material.issue.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group col="4">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="warehouse_ids" options="{'no_open':True,'no_create':True}" widget="many2many_tags"/>
+                    <field name="state"/>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_material_issue_report_wizard" model="ir.actions.act_window">
+        <field name="name">Material Request &amp; Issue Summary</field>
+        <field name="res_model">material.issue.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="material_issue_report_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_material_issue_report_wizard"
+              groups="ebits_inventory.group_material_request_user,ebits_inventory.group_material_issue_user"
+              id="menu_material_issue_report" name="Material Request &amp; Issue Summary"
+              parent="material_move_reporting_menu" sequence="7"/>
+</odoo>

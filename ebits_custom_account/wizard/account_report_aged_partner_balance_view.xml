@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account.account_aged_balance_view" model="ir.ui.view">
+        <field name="name">Aged Partner Balance</field>
+        <field name="model">account.aged.trial.balance</field>
+        <field name="arch" type="xml">
+            <form string="Report Options">
+                <separator string="Aged Partner Balance - Summary"/>
+                <label string="Aged Partner Balance - Summary is a more detailed report of your receivables by intervals. Odoo calculates a table of credit balance by start Date. So if you request an interval of 30 days Odoo generates an analysis of creditors for the past month, past two months, and so on. "/>
+                <group col="4">
+                    <field name="date_from"/>
+                    <field name="period_length"/>
+                    <newline/>
+                    <field name="result_selection" widget="radio"/>
+                    <field name="target_move" widget="radio"/>
+                    <newline/>
+                    <field name="other_currency"/>
+                    <newline/>
+                </group>
+                <separator string="Partner(s)"/>
+                <field domain="['|', ('customer', '=', True), ('supplier', '=', True), ('parent_id', '=', False)]" name="partner_ids" options="{'no_create': True, 'no_open': True}" required="other_currency == True">
+                    <tree>
+                        <field name="name"/>
+                        <field name="delivery_warehouse_id"/>
+                        <field name="transaction_currency_id"/>
+                    </tree></field>
+                <field invisible="1" name="journal_ids" required="0"/>
+                <footer>
+                    <button class="oe_highlight" default_focus="1" name="check_report" string="Print" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="account.action_account_aged_balance_view" model="ir.actions.act_window">
+        <field name="name">Aged Partner Balance - Summary</field>
+        <field name="res_model">account.aged.trial.balance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="account.account_aged_balance_view"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="account.action_account_aged_balance_view" id="account.menu_aged_trial_balance" name="Aged Partner Balance - Summary" parent="account.menu_finance_legal_statement" sequence="40"/>
+</odoo>

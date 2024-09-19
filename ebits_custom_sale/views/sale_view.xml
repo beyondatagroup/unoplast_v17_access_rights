@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="crm_team_view_form_inherit" model="ir.ui.view">
+            <field name="name">crm.team.form</field>
+            <field name="model">crm.team</field>
+            <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='user_id']" position="replace">
+                    <field domain="[('share', '=', False)]" name="user_id"
+                           options="{'no_create':True, 'no_open': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+
+<!--        removed group = sales_team.crm_team_view_form-->
+        <record id="view_ebits_custom_sale_order_form_inherited" model="ir.ui.view">
+            <field name="name">ebits.custom.sale.order.form.sale.stock</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <!-- <field name="mode">primary</field> -->
+            <field name="priority">16</field>
+            <field name="arch" type="xml">
+                <!--    Need to change header. Use inside instead of replace    -->
+                <xpath expr="//header/button[@id='create_invoice']" position="attributes">
+                    <attribute name="invisible">invoice_status != 'to invoice' or  state != 'done'</attribute>
+                </xpath>
+                <xpath expr="//header/button[@id='create_invoice_percentage']" position="attributes">
+                    <attribute name="invisible">invoice_status != 'no' or state != 'done'</attribute>
+                </xpath>
+                <xpath expr="//header/button[@id='send_by_email']" position="attributes">
+                    <attribute name="invisible">state not in ['sale','done']</attribute>
+                </xpath>
+                <xpath expr="//header/button[@id='create_invoice']" position="before">
+                    <button name="action_send_for_approval" string="Send For Approval" type="object"
+                            class="btn-primary o_sale_confirm" invisible="state not in ['draft','sent']"/>
+                </xpath>
+                <xpath expr="//header/button[@id='action_confirm']" position="attributes">
+                    <attribute name="invisible">state not in ['waiting']</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='action_confirm'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//header/button[@id='action_confirm']" position="after">
+                    <button class="btn-primary o_sale_confirm" groups="ebits_custom_sale.group_sale_higher_approval"
+                            invisible="state not in ['waiting_higher']" name="action_confirm" string="Confirm Sale"
+                            type="object" context="{'validate_analytic': True}" data-hotkey="q"/>
+                    <button name="%(action_sale_order_revision_wizard_form)d" string="Revise" type="action"
+                            invisible="state not in ['waiting']" class="btn-primary o_sale_confirm"/>
+                    <button name="%(action_sale_order_revision_wizard_form)d" string="Revise" type="action"
+                            groups="ebits_custom_sale.group_sale_higher_approval"
+                            invisible="state not in ['waiting_higher']"
+                            class="btn-primary o_sale_confirm"/>
+                    <button name="print_quotation" string="Print" type="object"
+                            invisible="state not in ['sale','done']"/>
+                    <button name="%(action_sale_order_cancel_wizard_form)d" string="Cancel" type="action"
+                            invisible="state not in ['draft','sent']"/>
+                    <button name="%(action_sale_order_cancel_wizard_form)d" string="Cancel" type="action"
+                            invisible="state not in ['waiting']"/>
+                    <button name="%(action_sale_order_cancel_wizard_form)d" string="Cancel" type="action"
+                            invisible="state not in ['waiting_higher','sale']"
+                            groups="ebits_custom_sale.group_sale_higher_approval"/>
+                    <button name="action_confirm" string="Lock" type="object"
+                            invisible="state not in ['sale']"
+                            help="If the sale is locked, you can not modify it anymore. However, you will still be able to invoice or deliver."/>
+                    <button name="%(action_sale_order_higher_approval_wizard_form)d"
+                            string="Send For Higher Authority Approval"
+                            type="action"
+                            invisible="state not in ['waiting']"
+                            class="btn-primary o_sale_confirm"/>
+                    <button name="%(action_sale_order_split_wizard_form)d" string="Split" type="action"
+                            class="btn-primary o_sale_confirm"
+                            context="{'default_order_id': active_id, 'order_id': active_id}"
+                            invisible="state not in ['sent','waiting']"/>
+                    <button name="%(action_sale_order_amendment_wizard_form)d" string="Amendment" type="action"
+                            invisible="state not in ['sale','done']"/>
+                </xpath>
+                <field name="state" position="attributes">
+                    <attribute name="statusbar_visible">draft,waiting,sale,done</attribute>
+                </field>
+
+                <!--    Comment this code because of position replace, It causes error  -->
+<!--                <xpath expr="/form/header" position="replace">-->
+<!--                    <header>-->
+<!--                        <field name="locked" invisible="1"/>-->
+<!--                        removed invisible="invoice_status != 'to invoice'"-->
+<!--                        <button class="btn-primary"-->
+<!--                                name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"-->
+<!--                                type="action"-->
+<!--                                invisible="invoice_status != 'no' or state != 'sale'"-->
+<!--                        />-->
+<!--       removed invisible="invoice_status != 'no' or            -->
+<!--                        <button context="{'default_advance_payment_method': 'percentage'}"-->
+<!--                                    invisible="state != 'sale'"-->
+<!--                                name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"-->
+<!--                                type="action"/>-->
+<!--                        <button class="btn-primary o_sale_confirm" invisible="state not in ['draft','sent']"-->
+<!--                                name="action_send_for_approval" string="Send For Approval" type="object"/>-->
+<!--                        <button class="btn-primary o_sale_confirm" id="action_confirm"-->
+<!--                                invisible="state not in ['waiting']" name="action_confirm" string="Confirm Sale"-->
+<!--                                type="object" context="{'validate_analytic': True}" data-hotkey="q"/>-->
+<!--                        <button class="btn-primary o_sale_confirm" groups="ebits_custom_sale.group_sale_higher_approval"-->
+<!--                                invisible="state not in ['waiting_higher']" name="action_confirm" string="Confirm Sale"-->
+<!--                                type="object" context="{'validate_analytic': True}" data-hotkey="q"/>-->
+<!--                        <button class="btn-primary o_sale_confirm"-->
+<!--                                invisible="state not in ['waiting']" name="%(action_sale_order_revision_wizard_form)d"-->
+<!--                                string="Revise" type="action"/>-->
+<!--                        <button class="btn-primary o_sale_confirm" groups="ebits_custom_sale.group_sale_higher_approval"-->
+<!--                                invisible="state not in ['waiting_higher']"-->
+<!--                                name="%(action_sale_order_revision_wizard_form)d" string="Revise" type="action"/>-->
+<!--                        <button invisible="state not in ['sale','done']" name="print_quotation" string="Print"-->
+<!--                                type="object"/>-->
+<!--                        <button invisible="state not in ['sale','done']" name="action_quotation_send"-->
+<!--                                string="Send by Email" type="object"/>-->
+<!--                        <button invisible="state not in ['draft','sent']"-->
+<!--                                name="%(action_sale_order_cancel_wizard_form)d" string="Cancel" type="action"/>-->
+<!--                        <button  invisible="state not in ['waiting']"-->
+<!--                                name="%(action_sale_order_cancel_wizard_form)d" string="Cancel" type="action"/>-->
+<!--                        <button groups="ebits_custom_sale.group_sale_higher_approval"-->
+<!--                                invisible="state not in ['waiting_higher','sale']"-->
+<!--                                name="%(action_sale_order_cancel_wizard_form)d" string="Cancel" type="action"/>-->
+
+<!--                        <button help="If the sale is locked, you can not modify it anymore. However, you will still be able to invoice or deliver."-->
+<!--                                invisible="state not in ['sale']" name="action_done" string="Lock" type="object"/>-->
+<!--                        -->
+<!--                        added action_confirm instead of action_done as action_done method is not in sale -->
+<!--                        <button help="If the sale is locked, you can not modify it anymore. However, you will still be able to invoice or deliver."-->
+<!--                                invisible="state not in ['sale']" name="action_confirm" string="Lock" type="object"/>-->
+
+<!--                        <button invisible="state not in ['draft','sent','sale']" -->
+<!--                                name="action_cancel" string="Cancel"-->
+<!--                            type="object"/>-->
+
+<!--                        <button class="btn-primary o_sale_confirm"-->
+<!--                                invisible="state not in ['waiting']"-->
+<!--                                name="%(action_sale_order_higher_approval_wizard_form)d"-->
+<!--                                string="Send For Higher Authority Approval" type="action"/>-->
+
+<!--                        no need to migrate as already in v17 -->
+<!--                        <button class="btn-primary o_sale_confirm"-->
+<!--                                context="{'default_order_id': active_id, 'order_id': active_id}"-->
+<!--                                invisible="state not in ['sent','waiting']"-->
+<!--                                name="%(action_sale_order_split_wizard_form)d" string="Split" type="action"/>-->
+
+<!--                        <button class="btn-primary o_sale_confirm"-->
+<!--                                context="{'default_order_id': active_id, 'order_id': active_id}"-->
+<!--                                groups="ebits_custom_sale.group_sale_higher_approval"-->
+<!--                                invisible="state not in ['waiting_higher']"-->
+<!--                                name="%(action_sale_order_split_wizard_form)d" string="Split" type="action"/>-->
+<!--                        <button invisible="state not in ['sale','done']"-->
+<!--                                name="%(action_sale_order_amendment_wizard_form)d" string="Amendment" type="action"/>-->
+<!--                        <field name="state" statusbar_visible="draft,waiting,sale" widget="statusbar"/>-->
+<!--                    </header>-->
+<!--                </xpath>-->
+
+                <!-- <xpath expr="//div[hasclass('oe_title')]" position="replace">
+                    <div>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                </xpath> -->
+                <xpath expr="//form/sheet/notebook/page/field[@name='order_line']" position="attributes">
+                    <attribute name="readonly">state not in ['draft','waiting'] </attribute>
+                </xpath>
+
+                <xpath expr="/form/sheet/div/button[@name='action_view_invoice']" position="before">
+                    <button class="oe_stat_button"  icon="fa-pencil-square-o"
+                            invisible="state not in ['waiting','waiting_higher']" name="action_open_partner_invoice"
+                            string="Pending Invoice(s)" type="object"/>
+                    <button class="oe_stat_button"  icon="fa-pencil-square-o"
+                            invisible="state not in ['waiting','waiting_higher']"
+                            name="action_open_partner_approved_sale" string="Approved Sale(s)" type="object"/>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/group/group/field[@name='validity_date']" position="after">
+                    <field invisible="state in ['draft', 'sent', 'cancel']" name="confirmation_date"/>
+                    <field name="exp_delivery_date" required="state in ('draft', 'sent')"
+                           readonly="state not in ['draft','sent']"/>
+
+
+                </xpath>
+
+<!--                <xpath expr="/form/sheet/group/group/field[@name='date_order']" position="replace">-->
+<!--                    <field name="date_order" readonly="1"/>-->
+<!--&lt;!&ndash;                    <field name="exp_delivery_date" required="state in ('draft', 'sent')" readonly="state not in ['draft','sent']"/>&ndash;&gt;-->
+<!--                </xpath>-->
+                <xpath expr="/form/sheet/group/group/field[@name='currency_id']" position="replace">
+<!--                    <attribute name="invisible">0</attribute>-->
+<!--                    <attribute name="readonly">state not ['draft','sent']</attribute>-->
+
+                        <field name="currency_id" invisible="0"
+                           readonly="state not in ['draft']"
+                        />
+
+
+                </xpath>
+
+<!--      replaced groups sales_team.group_sale_manager with product.group_product_pricelist-->
+<!--                <xpath expr="/form/sheet/group/group/field[@name='pricelist_id']" position="replace">-->
+<!--                    <field name="currency_id"-->
+<!--                           readonly="state not in ['draft','sent']"-->
+<!--                           options="{'no_create': True, 'no_open': True}"/>-->
+<!--                    -->
+<!--                    <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"-->
+<!--                           />-->
+<!--&lt;!&ndash;                     <field name="pricelist_id"/>&ndash;&gt;-->
+<!--                </xpath>-->
+
+
+<!--                <xpath expr="/form/sheet/group/group/field[@name='pricelist_id']" position="replace">-->
+<!--&lt;!&ndash;                    <field name="currency_id" options="{'no_create': True, 'no_open': True}"&ndash;&gt;-->
+<!--&lt;!&ndash;                           groups="sales_team.group_sale_manager"/>&ndash;&gt;-->
+<!--                    <field name="pricelist_id" invisible="1"-->
+<!--                           groups="sales_team.group_sale_manager" options="{'no_create': True, 'no_open': True}"-->
+<!--                           />-->
+<!--                </xpath>-->
+
+
+
+                <xpath expr="/form/sheet/group/group[2]" position="after">
+                    <group name="credit_check">
+                        <field name="credit_limit"/>
+                        <field name="avail_credit_limit"/>
+                        <field name="invoice_due"/>
+                        <label for="approved_so_value"/>
+                        <div>
+                            <field name="approved_so_value"/>
+                            <button class="oe_link" invisible="state not in ['draft','sent','waiting','waiting_higher']"
+                                    name="action_check_credit_limit" string="=> Check Current Credit Limit"
+                                    type="object"/>
+                        </div>
+                        <field invisible="1" name="credit_limit_invisible"/>
+                        <field invisible="1" name="avail_credit_limit_invisible"/>
+                        <field invisible="1" name="invoice_due_invisible"/>
+                        <field invisible="1" name="approved_so_value_invisible"/>
+                    </group>
+                    <group  name="payment_check">
+                        <field name="credit_limit_check"/>
+                        <field name="payment_term_check"/>
+                        <field invisible="split_sale_id == False" name="split_sale_id" options='{"no_create": True}'/>
+                        <label for="discount_available" style="color: #ef041c;"/>
+                        <div>
+                            <strong>
+                                <field name="discount_available" style="color: #ef041c;"/>
+                            </strong>
+                            <button class="oe_link"
+                                    invisible="state not in ['draft', 'sent', 'waiting', 'waiting_higher'] or discount_available == 'not_available'"
+                                    name="action_apply_global_discount" string="=> Apply" type="object"/>
+                        </div>
+                    </group>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="replace">
+<!--                    <field context="{'search_default_customer':1, 'show_address': 1}"-->
+<!--                           domain="[('customer_rank','=',True)]" name="partner_id"-->
+<!--                           options='{"always_reload": True,"no_open": True, "no_create": True}'/>-->
+                    <field context="{'search_default_customer':1, 'show_address': 1}"
+                           domain="[('customer_rank','>',0)]" name="partner_id"
+                           readonly="state not in ['draft','sent']"
+                           options='{"always_reload": True,"no_open": True, "no_create": True}'
+                           />
+                </xpath>
+
+
+                <xpath expr="/form/sheet/group/group/field[@name='partner_invoice_id']" position="replace">
+                    <field context="{'default_type':'invoice', 'show_address': 1}"
+                           domain="[('parent_id', 'child_of', partner_id),('type', '=', 'invoice')]"
+                           name="partner_invoice_id" readonly="state not in ['draft','sent']"
+                           options="{'always_reload': True,'no_open': True, 'no_create': True}"/>
+                    <field invisible="1" name="cash_sale"/>
+                    <field invisible="cash_sale != True" name="billing_info" readonly="state not in ['draft','sent']"
+                           required="cash_sale == True and state == 'draft'"/>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/group/group/field[@name='partner_shipping_id']" position="replace">
+                    <field context="{'default_type':'delivery', 'show_address': 1}"
+                           domain="[('parent_id', 'child_of', partner_id),('type', '=', 'delivery')]"
+                           groups="account.group_delivery_invoice_address" name="partner_shipping_id"
+                           options="{'always_reload': True,'no_open': True, 'no_create': True}"/>
+
+                    <field invisible="cash_sale != True" name="shipping_info" readonly="state not in ['draft','sent']"
+                           required="cash_sale == True and state == 'draft'"/>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='product_id']" position="replace">
+<!--                    removed procurement_ids as _name = "procurement.order" in not in v17, 'uom':product_uom, 'pricelist':parent.pricelist_id,-->
+                    <field context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty,
+                    'company_id': parent.company_id}"
+                           name="product_id" options="{'no_create': True, 'no_open': True}"
+                           readonly="qty_invoiced > 0"/>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='product_template_id']" position="attributes">
+<!--                    removed procurement_ids as _name = "procurement.order" in not in v17, 'uom':product_uom, 'pricelist':parent.pricelist_id,-->
+                    <attribute name="invisible">1</attribute>
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='price_unit']" position="before">
+<!--                    <attribute name="invisible">1</attribute>-->
+                    <field name="sales_user_id"/>
+                </xpath>
+
+<!--                commented due to context -->
+<!--                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='product_uom']" position="replace">-->
+<!--                    <field context="{'company_id': parent.company_id}" groups="product.group_uom" name="product_uom"-->
+<!--                           options="{'no_create': True, 'no_open': True}"-->
+<!--                           readonly="state in ('sale', 'done', 'cancel')"/>-->
+<!--                    <field domain="[('share', '=', False)]" name="sales_user_id"-->
+<!--                           options="{'no_create': True, 'no_open': True}" required="1"/>-->
+<!--                </xpath>-->
+
+<!--                as analytic_tag_ids not present in v17-->
+<!--                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='analytic_tag_ids']" position="replace">-->
+<!--                    <field groups="analytic.group_analytic_accounting" invisible="1" name="analytic_tag_ids"-->
+<!--                           options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>-->
+<!--                </xpath>-->
+
+                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='tax_id']" position="replace">
+                    <field domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" name="tax_id"
+                           options="{'no_create': True, 'no_open': True}" readonly="qty_invoiced > 0"
+                           widget="many2many_tags"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field/tree/field[@name='discount']" position="replace">
+                    <field name="discount" options='{"always_reload": True}'/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field/form/group/group/field[@name='product_id']"
+                       position="replace">
+                    <!--                    removed procurement_ids as _name = "procurement.order" in not in v17 , 'uom':product_uom, 'pricelist':parent.pricelist_id,-->
+                    <field context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty,
+                    'company_id': parent.company_id}"
+                           name="product_id" options="{'no_create': True, 'no_open': True}"
+                           readonly="qty_invoiced > 0"/>
+                </xpath>
+
+                <!--                commented due to context -->
+<!--                <xpath expr="/form/sheet/notebook/page/field/form/group/group/div/field[@name='product_uom']"-->
+<!--                       position="replace">-->
+<!--                    <field class="oe_inline oe_no_button" groups="sales_team.group_sale_manager" name="product_uom"-->
+<!--                           options="{'no_create': True, 'no_open': True}"-->
+<!--                           readonly="state in ('sale', 'done', 'cancel')"/>-->
+<!--                </xpath>-->
+
+                <!--                as analytic_tag_ids not present in v17-->
+<!--                <xpath expr="/form/sheet/notebook/page/field/form/group/group/div/field[@name='analytic_tag_ids']"-->
+<!--                       position="replace">-->
+<!--                    <field invisible="1" name="analytic_tag_ids" options="{'no_create': True, 'no_open': True}"-->
+<!--                           widget="many2many_tags"/>-->
+<!--                </xpath>-->
+
+                <xpath expr="/form/sheet/notebook/page/field/form/group/group/field[@name='tax_id']" position="replace">
+                    <field domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                            name="tax_id"
+                           options="{'no_create': True, 'no_open': True}" readonly="qty_invoiced > 0"
+                           widget="many2many_tags"/>
+<!--                    removed required="1"-->
+                    <field domain="[('share', '=', False)]" name="sales_user_id"
+                           options="{'no_create': True, 'no_open': True}" />
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field/form/group/group/field[@name='price_unit']"
+                       position="replace">
+                    <field groups="ebits_custom_sale.group_sale_price_unit_edit" name="price_unit"/>
+                </xpath>
+                <xpath expr="//label[@for='discount']"
+                       position="replace">
+                    <label for="discount" groups="ebits_custom_sale.group_sale_discount_edit"/>
+                </xpath>
+                <xpath expr="//div[@name='discount']" position="replace">
+                    <div groups="ebits_custom_sale.group_sale_discount_edit" name="discount">
+                        <field class="oe_inline" name="discount"/>
+                        %%
+                    </div>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field/form/group/group/label[@for='customer_lead']"
+                       position="replace">
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field/form/group/group/div/field[@name='customer_lead']"
+                       position="replace">
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page/field/form/group/group/label[@for='analytic_tag_ids']"-->
+<!--                       position="replace">-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/notebook/page/field/form/group/group/div/field[@name='analytic_tag_ids']"-->
+<!--                       position="replace">-->
+<!--                </xpath>-->
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='team_id']" position="replace">
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='user_id']" position="replace">
+                    <field name="team_id" options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"/>
+                    <field domain="[('share', '=', False)]" name="user_id"
+                           options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                    <field name="salesman_name"/>
+                    <field domain="[('share', '=', False)]" name="sales_manager_id" readonly="state not in ['draft']"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[2]" position="after">
+                    <page string="History">
+                        <label for="higher_reason"/>
+                        <field name="higher_reason"/>
+                        <group>
+                            <field name="approved_date" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                            <field name="approved_user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="amendment_user_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="1"/>
+                        </group>
+                        <label for="amendment_reason"/>
+                        <field name="amendment_reason"/>
+                        <group>
+                            <field name="revision_user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                        </group>
+                        <label for="revision_reason"/>
+                        <field name="revision_reason"/>
+                        <group>
+                            <field name="cancel_user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                        </group>
+                        <label for="cancel_reason"/>
+                        <field name="cancel_reason"/>
+                    </page>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='client_order_ref']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='fiscal_position_id']"
+                       position="replace">
+                    <field invisible="1" name="fiscal_position_id" options="{'no_create': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='payment_term_id']" position="replace">
+                    <field invisible="1" name="company_currency_id"/>
+                    <field  name="payment_term_id" readonly="state not in ['draft','sent','done']"
+                           options="{'no_create': True, 'no_open': True}" />
+                    <field name="client_order_ref" readonly="state == 'done'"/>
+                    <field name="sale_revision_no"/>
+                    <field name="sale_amendment_no"/>
+                    <field invisible="1" name="line_len"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_totals']"
+                       position="after">
+                    <field name="amount_discounted" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_totals']"
+                       position="after">
+                    <field name="amount_roundoff" options="{'currency_field': 'currency_id'}" widget="monetary"/>
+                </xpath>
+                <xpath expr="//group[@name='note_group']" position="after">
+                    <group>
+                        <field name="total_quantity_based_uom"/>
+                        <field name="amount_to_text"/>
+<!--                        <field invisible="amount_to_text_local_currency == ''" name="amount_to_text_local_currency"/>-->
+                        <field name="amount_to_text_local_currency"/>
+                    </group>
+                </xpath>
+                <xpath expr="/form/sheet/notebook" position="after">
+                    <label for="sale_remarks"/>
+                    <field name="sale_remarks" readonly="state in ['cancel','sale', 'done']" nolabel="1"/>
+                    <div class="oe_clear"/>
+                    <label for="internal_remarks"/>
+                    <field name="internal_remarks" readonly="state in ['cancel','sale', 'done']" nolabel="1"/>
+                    <div class="oe_clear"/>
+                    <label for="sale_history"/>
+                    <field name="sale_history" nolabel="1"/>
+                </xpath>
+<!--                <xpath expr="/form/sheet/notebook/page[2]" position="attributes">-->
+<!--                    <attribute name="groups">-->
+<!--                        sales_team.group_sale_manager-->
+<!--                    </attribute>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
+        <!-- Here directly override view of sale. We have changed to inherit and add changes according to that.
+            Reason to do this is it's causes error in odoo.sh   -->
+        <record id="view_sales_order_filter_inherit_ebits" model="ir.ui.view">
+            <field name="name">view.sales.order.filter.inherit.ebits</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="field[@name='name']" position="attributes">
+                    <attribute name="string">Sales Order</attribute>
+                </xpath>
+                <xpath expr="field[@name='name']" position="after">
+                    <field name="date_order"/>
+                    <field name="exp_delivery_date"/>
+                    <field name="sales_manager_id"/>
+                    <field name="warehouse_id"/>
+                </xpath>
+                    <!--                commented as project_id is not in v17-->
+<!--                    <field name="project_id"/>-->
+<!--                    <field name="product_id"/>-->
+                <xpath expr="filter[@name='my_sale_orders_filter']" position="attributes">
+                        <attribute name="string">My Orders(Created By)</attribute>
+                </xpath>
+                <xpath expr="filter[@name='my_sale_orders_filter']" position="after">
+                    <separator/>
+                    <filter domain="[('message_needaction','=',True)]" name="message_needaction"
+                            string="Unread Messages"/>
+                </xpath>
+<!--                    <group expand="0" string="Group By">-->
+<!--                        <filter context="{'group_by':'user_id'}" domain="[]" string="Created User"/>-->
+<!--                        <filter context="{'group_by':'user_id'}" domain="[]" string="Sales Manager"/>-->
+<!--                        <filter context="{'group_by':'team_id'}" domain="[]" string="Sales Team"/>-->
+<!--                        <filter context="{'group_by':'partner_id'}" domain="[]" name="customer" string="Customer"/>-->
+<!--                        <filter context="{'group_by':'warehouse_id'}" domain="[]" string="Division"/>-->
+<!--                        <filter context="{'group_by':'date_order'}" domain="[]" string="Order Month"/>-->
+<!--                    </group>-->
+            </field>
+        </record>
+
+        <record id="view_order_form_inherit_sale_stock_inherited" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.stock</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='warehouse_id']" position="replace">
+                </xpath>
+<!--                readonly="state not in ['draft','sent']" removed -->
+                <xpath expr="/form/sheet/group/group/field[@name='partner_shipping_id']" position="after">
+                    <field name="warehouse_id" readonly="state not in ['draft','sent']" options="{'no_create': True, 'no_open': True}" />
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='picking_policy']" position="replace">
+                    <field groups="base.group_no_one" name="picking_policy" required="True"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_order_tree_inherited" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="salesman_name"/>
+                    <field name="sales_manager_id" readonly="state not in ['draft']"/>
+                    <field name="team_id"/>
+                    <field name="warehouse_id" readonly="state not in ['draft','sent']" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="approved_date"/>
+                </field>
+                <field name="invoice_status" position="replace"></field>
+                <field name="state" position="replace">
+                    <field name="state"/>
+                    <field name="invoice_status"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_quotation_tree_inherited" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="salesman_name"/>
+                    <field name="sales_manager_id" readonly="state not in ['draft']"/>
+                    <field name="team_id"/>
+                    <field name="warehouse_id" readonly="state not in ['draft','sent']" options="{'no_create': True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_order_line_tree_inherit" model="ir.ui.view">
+            <field name="name">sale.order.line.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_order_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="salesman_id" position="after">
+                    <field name="sales_user_id" options="{'no_create': True, 'no_open': True}"/>
+                    <!--   removed readonly="state not in ['draft']"-->
+                    <field name="sales_manager_id" options="{'no_create': True, 'no_open': True}" />
+                    <field name="team_id" options="{'no_create': True, 'no_open': True}"/>
+<!--                    removed readonly="state not in ['draft', 'sent']"-->
+                    <field name="warehouse_id"  options="{'no_create': True, 'no_open': True}"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_sales_order_line_filter_inherit" model="ir.ui.view">
+            <field name="name">sale.order.line.select</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="arch" type="xml">
+                <field name="salesman_id" position="after">
+                    <field name="sales_user_id"/>
+                    <field name="sales_manager_id"/>
+                    <field name="team_id"/>
+<!--                    removed readonly="state not in ['draft','sent']" -->
+                    <field name="warehouse_id" />
+                </field>
+<!--                <xpath expr="/search/group/filter[3]" position="replace">-->
+<!--                    <filter context="{'group_by':'salesman_id'}" domain="[]" string="Created User"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/search/group" position="inside">-->
+<!--                    <filter context="{'group_by':'warehouse_id'}" domain="[]" string="Warehouse/Branch"/>-->
+<!--                    <filter context="{'group_by':'sales_user_id'}" domain="[]" string="Salesperson"/>-->
+<!--                    <filter context="{'group_by':'sales_manager_id'}" domain="[]" string="Sales Manager"/>-->
+<!--                    <filter context="{'group_by':'team_id'}" domain="[]" string="Sales Team"/>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
+        <record id="action_orders_lines" model="ir.actions.act_window">
+            <field name="name">Approved Sales Order Lines</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line</field>
+            <!--   <field name="view_type">form</field>-->
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'waiting', 'waiting_higher', 'cancel'))]</field>
+        </record>
+
+        <record id="action_draft_orders_lines" model="ir.actions.act_window">
+            <field name="name">Draft Sales Order Lines</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line</field>
+            <!--   <field name="view_type">form</field>-->
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', '=', 'draft')]</field>
+        </record>
+<!--        changed parent="sales_team.menu_sales" -->
+        <menuitem action="action_orders_lines"  id="menu_sale_order_lines"
+                  parent="sale.sale_order_menu" sequence="80"/>
+
+        <!--        changed parent="sales_team.menu_sales" -->
+        <menuitem action="action_draft_orders_lines"
+                  id="menu_draft_sale_order_lines" parent="sale.sale_order_menu" sequence="60"/>
+
+        <record id="product_pricelist_item_search_view" model="ir.ui.view">
+            <field name="name">product.pricelist.item.search</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="arch" type="xml">
+                <search string="Pricelist Items">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="product_tmpl_id"/>
+                    <field name="categ_id"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="product_pricelist_item_action" model="ir.actions.act_window">
+            <field name="name">Pricelist Items</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.pricelist.item</field>
+            <!--   <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="product_pricelist_item_search_view"/>
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem action="product_pricelist_item_action" id="menu_product_pricelist_item" name="Pricelist Items"
+                  parent="sale.product_menu_catalog" sequence="40"/>
+<!--                  parent="sale.menu_product_pricelist_main" sequence="20"/>-->
+    </data>
+</odoo>

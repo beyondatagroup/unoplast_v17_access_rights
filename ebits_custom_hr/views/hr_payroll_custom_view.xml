@@ -1,0 +1,436 @@
+<odoo>
+    <data>
+        <record id="income_tax_structure_tree" model="ir.ui.view">
+            <field name="name">Income Tax Structure</field>
+            <field name="model">income.tax.structure</field>
+            <field name="arch" type="xml"> 
+                <tree string="Income Tax Structure">
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="active"/>
+                </tree>
+            </field> 
+        </record>
+        
+        <record id="income_tax_structure_form" model="ir.ui.view">
+            <field name="name">Income Tax Structure</field>
+            <field name="model">income.tax.structure</field>
+            <field name="arch" type="xml"> 
+                <form string="Income Tax Structure">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Tax Line">
+                            <field name="tax_line" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="tax_value_from"/>
+                                    <field name="tax_value_to"/>
+                                    <field name="tax_percentage"/>
+                                    <field name="tax_amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </field> 
+        </record>
+        
+        <record id="income_tax_structure_filter" model="ir.ui.view">
+            <field name="name">Income Tax Structure</field>
+            <field name="model">income.tax.structure</field>
+            <field name="arch" type="xml"> 
+                <search string="Income Tax Structure">
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="active"/>
+                    <newline/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]" context="{}"/>
+                    <filter string="In Active" name="inactive" domain="[('active', '!=', True)]" context="{}"/>
+                </search>
+            </field> 
+        </record>
+        
+        <record id="action_income_tax_structure" model="ir.actions.act_window">
+            <field name="name">Income Tax Structure</field>
+            <field name="res_model">income.tax.structure</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="income_tax_structure_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click here to create Income Tax Structure.
+                </p>
+            </field>
+        </record>
+        
+        <record id="hr_payroll_custom_tree" model="ir.ui.view">
+            <field name="name">Employee Payroll</field>
+            <field name="model">hr.payroll.custom</field>
+            <field name="arch" type="xml"> 
+                <tree string="Employees Payroll">
+                    <field name="name"/>
+                    <field name="production_unit_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="user_id"/>
+                    <field name="date"/>
+                    <field name="approved_id"/>
+                    <field name="approved_date"/>
+                    <field name="state"/>
+                </tree>
+            </field> 
+        </record>
+        
+        <record id="hr_payroll_custom_form" model="ir.ui.view">
+            <field name="name">Employee Payroll</field>
+            <field name="model">hr.payroll.custom</field>
+            <field name="arch" type="xml"> 
+                <form string="Employee Payroll">
+                    <header>
+                        <button name="action_send_for_approval" string="Send for Approval" type="object" states="draft" class="oe_highlight"/>
+                        <button name="action_approve" string="Approve" type="object" states="wait" class="oe_highlight" groups="ebits_custom_hr.group_hr_payroll_custom_manager"/>
+                        <button name="%(action_hr_payroll_custom_reedit)d" string="Re-edit" type="action" states="wait" class="oe_highlight"/>
+                        <button name="%(action_hr_payroll_custom_cancel)d" string="Cancel" type="action" states="wait,approved" class="oe_highlight"/>
+                        <button name="action_create_journal_entries" string="Create and Post Entries" type="object" class="oe_highlight" states="approved" groups="ebits_custom_hr.group_hr_payroll_custom_manager"/>
+                        
+                        <button name="%(action_hr_payroll_custom_cancel)d" string="Cancel" type="action" states="done" class="oe_highlight" groups="ebits_custom_hr.group_hr_payroll_custom_manager"/>
+                        <button name="action_set_draft" string="Set to Draft" type="object" states="cancel" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,wait,approved,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <label string="Period"/>
+                                <div>
+                                    <field name="date_from" nolabel="1"/> - 
+                                    <field name="date_to" nolabel="1"/>
+                                </div>
+                                <field name="name"/>
+                                <field name="production_unit_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="payslip_count"/>
+                                <field name="analytic_account_id" domain="[('analytic_account_type', '!=', 'view')]" readonly="state != 'approved'" required="state == 'approved'" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="journal_id" domain="[('type', '=', 'general')]" readonly="state != 'approved'" required="state == 'approved'" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="approved_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="approved_date"/>
+                                <field name="company_id" invisible="1" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="account_date" required="state == 'approved'" readonly="move_id != False or state != 'approved'"/>
+                                <field name="move_id"/>
+                                <field name="sequence" groups="base.group_no_one"/>
+                            </group>
+                        </group>
+                        <button name="action_summary_total" type="object" class="oe_highlight" string="Calculate Summary" states="draft"/>
+                        <newline/>
+                        <notebook>
+                            <page string="Employee Payroll">
+                                <field name="payroll_lines" widget="one2many_list" context="{'date_from': date_from, 'date_to': date_to, 'default_date_from': date_from, 'default_date_to': date_to}">
+                                    <tree>
+                                        <field name="employee_id"/>
+                                        <field name="date_from"/>
+                                        <field name="date_to"/>
+                                        <field name="basic"/>
+                                        <field name="earnings_gross"/>
+                                        <field name="deductions_gross"/>
+                                        <field name="loan_balance"/>
+                                        <field name="net_pay"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="employee_id"/>
+                                                <field name="name"/>
+                                            </group>
+                                            <group>
+                                                <field name="production_unit_id" options="{'no_create': True, 'no_open': True}"/>
+                                                <field name="date_from"/>
+                                                <field name="date_to"/>
+                                                <field name="month"/>
+                                            </group>
+                                            <group string="Earnings">
+                                                <field name="basic"/>
+                                                <field name="transp"/>
+                                                <field name="hra_earnings"/>
+                                                <field name="prof_all"/>
+                                                <field name="misc_earnings"/>
+                                                <field name="over_time"/>
+                                                <field name="child_education_earnings"/>
+                                                <field name="bonus_earnings"/>
+                                                <field name="night_allowance"/>
+                                                <field name="arres"/>
+                                                <field name="leave_allowance"/>
+                                            </group>
+                                            <group string="Deductions">
+                                                <field name="npf"/>
+                                                <field name="payee"/>
+                                                <field name="ppf"/>
+                                                <field name="tuico"/>
+                                                <field name="salary_advance"/>
+                                                <field name="loan"/>
+                                                <field name="child_education_deductions"/>
+                                                <field name="hra_deductions"/>
+                                                <field name="bonus_deductions"/>
+                                                <field name="misc"/>
+                                                <field name="absent"/>
+                                                <field name="coin_adjustment"/>
+                                            </group>
+                                            <group string="Gross Earnings">
+                                                <field name="earnings_gross"/>
+                                            </group>
+                                            <group string="Gross Deductions">
+                                                <field name="deductions_gross"/>
+                                            </group>
+                                            <group string="Net Pay">
+                                                <field name="net_pay"/>
+                                            </group>
+                                            <group string="Loan Balance">
+                                                <field name="loan_balance"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Earnings">
+                                <field name="earning_line" widget="one2many_list">
+                                    <tree create="0" delete="0" edit="0">
+                                        <field name="unit_id" invisible="1"/>
+                                        <field name="earning_type"/>
+                                        <field name="account_id" domain="[('internal_type', '!=', 'view')]" options="{'no_create': True, 'no_open': True}"/>
+                                        <field name="amount" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Deductions">
+                                <field name="deduction_line" widget="one2many_list">
+                                    <tree create="0" delete="0" edit="0">
+                                        <field name="unit_id" invisible="1"/>
+                                        <field name="deduction_type"/>
+                                        <field name="account_id" domain="[('internal_type', '!=', 'view')]" options="{'no_create': True, 'no_open': True}"/>
+                                        <field name="amount" sum="Total"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="History">
+                                <field name="history"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_payroll_custom_filter" model="ir.ui.view">
+            <field name="name">Employee Payroll</field>
+            <field name="model">hr.payroll.custom</field>
+            <field name="arch" type="xml"> 
+                <search string="Employee Payroll">
+                    <field name="name"/>
+                    <field name="production_unit_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="user_id"/>
+                    <field name="date"/>
+                    <field name="approved_id"/>
+                    <field name="approved_date"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Creator" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Unit" domain="[]" context="{'group_by':'production_unit_id'}"/>
+                        <filter string="Approver" domain="[]" context="{'group_by':'approved_id'}"/>
+                        <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field> 
+        </record>
+        
+        <record id="hr_payroll_lines_tree" model="ir.ui.view">
+            <field name="name">Employee Payroll Lines</field>
+            <field name="model">hr.payroll.custom.line</field>
+            <field name="arch" type="xml"> 
+                <tree string="Employees Payroll Lines" edit="0" create="0">
+                    <field name="employee_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="basic"/>
+                    <field name="earnings_gross"/>
+                    <field name="deductions_gross"/>
+                    <field name="loan_balance"/>
+                    <field name="net_pay"/>
+                </tree>
+            </field> 
+        </record>
+        
+        <record id="hr_payroll_custom_line_form" model="ir.ui.view">
+            <field name="name">Employee Payroll Line</field>
+            <field name="model">hr.payroll.custom.line</field>
+            <field name="arch" type="xml"> 
+                <form string="Employee Payroll Line" edit="0" create="0">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,wait,approved,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="employee_id"/>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="production_unit_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="month"/>
+                            </group>
+                            <group string="Earnings">
+                                <field name="basic"/>
+                                <field name="transp"/>
+                                <field name="hra_earnings"/>
+                                <field name="prof_all"/>
+                                <field name="misc_earnings"/>
+                                <field name="over_time"/>
+                                <field name="child_education_earnings"/>
+                                <field name="bonus_earnings"/>
+                                <field name="night_allowance"/>
+                                <field name="arres"/>
+                                <field name="leave_allowance"/>
+                            </group>
+                            <group string="Deductions">
+                                <field name="npf"/>
+                                <field name="payee"/>
+                                <field name="ppf"/>
+                                <field name="tuico"/>
+                                <field name="salary_advance"/>
+                                <field name="loan"/>
+                                <field name="child_education_deductions"/>
+                                <field name="hra_deductions"/>
+                                <field name="bonus_deductions"/>
+                                <field name="misc"/>
+                                <field name="absent"/>
+                                <field name="coin_adjustment"/>
+                            </group>
+                            <group string="Gross Earnings">
+                                <field name="earnings_gross"/>
+                            </group>
+                            <group string="Gross Deductions">
+                                <field name="deductions_gross"/>
+                            </group>
+                            <group string="Net Pay">
+                                <field name="net_pay"/>
+                            </group>
+                            <group string="Loan Balance">
+                                <field name="loan_balance"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
+        
+        <record id="hr_payroll_custom_line_filter" model="ir.ui.view">
+            <field name="name">Employee Payroll Line</field>
+            <field name="model">hr.payroll.custom.line</field>
+            <field name="arch" type="xml"> 
+                <search string="Employee Payroll Line">
+                    <field name="employee_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="basic"/>
+                    <field name="earnings_gross"/>
+                    <field name="deductions_gross"/>
+                    <field name="loan_balance"/>
+                    <field name="net_pay"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" domain="[]" context="{'group_by':'employee_id'}"/>
+                        <filter string="Gross Earning" domain="[]" context="{'group_by':'earnings_gross'}"/>
+                        <filter string="Basic" domain="[]" context="{'group_by':'basic'}"/>
+                    </group>
+                </search>
+            </field> 
+        </record>
+        
+        <record id="action_hr_payroll_custom" model="ir.actions.act_window">
+            <field name="name">Employee Payroll</field>
+            <field name="res_model">hr.payroll.custom</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="hr_payroll_custom_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    WELCOME!..Click here to create a payroll form
+                </p>
+            </field>
+        </record>
+        
+        <record id="action_hr_payroll_custom_line" model="ir.actions.act_window">
+            <field name="name">Employee Payroll Line</field>
+            <field name="res_model">hr.payroll.custom.line</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="hr_payroll_custom_line_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    All the employee payroll lines entered in the employee payroll for are shown here
+                </p>
+            </field>
+        </record>
+        
+        <!-- <menuitem id="hr_payroll_custom_menu" 
+            name="Payroll" 
+            sequence="99" 
+            parent="hr.menu_hr_root"
+            groups="ebits_custom_hr.group_hr_payroll_custom_user,ebits_custom_hr.group_hr_payroll_custom_manager"/>
+        
+        <menuitem id="hr_payroll_custom_sub_menu" 
+            name="Employee Payroll" 
+            sequence="1" 
+            parent="hr_payroll_custom_menu" 
+            action="action_hr_payroll_custom"
+            groups="ebits_custom_hr.group_hr_payroll_custom_user,ebits_custom_hr.group_hr_payroll_custom_manager"/>
+            
+        <menuitem id="hr_payroll_custom_upload_template_menu" 
+            name="Payroll Template" 
+            sequence="3" 
+            parent="hr_payroll_custom_menu" 
+            action="action_hr_payroll_custom_upload_template"
+            groups="ebits_custom_hr.group_hr_payroll_custom_manager"/>
+        
+        <menuitem id="hr_payroll_custom_line_sub_menu" 
+            name="Employee Payroll Line" 
+            sequence="2" 
+            parent="hr_payroll_custom_menu" 
+            action="action_hr_payroll_custom_line"
+            groups="ebits_custom_hr.group_hr_payroll_custom_user,ebits_custom_hr.group_hr_payroll_custom_manager"/> 
+            
+        <menuitem id="hr_payroll_custom_report_menu" 
+            name="Salary Slip Detailed/Summary Report" 
+            sequence="4" 
+            parent="hr_payroll_custom_menu" 
+            action="action_hr_payroll_custom_report"
+            groups="ebits_custom_hr.group_hr_payroll_custom_manager"/>   
+            
+        <menuitem id="income_tax_structure_sub_menu" 
+            name="Income Tax Structure" 
+            sequence="5" 
+            parent="hr.menu_human_resources_configuration" 
+            action="action_income_tax_structure"/>
+     -->
+
+     
+    </data>    
+</odoo>

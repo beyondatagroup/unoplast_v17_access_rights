@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_uom_form_view_inherit" model="ir.ui.view">
+        <field name="name">uom.uom.form</field>
+        <field name="model">uom.uom</field>
+<!--    changed product.product_uom_form_view  to  uom.product_uom_form_view-->
+        <field name="inherit_id" ref="uom.product_uom_form_view"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="/form/group/group/group/field[@name='active']" position="after">-->
+            <xpath expr="//field[@name='active']" position="after">
+                <field name="allow_decimal_digits"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_template_only_form_view" model="ir.ui.view">
+        <field name="name">product.template.product.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name="barcode" position="replace">
+                                <field invisible="1" name="barcode"/>
+<!--                <field invisible="1"/>-->
+            </field>
+        </field>
+    </record>
+    <record id="product_template_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.common.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+<!--       Change due to field change     -->
+<!--            <xpath expr="/form/sheet/notebook/page[@name='general_information']/group/group/field[@name='type']"-->
+            <xpath expr="/form/sheet/notebook/page[@name='general_information']/group/group/field[@name='detailed_type']"
+                   position="after">
+                <field name="stock_warehouse_ids" options="{'no_create': True, 'no_open': True}" required="1"
+                       widget="many2many_tags"/>
+                <field name="purchase_req_required"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_variant_easy_edit_view" model="ir.ui.view">
+        <field name="name">product.product.view.form.easy</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/group/group/field[@name='barcode']" position="replace">
+                                <field invisible="1" name="barcode"/>
+<!--                <field invisible="1"/>-->
+            </xpath>
+        </field>
+    </record>
+    <record id="product_product_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+<!--            changed due field name changed-->
+<!--            <field name="attribute_value_ids" position="replace">-->
+            <field name="product_template_variant_value_ids" position="replace">
+
+            </field>
+            <field name="barcode" position="replace">
+                <field invisible="1" name="barcode"/>
+<!--                <field invisible="1"/>-->
+            </field>
+        </field>
+    </record>
+    <record id="product_normal_form_view" model="ir.ui.view">
+        <field name="name">product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="barcode" position="replace"></field>
+            <xpath expr="/form/sheet/notebook/page[@name='inventory']" position="after">
+                <page string="Pack">
+                    <group>
+                        <group>
+                            <field name="package_available"/>
+                        </group>
+                    </group>
+                    <field name="package_product_lines" readonly="package_available != True" widget="one2manylist">
+                        <tree editable="bottom">
+                            <field name="product_pack_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="product_qty"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_supplierinfo_form_view" model="ir.ui.view">
+        <field name="name">product.supplierinfo.form.view</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"
+                        name="partner_id"
+                       options="{'no_create': True, 'no_open': True}"/>
+<!--        removed from domain="[('supplier', '=', True), ('parent_id', '=', False)]"-->
+            </xpath>
+            <xpath expr="//field[@name='product_tmpl_id']" position="replace">
+                <field invisible="context.get('visible_product_tmpl_id', True)" name="product_tmpl_id"
+                       options="{'no_create': True, 'no_open': True}" string="Product"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="replace">
+                <field class="oe_inline" groups="base.group_multi_currency" name="currency_id"
+                       options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="qty_category_discount_form_view" model="ir.ui.view">
+        <field name="name">qty.category.discount.form.view</field>
+        <field name="model">qty.category.discount</field>
+        <field name="arch" type="xml">
+            <form string="Qty &amp; Category Wise Discount">
+                <sheet>
+                    <group>
+                        <div class="oe_title">
+                            <h3>
+                                <label class="oe_edit_only" for="category_id"/>
+                            </h3>
+                            <h1>
+<!--                                removed domain="[('type', '=', 'view'),('parent_id', '=', False)]" on category_id-->
+                                <field  name="category_id"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                            </h1>
+                        </div>
+                    </group>
+                    <group>
+                        <group>
+                            <field groups="base.group_multi_company" name="company_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="min_qty"/>
+                            <field name="max_qty"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="discount"/>
+                        </group>
+                    </group>
+                    <label for="description"/>
+                    <field name="description" placeholder="Write a description(If any)"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="qty_category_discount_tree_view" model="ir.ui.view">
+        <field name="name">qty.category.discount.tree.view</field>
+        <field name="model">qty.category.discount</field>
+        <field name="arch" type="xml">
+            <tree string="Qty &amp; Category Wise Discount">
+                <field name="category_id"/>
+                <field groups="base.group_multi_company" name="company_id"/>
+                <field name="discount"/>
+                <field name="min_qty"/>
+                <field name="max_qty"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </tree>
+        </field>
+    </record>
+    <record id="qty_category_discount_filter_view" model="ir.ui.view">
+        <field name="name">qty.category.discount.search.view</field>
+        <field name="model">qty.category.discount</field>
+        <field name="arch" type="xml">
+            <search string="Qty &amp; Category Wise Discount">
+                <field name="category_id"/>
+                <field groups="base.group_multi_company" name="company_id"/>
+                <field name="discount"/>
+                <field name="min_qty"/>
+                <field name="max_qty"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_qty_category_discount" model="ir.actions.act_window">
+        <field name="name">Qty &amp; Category Wise Discount</field>
+        <field name="res_model">qty.category.discount</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="qty_category_discount_filter_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a Qty &amp; Category Wise Discount
+            </p>
+        </field>
+    </record>
+    <menuitem action="action_qty_category_discount" id="menu_qty_category_discount" name="Qty &amp; Category Discount"
+              parent="sale.menu_sale_config" sequence="3"/>
+</odoo>

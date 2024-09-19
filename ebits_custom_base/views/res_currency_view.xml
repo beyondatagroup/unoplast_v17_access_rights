@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <record id="view_currency_tree_inherit" model="ir.ui.view">
+            <field name="name">res.currency.tree</field>
+            <field name="model">res.currency</field>
+            <field name="inherit_id" ref="base.view_currency_tree"/>
+            <field name="arch" type="xml">
+                <field name="symbol" position="after">
+                    <field name="subcurrency"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_currency_form_inherit" model="ir.ui.view">
+            <field name="name">res.currency.form</field>
+            <field name="model">res.currency</field>
+            <field name="inherit_id" ref="base.view_currency_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group/field[@name='name']" position="after">
+                    <field name="subcurrency"/>
+                </xpath>
+                <xpath expr="/form/sheet/group[2]" position="after">
+                    <newline/>
+                    <notebook>
+                        <page string="Rates">
+                            <field name="rate_ids" widget="one2many_list">
+                                <tree string="Currency Rates" editable="top">
+                                    <field name="name"/>
+<!--                                    <field name="currency_value"/>-->
+                                    <field name="rate" invisible="1"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                </tree>
+                                <form string="Currency Rates">
+                                    <field name="name"/>
+<!--                                    <field name="currency_value"/>-->
+                                    <field name="rate" invisible="1"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_currency_rate_tree_inherit" model="ir.ui.view">
+            <field name="name">res.currency.rate.tree</field>
+            <field name="model">res.currency.rate</field>
+            <field name="inherit_id" ref="base.view_currency_rate_tree"/>
+            <field name="arch" type="xml">
+                <field name="rate" position="replace">
+<!--                    <field name="currency_value"/>-->
+                    <field name="rate" invisible="1"/>
+<!--                    <field invisible="1"/>-->
+                </field>
+            </field>
+        </record>
+        
+        <record id="view_currency_rate_form_inherit" model="ir.ui.view">
+            <field name="name">res.currency.rate.form</field>
+            <field name="model">res.currency.rate</field>
+            <field name="inherit_id" ref="base.view_currency_rate_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='rate']" position="replace">
+<!--                    <field name="currency_value"/>-->
+                    <field name="rate" invisible="1"/>
+<!--                    <field invisible="1"/>-->
+                </xpath>
+            </field>
+        </record>
+           
+</odoo>

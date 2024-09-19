@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sales_target" model="ir.ui.view">
+        <field name="name">Sales Target</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Target">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="warehouse_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="sales_target_form" model="ir.ui.view">
+        <field name="name">Sales Target</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <form string="Sales Target">
+                <header>
+                    <button class="oe_highlight" invisible="state not in ['draft']" name="move_to_done" string="Confirm"
+                            type="object"/>
+                    <button class="oe_highlight" invisible="state not in ['done']" name="move_to_reedit" string="Reedit"
+                            type="object"/>
+                    <field name="state" statusbar_visible="draft,done" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="state == 'done'"/>
+                            <field name="based_product" readonly="state == 'done'"/>
+                            <field name="based_team" readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="warehouse_id" option="{'no_option': True, 'no_create': True}"
+                                   readonly="state == 'done'"/>
+                            <field name="date_start" readonly="state == 'done'"/>
+                            <field name="date_end" readonly="state == 'done'"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Target Line">
+                            <field context="{'default_based_product': based_product, 'default_based_team': based_team}"
+                                   name="target_line" readonly="state == 'done'" widget="one2many_list">
+                                <tree>
+                                    <field name="team_id"/>
+                                    <field name="user_id"/>
+                                    <field name="product_ids" widget="many2many_tags"/>
+                                    <field invisible="1" name="based_product"/>
+                                    <field invisible="1" name="based_team"/>
+                                    <field name="product_category_ids" widget="many2many_tags"/>
+                                    <field name="parent_category_ids" widget="many2many_tags"/>
+                                    <field name="currency_id"/>
+                                    <field name="target_qty"/>
+                                    <field name="target_value"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field domain="[('type', '=', 'normal')]"
+                                                   invisible="based_product != 'product_category'"
+                                                   name="product_category_ids"
+                                                   option="{'no_option': True, 'no_create': True}"
+                                                   required="based_product == 'product_category'"
+                                                   widget="many2many_tags"/>
+                                            <field invisible="based_product != 'product'" name="product_ids"
+                                                   option="{'no_option': True, 'no_create': True}"
+                                                   required="based_product == 'product'" widget="many2many_tags"/>
+                                            <field domain="[('type', '=', 'view')]"
+                                                   invisible="based_product != 'parent_category'"
+                                                   name="parent_category_ids"
+                                                   option="{'no_option': True, 'no_create': True}"
+                                                   required="based_product == 'parent_category'"
+                                                   widget="many2many_tags"/>
+                                            <field invisible="1" name="based_product"/>
+                                            <field invisible="1" name="based_team"/>
+                                        </group>
+                                        <group>
+                                            <field invisible="based_team != 'sales_team'" name="team_id"
+                                                   option="{'no_option': True, 'no_create': True}"
+                                                   required="based_team == 'sales_team'"/>
+                                            <field invisible="based_team != 'sales_person'" name="user_id"
+                                                   option="{'no_option': True, 'no_create': True}"
+                                                   required="based_team == 'sales_person'"/>
+                                            <field name="currency_id" option="{'no_option': True, 'no_create': True}"/>
+                                            <field name="target_qty"/>
+                                            <field name="target_value"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_sales_target_filter" model="ir.ui.view">
+        <field name="name">Sales Target</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <search string="Sales Target">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="warehouse_id"/>
+                <filter context="{}" domain="[('active', '=', True)]" name="active" string="Active"/>
+                <filter context="{}" domain="[('active', '=', False)]" name="inactive" string="In Active"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_sales_target" model="ir.actions.act_window">
+        <field name="name">Sales Target</field>
+        <field name="res_model">sales.target</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--  <field name="view_type">form</field>-->
+        <field name="search_view_id" ref="view_sales_target_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Welcome...Click here to create sales target.
+            </p>
+        </field>
+    </record>
+    <!-- <menuitem groups="ebits_custom_sale.group_sales_target_user,ebits_custom_sale.group_sales_target_manager"-->
+    <!--           id="sales_target_child_menu" name="Sales Target"-->
+    <!--           parent="sales_team.menu_base_partner" sequence="10"/>-->
+
+    <!-- <menuitem action="action_sales_target"-->
+    <!--           groups="ebits_custom_sale.group_sales_target_user,ebits_custom_sale.group_sales_target_manager"-->
+    <!--           id="sales_target_sub_child_menu" name="Sales Target" parent="sales_target_child_menu" sequence="1"/>-->
+</odoo>

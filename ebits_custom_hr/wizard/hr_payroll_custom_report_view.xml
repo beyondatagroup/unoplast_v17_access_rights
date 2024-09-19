@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="hr_payroll_custom_report_form" model="ir.ui.view">
+            <field name="name">Payslip Report</field>
+            <field name="model">hr.payroll.custom.report</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Reason">
+                    <group>
+                        <group>
+                            <label string="Payroll Period"/>
+                            <div>
+                                <field name="date_from" nolabel="1"/>
+                                <field name="date_to" nolabel="1"/>
+                            </div>
+                            <field name="name"/>
+                            <field name="production_unit_id" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                    </group>
+                    <field name="report_name" invisible="1"/>
+                    <h1 invisible="output == False">
+                        
+                        <field name="output" filename="report_name" nolabel="1"/>
+                    </h1>
+                    <footer>
+                        <button name="action_print_report" type="object" string="Generate Report" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_hr_payroll_custom_report" model="ir.actions.act_window">
+            <field name="name">Payslip Report</field>
+            <field name="res_model">hr.payroll.custom.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hr_payroll_custom_report_form"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+        </record>
+        
+</odoo>

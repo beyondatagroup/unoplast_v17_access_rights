@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mrp_bom_form_view_inherited" model="ir.ui.view">
+            <field name="name">mrp.bom.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='product_tmpl_id']" position="replace">
+                    <field name="warehouse_id" options="{'no_create': True, 'no_open': True}" required="1"/>
+                    <field name="addl_warehouse_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                    <field context="{'default_type': 'product'}" name="product_tmpl_id"
+                           options="{'no_create': True, 'no_open': True}" string="Product Template"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='product_id']" position="replace">
+                    <field context="{'default_type': 'product'}" groups="product.group_product_variant"
+                           name="product_id" options="{'no_create': True, 'no_open': True}" required="1"
+                           string="Product"/>
+                </xpath>
+                <!--                not available in 17  -->
+                <!--                <xpath expr="/form/sheet/group/group/field[@name='routing_id']" position="replace">-->
+                <!--                    <field name="routing_id" groups="mrp.group_mrp_routings" options="{'no_create': True, 'no_open': True}"/>-->
+                <!--                </xpath>-->
+                <xpath expr="/form/sheet/group/group/field[@name='type']" position="after">
+                    <field name="is_by_product"/>
+                    <field invisible="is_by_product != True" name="equalent_weight" required="is_by_product == True"/>
+                    <div invisible="is_by_product != True" style="width:200%;color: #9F6000;background-color: #FEEFB3;">
+                        <p>
+                            Total Equalent weight of quantity defined in this BOM
+                            <br/>
+                            Ex:-
+                            <ol>
+                                <li>
+                                    15 Nos = 150 Kgs
+                                </li>
+                                <li>
+                                    150 Kgs = 150 Kgs (If BOM quantity is in Kgs, then Total equalent weight is same as
+                                    the BOM quantity)
+                                </li>
+                            </ol>
+                        </p>
+                    </div>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_id']"
+                       position="replace">
+                    <field column_invisible="1" name="warehouse_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field context="{'default_type': 'product'}" name="product_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='bom_line_ids']/tree/field[@name='product_uom_id']"
+                       position="replace">
+                    <field name="product_uom_id" options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='picking_type_id']" position="replace">
+                    <field domain="[('warehouse_id', '=', warehouse_id)]" name="picking_type_id"
+                           options="{'no_create': True, 'no_open': True}" string="Operation"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="mrp_bom_tree_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.bom.tree</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="warehouse_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_mrp_bom_filter_inherit" model="ir.ui.view">
+            <field name="name">mrp.bom.select</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.view_mrp_bom_filter"/>
+            <field name="arch" type="xml">
+                <field name="product_tmpl_id" position="after">
+                    <field name="warehouse_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="mrp_bom_line_view_form_inherit" model="ir.ui.view">
+            <field name="name">mrp.bom.line.view.form</field>
+            <field name="model">mrp.bom.line</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_line_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='product_id']" position="before">
+                    <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+            </field>
+        </record>
+        <!--        NOT AVAILABLE IN 17-->
+
+
+        <!--        <record id="mrp_bom_component_tree_view_inherit" model="ir.ui.view">-->
+        <!--            <field name="name">mrp.bom.line.view.form</field>-->
+        <!--            <field name="model">mrp.bom.line</field>-->
+        <!--            <field name="inherit_id" ref="mrp.mrp_bom_component_tree_view"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <field name="product_id" position="before">-->
+        <!--                    <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"/></field></field>-->
+        <!--        </record>-->
+        <!--        <record id="mrp_bom_line_tree_view_inherit" model="ir.ui.view">-->
+        <!--            <field name="name">mrp.bom.tree</field>-->
+        <!--            <field name="model">mrp.bom.line</field>-->
+        <!--            <field name="inherit_id" ref="mrp.mrp_bom_line_tree_view"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <field name="product_id" position="before">-->
+        <!--                    <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"/></field></field>-->
+        <!--        </record>-->
+
+        <!--        <record id="view_mrp_bom_line_filter_inherit" model="ir.ui.view">-->
+        <!--            <field name="name">mrp.bom.line.select</field>-->
+        <!--            <field name="model">mrp.bom.line</field>-->
+        <!--            <field name="inherit_id" ref="mrp.view_mrp_bom_line_filter"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <field name="product_id" position="before">-->
+        <!--                    <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"/></field></field>-->
+        <!--        </record>-->
+        <!--        <record id="action_mrp_bom_line" model="ir.actions.act_window">-->
+        <!--            <field name="name">BOM Components Lines</field>-->
+        <!--            <field name="type">ir.actions.act_window</field>-->
+        <!--            <field name="res_model">mrp.bom.line</field>-->
+        <!--            <field name="domain">[]</field>-->
+        <!--            <field name="view_type">form</field>-->
+        <!--            <field name="search_view_id" ref="mrp.view_mrp_bom_line_filter"/>-->
+        <!--        </record>-->
+        <!--        <menuitem action="action_mrp_bom_line" id="menu_action_mrp_bom_line" parent="mrp.menu_mrp_bom" sequence="99"/>-->
+
+        <!--        <record id="mrp_subproduct_view_form" model="ir.ui.view">-->
+        <!--            <field name="name">mrp.subproduct.view.form</field>-->
+        <!--            <field name="model">mrp.subproduct</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <form string="BOM Subproduct">-->
+        <!--                    <group>-->
+        <!--                        <group string="Product">-->
+        <!--                            <field name="product_id"/>-->
+        <!--                            <label for="product_qty" string="Quantity"/>-->
+        <!--                            <div class="o_row">-->
+        <!--                                <field name="product_qty"/>-->
+        <!--                                <field groups="product.group_uom" name="product_uom_id" options="{'no_open': True,'no_create': True}"/>-->
+        <!--                            </div>-->
+        <!--                            <field name="equalent_weight"/>-->
+        <!--                        </group>-->
+        <!--                        <group string="BoM details">-->
+        <!--                            <field groups="mrp.group_mrp_routings" name="operation_id"/>-->
+        <!--                        </group>-->
+        <!--                    </group>-->
+        <!--                </form></field>-->
+        <!--        </record>-->
+        <!--        <record id="mrp_subproduct_tree_view" model="ir.ui.view">-->
+        <!--            <field name="name">mrp.subproduct.tree</field>-->
+        <!--            <field name="model">mrp.subproduct</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <tree editable="top" string="BOM Subproduct">-->
+        <!--                    <field name="bom_id"/>-->
+        <!--                    <field name="product_id"/>-->
+        <!--                    <field name="product_qty"/>-->
+        <!--                    <field groups="product.group_uom" name="product_uom_id" options="{'no_open': True,'no_create': True}"/>-->
+        <!--                    <field name="equalent_weight"/>-->
+        <!--                </tree></field>-->
+        <!--        </record>-->
+        <!--        <record id="view_mrp_subproduct_filter" model="ir.ui.view">-->
+        <!--            <field name="name">mrp.subproduct.select</field>-->
+        <!--            <field name="model">mrp.subproduct</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <search string="Search Bill Of Material Subproduct">-->
+        <!--                    <field name="bom_id"/>-->
+        <!--                    <field name="product_id"/>-->
+        <!--                    <group expand="0" string="Group By...">-->
+        <!--                        <filter context="{'group_by': 'bom_id'}" domain="[]" string="Bill Of Material"/>-->
+        <!--                        <filter context="{'group_by': 'product_id'}" domain="[]" string="Product"/>-->
+        <!--                        <filter context="{'group_by' : 'product_uom_id'}" domain="[]" string="Default Unit of Measure"/>-->
+        <!--                    </group>-->
+        <!--                </search></field>-->
+        <!--        </record>-->
+        <!--        <record id="action_mrp_subproduct" model="ir.actions.act_window">-->
+        <!--            <field name="name">BOM Subproduct</field>-->
+        <!--            <field name="type">ir.actions.act_window</field>-->
+        <!--            <field name="res_model">mrp.subproduct</field>-->
+        <!--            <field name="domain">[]</field>-->
+        <!--            <field name="view_type">form</field>-->
+        <!--            <field name="search_view_id" ref="view_mrp_subproduct_filter"/>-->
+        <!--        </record>-->
+        <!--        <menuitem action="action_mrp_subproduct" id="menu_action_mrp_subproduct" parent="mrp.menu_mrp_bom" sequence="99"/>-->
+
+        <record id="mrp_byproduct_form_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.bom.sub.product</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page invisible="is_by_product != True" string="Byproducts">
+                        <field name="byproduct_ids">
+                            <tree editable="top" string="Byproducts">
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="product_uom_id"/>
+                                <field name="equalent_weight"/>
+                                <field name="company_id"/>
+                                <field name="company_id"/>
+                                <field name="product_uom_category_id"/>
+                            </tree>
+                            <form string="Byproducts">
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="product_uom_id"/>
+                                <field name="equalent_weight"/>
+                                <field name="company_id"/>
+                                <field name="product_uom_category_id"/>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+
+        <!--        #########################################################################################3&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+        <record id="action_mrp_to_inter_process" model="ir.actions.act_window">
+            <field name="name">MRP Production</field>
+            <field name="context">{'default_mrp_production_id': active_id, 'search_default_mrp_production_id':
+                active_id}
+            </field>
+            <field name="res_model">production.line.detail</field>
+        </record>
+        <record id="mrp_production_form_inherited" model="ir.ui.view">
+            <field name="name">mrp.production.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='product_id']" position="replace">
+                    <field domain="[('bom_ids', '!=', False)]" name="product_id"
+                           options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='product_id']" position="after">
+                    <field name="shift_type"
+                           options="{'no_create': True, 'no_open': True}" readonly="state == 'done'"
+                           required="state != 'draft'"
+                           invisible="state == 'draft'"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/div[hasclass('o_row')]/field[@name='bom_id']" position="replace">
+                    <field name="bom_id"
+                           context="{'default_product_tmpl_id': product_tmpl_id}"
+                           domain="['&amp;', '|',('product_id','=',product_id),
+                           '&amp;',('product_tmpl_id.product_variant_ids','=',product_id),
+                            ('product_id','=',False),
+                            ('type', '=', 'normal')]"
+                           options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'" required="1"/>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='picking_type_id']" position="replace">
+                </xpath>
+                <!--                NOT AVAILABLE IN 17-->
+
+                <!--                <xpath expr="/form/sheet/group/group/field[@name='routing_id']" position="replace">-->
+                <!--                    <field groups="mrp.group_mrp_routings" name="routing_id" options="{'no_create': True, 'no_open': True}"/>-->
+                <!--                </xpath>-->
+                <xpath expr="/form/sheet/group/group/field[@name='user_id']" position="replace">
+                    <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='user_id']" position="after">
+                    <field name="picking_type_id" options="{'no_create': True, 'no_open': True}"
+                           readonly="state != 'draft'"/>
+                    <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field invisible="state != 'done'" name="force_closed"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='move_raw_ids']/tree/field[@name='product_id']"
+                       position="replace">
+                    <field name="product_id" options="{'no_create': True, 'no_open': True}" required="1"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='move_raw_ids']/tree/field[@name='product_uom']"
+                       position="replace">
+                    <field name="product_uom" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[@name='components']"
+                       position="after">
+                    <page string="Finished Products">
+                        <field name="finished_product_ids"
+                               readonly="state == 'cancel' or (state == 'done' and is_locked)">
+                            <tree editable="top">
+                                <field name="product_id" width="80px" readonly="state != 'draft'"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="product_uom_qty"
+                                       readonly="state != 'draft'" string="To produce"/>
+                                <field name="product_uom" options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>
+
+                                <field name="company_id" invisible="1" optional="hide"/>
+
+                                <field name="state"/>
+                                <field name="product_uom_category_id" optional="hide"/>
+                                <field name="quantity" string="Produced" readonly="state != 'draft'"/>
+                                <field name="shift_type"/>
+                                <field name="date_deadline" column_invisible="1"/>
+                                <field name="location_id" column_invisible="1"/>
+                                <field name="location_dest_id" column_invisible="1"/>
+                                <field name="name" column_invisible="1"/>
+
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='location_src_id']" position="replace">
+                    <field domain="[('usage','=','internal')]" name="location_src_id"
+                           options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='location_dest_id']" position="replace">
+                    <field domain="[('usage','=','internal')]" name="location_dest_id"
+                           options="{'no_create': True, 'no_open': True}" readonly="state != 'draft'"/>
+                </xpath>
+                <xpath expr="/form/sheet/div[hasclass('oe_title')]" position="after">
+                    <div class="oe_right " name="button_box">
+                        <button class="oe_stat_button" context="{'default_product_id': product_id}" icon="fa-archive"
+                                name="%(action_mrp_to_inter_process)d" string="Record Process Production"
+                                type="action"/>
+                    </div>
+                </xpath>
+                <xpath expr="/form/header/button[@name='button_scrap']" position="after">
+                    <button invisible="state not in ['progress','confirm']" name="action_force_closed" string="Force Close"
+                            type="object"/>
+                </xpath>
+                <xpath expr="/form/header/button[@name='action_cancel']" position="replace">
+                    <button invisible="not id or state in ('progress', 'done', 'cancel')" name="action_cancel"
+                            string="Cancel" type="object"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/div/button[@name='%(mrp.action_change_production_qty)d']"
+                       position="replace">
+                    <button class="oe_link" invisible="not id or state in ('done', 'cancel')"
+                            name="%(mrp.action_change_production_qty)d" string="Update" type="action"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="mrp_production_tree_inherited" model="ir.ui.view">
+            <field name="name">mrp.production.tree</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="product_cat_name"/>
+                    <field name="warehouse_id"/>
+                </field>
+                <field name="product_qty" position="after">
+                    <field name="qty_produced"/>
+                </field>
+                <field name="state" position="after">
+                    <field name="availability"/>
+                    <!--                    NOT AVAILABLE IN 17 #################################################-->
+
+                    <!--                    <field invisible="1" name="check_to_done"/>-->
+                    <!--                    <field invisible="1" name="post_visible"/>-->
+                    <!--                    <button class="oe_highlight" invisible="check_to_done == True or availability not in ['waiting', 'partially_available', 'assigned'] or state not in ('confirmed', 'progress') or routing_id != False" name="open_produce_product" string="Produce" type="object"/>-->
+                    <field name="force_closed"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="mrp_unbuild_form_view_simplified_inherit" model="ir.ui.view">
+            <field name="name">mrp.unbuild.form.simplified</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="inherit_id" ref="mrp.mrp_unbuild_form_view_simplified"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="warehouse_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="mrp_unbuild_form_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.unbuild.form</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="inherit_id" ref="mrp.mrp_unbuild_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='mo_id']" position="replace">
+                    <field name="mo_id" options="{'no_create':True}" required="1"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='product_id']" position="replace">
+                    <field name="warehouse_id" options="{'no_open':True,'no_create':True}" required="1"
+                           readonly="state in ['done']"/>
+                    <field domain="[('bom_ids', '!=', False)]" name="product_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='bom_id']" position="replace">
+                    <field domain="['|',('product_id','=',product_id),
+                                   '&amp;',
+                                    ('product_tmpl_id.product_variant_ids','=',product_id),
+                                    ('product_id','=',False),
+                                    ('type', '=', 'normal')]" name="bom_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='location_id']" position="replace">
+                    <field name="location_id" readonly="state in ['done']"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='location_dest_id']" position="replace">
+                    <field name="location_dest_id"
+                           readonly="state in ['done']" options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='lot_id']" position="replace">
+                    <field name="lot_id" invisible="1" readonly="mo_id or state == 'done'"
+                           required="has_tracking != 'none'" groups="stock.group_production_lot" force_save="1"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='company_id']" position="replace">
+                    <field name="company_id" groups="base.group_multi_company" readonly="state == 'done'"
+                           invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="mrp_unbuild_tree_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.unbuild.tree</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="inherit_id" ref="mrp.mrp_unbuild_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="before">
+                    <field name="warehouse_id"/>
+                </field>
+                <field name="mo_id" position="replace">
+                    <field name="mo_id" column_invisible="True" readonly="state == 'done'"/>
+                </field>
+                <field name="lot_id" position="replace">
+                    <field name="lot_id" column_invisible="True"/>
+                </field>
+                <field name="state" position="after">
+                    <field name="location_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="mrp_unbuild_search_view_inherit" model="ir.ui.view">
+            <field name="name">mrp.unbuild.search</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="inherit_id" ref="mrp.mrp_unbuild_search_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="warehouse_id"/>
+                </field>
+                <xpath expr="/search/group/filter[@name='productgroup']" position="after">
+                    <filter context="{'group_by': 'warehouse_id'}" name="warehousegroup" string="Warehouse"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="stock_scrap_form_view2_inherit" model="ir.ui.view">
+            <field name="name">stock.scrap.view.form2.inherit.mrp</field>
+            <field name="model">stock.scrap</field>
+            <field name="inherit_id" ref="stock.stock_scrap_form_view2"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/group/field[@name='product_id']" position="replace">
+                    <field name="warehouse_id" options="{'no_open':True,'no_create':True}" required="1"/>
+                    <field domain="[('id', 'in', context.get('product_ids', []))]" name="product_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/group/group/field[@name='location_id']" position="replace">
+                    <field groups="stock.group_stock_multi_locations" name="location_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/group/group/field[@name='scrap_location_id']" position="replace">
+                    <field groups="stock.group_stock_multi_locations" name="scrap_location_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="stock_scrap_form_view_inherit" model="ir.ui.view">
+            <field name="name">stock.scrap.view.form.inherit.mrp</field>
+            <field name="model">stock.scrap</field>
+            <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/group/group/field[@name='product_id']" position="replace">
+                    <field name="warehouse_id" options="{'no_open':True,'no_create':True}" required="1"/>
+                    <field name="product_id" options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='production_id']" position="replace">
+                    <field name="production_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='location_id']" position="replace">
+                    <field name="location_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='scrap_location_id']" position="replace">
+                    <field name="scrap_location_id"
+                           options="{'no_open':True,'no_create':True}"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="stock_scrap_tree_view_inherit" model="ir.ui.view">
+            <field name="name">stock.scrap.tree</field>
+            <field name="model">stock.scrap</field>
+            <field name="inherit_id" ref="stock.stock_scrap_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="before">
+                    <field name="warehouse_id"/>
+                </field>
+                <field name="product_uom_id" position="replace">
+                    <field name="product_uom_id" readonly="state == 'done'"/>
+                </field>
+                <field name="location_id" position="replace">
+                    <field name="location_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                </field>
+                <field name="scrap_location_id" position="replace">
+                    <field name="scrap_location_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                </field>
+            </field>
+        </record>
+        <record id="stock_scrap_search_view_inherit" model="ir.ui.view">
+            <field name="name">stock.scrap.search</field>
+            <field name="model">stock.scrap</field>
+            <field name="inherit_id" ref="stock.stock_scrap_search_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="before">
+                    <field name="warehouse_id"/>
+                </field>
+                <xpath expr="/search/group" position="inside">
+                    <filter context="{'group_by': 'warehouse_id'}" name="warehousegroup" string="Warehouse"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

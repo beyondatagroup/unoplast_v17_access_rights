@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+            
+        <report 
+            id="action_report_stockregister_product_summary"
+            model="stock.register.product.warehouse.wizard"
+            string="Stock Register - Product Summary"
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stockregister_product_summary_rml.rml" 
+            name="stockregister.product.summary.rml"
+            menu="False"
+            header="False"
+            />
+            
+        <report 
+            id="action_report_stockregister_product_summary_value"
+            model="stock.register.product.warehouse.wizard"
+            string="Stock Register - Product Summary and Inventory Value"
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stockregister_product_summary_value_rml.rml" 
+            name="stockregister.product.summary.value.rml"
+            menu="False"
+            header="False"
+            />
+            
+        <report 
+            id="action_report_stockregister_product_detailed"
+            model="stock.register.product.warehouse.wizard"
+            string="Stock Register - Product Detailed"
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stockregister_product_detailed_rml.rml" 
+            name="stockregister.product.detailed.rml"
+            menu="False"
+            header="False"
+            />
+            
+        <report 
+            id="action_report_stockregister_product_detailed_value"
+            model="stock.register.product.warehouse.wizard"
+            string="Stock Register - Product Detailed and Inventory Value"
+            report_type="pdf"
+            rml="ebits_custom_stock/report/stockregister_product_detailed_value_rml.rml" 
+            name="stockregister.product.detailed.value.rml"
+            menu="False"
+            header="False"
+            />
+        
+        <report 
+            id="action_report_product_stock_summary_value"
+            model="stock.register.product.warehouse.wizard"
+            string="Stock Register - Product Stock Summary"
+            report_type="pdf"
+            rml="ebits_custom_stock/report/product_stock_summary_value_rml.rml" 
+            name="product.stock.summary.value.rml"
+            menu="False"
+            header="False"
+            />
+        
+        <report 
+            id="action_report_location_stock_summary_value"
+            model="stock.register.product.warehouse.wizard"
+            string="Stock Register - Location Stock Summary"
+            report_type="pdf"
+            rml="ebits_custom_stock/report/location_stock_summary_value_rml.rml" 
+            name="location.stock.summary.value.rml"
+            menu="False"
+            header="False"
+            />
+        
+        <report 
+            id="report_inventory_valuation_rml"
+            string="Inventory Valuation Report"
+            model="inventory.valuation.report.wizard" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/inventory_valuation_report_rml.rml" 
+            name="inventory.valuation.rml.report"
+            menu="False"
+            header="False"
+        />
+        
+        <report 
+            id="report_inventory_valuation_date_rml"
+            string="Inventory Valuation At Date Report"
+            model="inventory.valuation.report.wizard" 
+            report_type="pdf"
+            rml="ebits_custom_stock/report/inventory_valuation_date_report_rml.rml" 
+            name="inventory.valuation.date.rml.report"
+            menu="False"
+            header="False"
+        />
+</odoo>

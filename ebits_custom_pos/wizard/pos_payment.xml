@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_pos_payment_inherit" model="ir.ui.view">
+            <field name="name">pos.make.payment.form</field>
+            <field name="model">pos.make.payment</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_payment" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/field[@name='journal_id']" position="replace">
+                    <field name="journal_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="amount_to_be_paid" readonly="1" invisible="1"/>
+                </xpath>
+                <xpath expr="/form/group/field[@name='amount']" position="replace">
+                    <field name="amount" readonly="1"/>
+                </xpath>
+<!--                <xpath expr="/form/group" position="after">-->
+<!--                    <group string="For Balance Calculation">-->
+<!--                        <field name="amount_tendered"/>-->
+<!--                        <field name="amount_balance" readonly="1"/>-->
+<!--                    </group>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+</odoo>

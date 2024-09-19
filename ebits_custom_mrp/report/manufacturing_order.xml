@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="paperformat_mrp_order" model="report.paperformat">
+            <field name="name">Custom Manufacturing Order</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">53</field>
+            <field name="margin_bottom">30</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">50</field>
+            <field name="dpi">90</field>
+        </record>
+
+
+        <record id="action_report_manufacturing_order" model="ir.actions.report">
+            <field name="name">Manufacturing Order</field>
+            <field name="model">mrp.production</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ebits_custom_mrp.report_template_manufacturing_order_custom</field>
+            <field name="report_file">ebits_custom_mrp.report_template_manufacturing_order_custom</field>
+            <field name="paperformat_id" ref="ebits_custom_mrp.paperformat_mrp_order"/>
+            <field name="print_report_name">'Manufacturing Order - %s' % object.name</field>
+            <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_headers">
+            <div class="header">
+                <center>
+                    <b>Manufacturing Order</b>
+                </center>
+                <table width="100%" style="font-family: sans-serif;border:1px solid lightgrey; font-size:13px">
+                    <tr>
+                        <td width="55%" style="border:1px solid lightgrey;">
+                            <div style="width: 35%; float: left;text-align:center;">
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)"
+                                     style="max-height:90px; display: inline; vertical-align: middle;margin-top: 15px;"
+                                     alt="Logo"/>
+                            </div>
+                            <div
+                                    style="width: 65%; float: right; text-align: left; font-size: 13px;padding:5px; position: relative;  height: 140px;">
+                                <strong style="text-align:center; font-size:14px">
+                                    <t t-esc="doc.company_id.name"/>
+                                    <br/>
+                                </strong>
+                                <t t-esc="doc.company_id.street" style="margin-left:5px;"/>
+                                <br/>
+                                <t t-if="doc.company_id.street2">
+                                    <t t-esc="doc.company_id.street2" style="margin-left:5px;"/>
+                                    <br/>
+                                </t>
+                                <t t-if="doc.company_id.city">
+                                    <t t-esc="doc.company_id.city" style="margin-left:5px;"/>
+                                </t>
+                                <t t-if="doc.company_id.country_id">
+                                    <t t-esc="doc.company_id.country_id.name" style="margin-left:5px;"/>
+                                </t>
+                                <br/>
+                                <t t-if="doc.company_id.email">
+                                    Email:
+                                    <span t-esc="doc.company_id.email"/>
+                                </t>
+                                <br/>
+                                <t t-if="doc.company_id.mobile">
+                                    Mobile:
+                                    <span t-esc="doc.company_id.mobile" style="margin-left:5px;"/>
+                                </t>
+                                <br/>
+                                <t t-if="doc.company_id.phone">
+                                    Phone:
+                                    <span t-esc="doc.company_id.phone" style="margin-left:5px;"/>
+                                </t>
+                                <br/>
+                                <t t-if="doc.company_id.vat">
+                                    <span>TIN:</span>
+                                    <span t-esc="doc.company_id.vat"/>
+                                </t>
+                                <t t-if="doc.company_id.vat">
+                                    VAT:
+                                    <span t-esc="doc.company_id.partner_id.vrn_no"/>
+                                </t>
+                            </div>
+                        </td>
+                        <td width="45%" style="position:fixed;top:20;">
+                            <div style="padding:10px;width: 100%;">
+                                <div style="float:left;">
+                                    <p>
+                                        <b>Order NO</b>
+                                        <br/>
+                                        <span t-field="doc.name"/>
+                                        <br/>
+                                        <b>Warehouse</b>
+                                        <br></br>
+                                        <span t-field="doc.warehouse_id.name"/>
+                                        <br/>
+                                        <b>Consumed Materials</b>
+                                        <br/>
+                                        <b>Source Location</b>
+                                        <br></br>
+                                        <span t-field="doc.location_src_id.name"/>
+                                        <br/>
+
+                                    </p>
+                                </div>
+                                <div style="float:right;margin-right:60px;">
+                                    <p>
+                                        <b>Dated</b>
+                                        <br></br>
+                                        <span t-esc="doc.date_start.strftime('%Y-%m-%d')"
+                                        />
+                                        <br/>
+                                        <b>Status</b>
+                                        <br></br>
+                                        <span t-field="doc.state"/>
+                                        <br/>
+                                        <b>Finished Products</b>
+                                        <br/>
+                                        <b>
+                                            Destination Location
+                                        </b>
+                                        <br></br>
+                                        <span t-field="doc.location_dest_id.name"/>
+                                        <br/>
+
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </template>
+
+
+        <template id="report_template_manufacturing_order_custom">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.basic_layout">
+                        <div class="page" style="border:1px solid lightgrey;border-collapse : collapse;">
+                            <t t-call="ebits_custom_mrp.report_headers"/>
+                            <div class="page">
+                                <style>
+                                    table, th, td {
+                                    border:1px solid lightgrey;border-collapse : collapse;
+                                    }
+                                </style>
+                                <div>
+                                    <table width="100%" class="table table-sm o_main_table"
+                                           style="font-family: Times New Roman">
+                                        <tr>
+                                            <th style="border-top: 1px solid black;">Product</th>
+                                            <th style="border-top: 1px solid black;">UOM</th>
+                                            <th style="border-top: 1px solid black;">Quantity</th>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-top: 1px solid black;text-align:center;">
+                                                <t t-esc="doc.product_id.name"/>
+                                            </td>
+                                            <td style="border-top: 1px solid black;text-align:center;">
+                                                <t t-esc="doc.product_id.uom_id.name"/>
+                                            </td>
+                                            <td style="border-top: 1px solid black;text-align:center;">
+                                                <t t-esc="doc.product_qty"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="materials">
+                                    <center>
+                                        <h2>Consumed Materials</h2>
+                                    </center>
+                                    <table width="100%" class="table table-sm o_main_table"
+                                           style="font-family: Times New Roman">
+                                        <thead>
+                                            <tr>
+                                                <th name="th_sr_no" class="text-center" width="5%">
+                                                    <strong>Sr No.</strong>
+                                                </th>
+                                                <th name="th_description" class="text-center" width="45%">
+                                                    <strong>Raw Materials</strong>
+                                                </th>
+                                                <th name="th_hsn_sac_code" class="text-center" width="5%">
+                                                    <strong>UOM</strong>
+                                                </th>
+                                                <th name="th_taxes" class="text-center" width="6%">
+                                                    <strong>To Consume Quantity</strong>
+                                                </th>
+                                                <th name="th_date_req" class="text-center" width="7%">
+                                                    <strong>Consumed Quantity</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="s" t-value="1"/>
+
+                                            <t t-foreach="doc.move_raw_ids" t-as="line">
+
+                                                <tr>
+
+                                                    <td id="th_sr_no" style="text-align:center;" width="5%">
+                                                        <t t-esc="s"/>
+                                                        <t t-set="s" t-value="s+1"/>
+                                                    </td>
+                                                    <td id="product" style="text-align:center" width="45%">
+                                                        <span t-field="line.product_id.name"/>
+                                                    </td>
+                                                    <td name="" style="text-align:center" width="5%">
+                                                        <t t-esc="line.product_uom.name"/>
+                                                    </td>
+                                                    <td name="td_taxes" style="text-align:center" width="6%">
+                                                        <span t-esc="line.product_uom_qty"/>
+                                                    </td>
+                                                    <td style="text-align:center" width="7%">
+                                                        <span t-esc="line.picked"/>
+                                                    </td>
+
+                                                </tr>
+
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="finished-products">
+                                    <center>
+                                        <h2>Finished Products</h2>
+                                    </center>
+                                    <table width="100%" class="table table-sm o_main_table"
+                                           style="font-family: Times New Roman">
+                                        <thead>
+                                            <tr>
+                                                <th name="th_sr_no" class="text-center" width="5%">
+                                                    <strong>Sr No.</strong>
+                                                </th>
+                                                <th name="th_description" class="text-center" width="45%">
+                                                    <strong>Product</strong>
+                                                </th>
+                                                <th name="th_hsn_sac_code" class="text-center" width="5%">
+                                                    <strong>Production Date</strong>
+                                                </th>
+                                                <th name="th_taxes" class="text-center" width="6%">
+                                                    <strong>Quantity</strong>
+                                                </th>
+                                                <th name="th_date_req" class="text-center" width="7%">
+                                                    <strong>Shift</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="s" t-value="1"/>
+
+                                            <t t-foreach="doc.finished_product_ids" t-as="line">
+
+                                                <tr>
+
+                                                    <td id="th_sr_no" style="text-align:center;" width="5%">
+                                                        <t t-esc="s"/>
+                                                        <t t-set="s" t-value="s+1"/>
+                                                    </td>
+                                                    <td id="product" style="text-align:center" width="45%">
+                                                        <span t-field="line.product_id.name"/>
+                                                    </td>
+                                                    <td name="" style="text-align:center" width="5%">
+                                                        <t t-esc="line.date_deadline.strftime('%d-%m-%Y')"/>
+                                                    </td>
+                                                    <td name="td_taxes" style="text-align:center" width="6%">
+                                                        <span t-esc="line.quantity"/>
+                                                    </td>
+                                                    <td style="text-align:center" width="7%">
+                                                        <span t-out="dict(line._fields['shift_type']._description_selection(doc.env)).get(line.shift_type, '')"/>
+<!--                                                        <span t-esc="line.shift_type"/>-->
+                                                    </td>
+
+                                                </tr>
+
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                            <div class="footer">
+                                <div class="authorized-signatory"
+                                     style="font-family :Times New Roman;text-align:right;">
+                                    For
+                                    <b>
+                                        <span t-field="doc.company_id"/>
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <p>Authorized Signatory</p>
+
+                                </div>
+
+                                <div style="border-top: 1px solid black; padding: 5px">
+                                    <div width="100%"
+                                         style="font-family :Times New Roman;text-align:right; font-size:15px;">
+
+                                        Page:
+                                        <span class="page"/>
+                                        of
+                                        <span class="topage"/>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+
+</odoo>

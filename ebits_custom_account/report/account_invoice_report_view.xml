@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="report_account_invoice_rml"
+            string="Invoice Report"
+            model="account.invoice" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/account_invoice_rml_report.rml" 
+            name="account.invoice.rml.report"
+            menu="False"
+            attachment_use="False"
+        />
+        
+        <report 
+            id="report_account_invoice_cash_rml"
+            string="Invoice Report"
+            model="account.invoice" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/account_invoice_cash_rml_report.rml" 
+            name="account.invoice.cash.rml.report"
+            menu="False"
+            attachment_use="False"
+        />
+        
+        <report 
+            id="report_account_invoice_vendor_rml"
+            string="Vendor Bill"
+            model="account.invoice" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/account_invoice_vendor_rml_report.rml" 
+            name="account.invoice.vendor.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_invoice_credit_note_rml"
+            string="Credit Note"
+            model="account.invoice" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/credit_note_report_rml.rml" 
+            name="credit.note.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_invoice_credit_note_cash_rml"
+            string="Credit Note"
+            model="account.invoice" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/credit_note_cash_report_rml.rml" 
+            name="credit.note.cash.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_invoice_debit_note_rml"
+            string="Debit Note"
+            model="account.invoice" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/debit_note_report_rml.rml" 
+            name="debit.note.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_invoices_custom"
+            model="account.invoice"
+            string="Print Invoice"
+            report_type="qweb-pdf"
+            name="ebits_custom_account.report_invoice_custom"
+            file="ebits_custom_account.report_invoice_custom"
+            attachment_use="False"
+            attachment="(object.state in ('open','paid')) and ((object.number or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+        
+        <report 
+            id="account.account_invoices"
+            model="account.invoice"
+            string="Invoices"
+            report_type="qweb-pdf"
+            name="account.report_invoice"
+            file="account.report_invoice"
+            attachment_use="False"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+            menu="False"
+        />
+
+        <report 
+            id="account.account_invoice_action_report_duplicate"
+            model="account.invoice"
+            string="Duplicates"
+            report_type="qweb-pdf"
+            name="account.account_invoice_report_duplicate_main"
+            file="account.report_invoice_duplicate"
+            attachment_use="False"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_payment_internal_transfer_rml"
+            string="Contra Voucher"
+            model="account.payment" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/internal_transfer_report_rml.rml" 
+            name="internal.transfer.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_payment_customer_payment_voucher_rml"
+            string="Customer Payment Voucher"
+            model="account.payment" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/payment_voucher_report_rml.rml" 
+            name="payment.voucher.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_payment_supplier_payment_voucher_rml"
+            string="Supplier Payment Voucher"
+            model="account.payment" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/supplier_payment_voucher_report_rml.rml" 
+            name="supplier.payment.voucher.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_account_move_journal_entries_rml"
+            string="Journal Entries"
+            model="account.move" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/journal_entries_report_rml.rml" 
+            name="journal.entries.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="action_report_partnerledger_currency"
+            model="ebits_custom_account.report_partnerledger_currency"
+            string="Partner Ledger (Currency)"
+            report_type="qweb-pdf"
+            name="ebits_custom_account.report_partnerledger_currency"
+            file="ebits_custom_account.report_partnerledger_currency"
+            />
+            
+        <report 
+            id="account.action_report_partnerledger"
+            model="account.report_partnerledger"
+            string="Partner Ledger"
+            report_type="qweb-pdf"
+            name="account.report_partnerledger"
+            file="account.report_partnerledger"
+            />
+            
+        <report
+          id="action_report_open_items_qweb"
+          model="report_open_items_qweb"
+          string="Open Items"
+          report_type="qweb-pdf"
+          name="ebits_custom_account.report_open_items_qweb"
+          file="ebits_custom_account.report_open_items_qweb"
+        />
+                
+        <report
+          id="action_report_aged_partner_balance_qweb"
+          model="report_aged_partner_balance_qweb"
+          string="Aged Partner Balance - Detailed"
+          report_type="qweb-pdf"
+          name="ebits_custom_account.report_aged_partner_balance_qweb"
+          file="ebits_custom_account.report_aged_partner_balance_qweb"
+        />
+        
+        <report
+          id="action_report_aged_partner_balance_qweb_other"
+          model="report_aged_partner_balance_qweb"
+          string="Aged Partner Balance - Detailed Other Currency"
+          report_type="qweb-pdf"
+          name="ebits_custom_account.report_aged_partner_balance_other_qweb"
+          file="ebits_custom_account.report_aged_partner_balance_other_qweb"
+        />
+        
+        <report
+          id="action_report_financial_custom_hierarchy"
+          model="report_financial_custom_hierarchy"
+          string="Financial Report - Hierarchy"
+          report_type="qweb-pdf"
+          name="ebits_custom_account.report_financial_custom_hierarchy"
+          file="ebits_custom_account.report_financial_custom_hierarchy"
+        />
+        
+        <report
+            id="action_report_aged_partner_balance_currency"
+            model="res.partner"
+            string="Aged Partner Balance - Detailed Currency"
+            menu="False"
+            report_type="qweb-pdf"
+            name="ebits_custom_account.report_agedpartnerbalance_currency"
+            file="ebits_custom_account.report_agedpartnerbalance_currency"
+        />
+        
+        <report 
+            id="bank_account_reconciliation_rml"
+            string="Print Bank Account Reconciliation"
+            model="bank.account.rec.statement" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/bank_account_reconciliation_rml.rml" 
+            name="bank.account.reconciliation.rml.report"
+        />
+        
+        <report 
+            id="account_move_forex_rml"
+            string="Forex Summary"
+            model="account.move.forex" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/account_move_forex_report_rml.rml" 
+            name="account.move.forex.rml.report"
+        />
+        
+        <report 
+            id="report_lc_rml"
+            string="LC Report"
+            model="lc.report.wizard" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/lc_report_rml.rml" 
+            name="lc.rml.report"
+            menu="False"
+            header="False"
+        />
+        
+        <report 
+            id="reconciled_entry_rml"
+            string="Reconciled Entries"
+            model="bank.account.rec.statement" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/reconciled_report_rml.rml" 
+            name="reconciled.entry.rml.report"
+        />
+        
+        <report 
+            id="unreconciled_entry_rml"
+            string="Unreconciled Entries"
+            model="bank.account.rec.statement" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/unreconciled_report_rml.rml" 
+            name="unreconciled.entry.rml.report"
+        />
+        
+        <report 
+            id="payment_due_rml"
+            string="Balance Due"
+            model="res.partner" 
+            report_type="pdf"
+            rml="ebits_custom_account/report/payment_due_report_rml.rml" 
+            name="payment.due.rml.report"
+        />
+        
+        <record id="action_report_open_items_xlsx" model="ir.actions.report.xml">
+          <field name="name">Open Items Excel</field>
+          <field name="model">report_open_items_qweb</field>
+          <field name="type">ir.actions.report.xml</field>
+          <field name="report_name">ebits_custom_account.report_open_items_xlsx</field>
+          <field name="report_type">xlsx</field>
+          <field name="auto" eval="False"/>
+        </record>
+        
+        <record id="action_report_aged_partner_balance_xlsx" model="ir.actions.report.xml">
+          <field name="name">Aged Partner Balance - Detailed Excel</field>
+          <field name="model">report_aged_partner_balance_qweb</field>
+          <field name="type">ir.actions.report.xml</field>
+          <field name="report_name">ebits_custom_account.report_aged_partner_balance_xlsx</field>
+          <field name="report_type">xlsx</field>
+          <field name="auto" eval="False"/>
+        </record>
+        
+        <record id="action_report_aged_partner_balance_other_currency_xlsx" model="ir.actions.report.xml">
+          <field name="name">Aged Partner Balance - Detailed Other Currency Excel</field>
+          <field name="model">report_aged_partner_balance_qweb</field>
+          <field name="type">ir.actions.report.xml</field>
+          <field name="report_name">ebits_custom_account.report_aged_partner_balance_other_xlsx</field>
+          <field name="report_type">xlsx</field>
+          <field name="auto" eval="False"/>
+        </record>
+
+        <record id="paperformat_account_overdue_report" model="report.paperformat">
+           <field name="name">Balance Due Report Landscape</field>
+           <field name="orientation">Landscape</field>
+        </record>
+
+        <record id="account.action_report_print_overdue" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="paperformat_account_overdue_report"/>
+        </record>          
+</odoo>

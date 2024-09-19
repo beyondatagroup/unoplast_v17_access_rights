@@ -1,0 +1,23 @@
+<odoo>
+
+    <data noupdate="1">
+        <record id="res_partner_supplier_sequence" model="ir.sequence">
+            <field name="name">Supplier Sequence</field>
+            <field name="code">res.partner.supplier.code</field>
+<!--            <field name="implementation" eval="no_gap"/>-->
+            <field name="padding" eval="5"/>
+            <field name="prefix">Supplier/</field>
+        </record>
+
+        <record forcecreate="True" id="decimal_bom_product_uom" model="decimal.precision">
+            <field name="name">BOM Product Unit of Measure</field>
+            <field name="digits" eval="4"/>
+        </record>
+        
+        <record forcecreate="True" id="decimal_po_product_price" model="decimal.precision">
+            <field name="name">Purchase Product Price</field>
+            <field name="digits" eval="4"/>
+        </record>
+    </data>
+    
+</odoo>

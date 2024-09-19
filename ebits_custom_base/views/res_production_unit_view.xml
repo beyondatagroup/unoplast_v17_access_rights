@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <record id="res_production_unit_form_view" model="ir.ui.view">
+            <field name="name">res.production.unit.form.view</field>
+            <field name="model">res.production.unit</field>
+            <field name="arch" type="xml">
+                <form string="Production Unit">
+                    <sheet>
+                        <group>
+                            <div class="oe_title">
+                                <label for="name" class="oe_edit_only"/>
+                                <h1>
+                                    <field name="name"/>
+                                </h1>
+                            </div>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company"/>
+<!--                                removed domain -->
+<!--                                 <field name="account_id" domain="[('internal_type', '!=', 'view')]" options="{'no_create': True, 'no_open': True}"/>-->
+                                 <field name="account_id" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                        </group>
+                        <newline/>
+                        <notebook>
+                            <page string="Earnings">
+                                <field name="earning_line" widget="one2many_list">
+                                    <tree editable="bottom">
+                                        <field name="earning_type"/>
+                                        <!--                                removed domain -->
+<!--                                 <field name="account_id" domain="[('internal_type', '!=', 'view')]" options="{'no_create': True, 'no_open': True}"/>-->
+                                        <field name="account_id" options="{'no_create': True, 'no_open': True}"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Deductions">
+                                <field name="deduction_line" widget="one2many_list">
+                                    <tree editable="bottom">
+                                        <field name="deduction_type"/>
+                                        <!--                                removed domain -->
+<!--                                 <field name="account_id" domain="[('internal_type', '!=', 'view')]" options="{'no_create': True, 'no_open': True}"/>-->
+                                        <field name="account_id" options="{'no_create': True, 'no_open': True}"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>    
+                        <label for="description"/>
+                        <field name="description" placeholder="Write a description(If any)"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_production_unit_tree_view" model="ir.ui.view">
+            <field name="name">res.production.unit.tree.view</field>
+            <field name="model">res.production.unit</field>
+            <field name="arch" type="xml">
+                <tree string="Production Unit">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="res_production_unit_search_view" model="ir.ui.view">
+            <field name="name">res.production.unit.search.view</field>
+            <field name="model">res.production.unit</field>
+            <field name="arch" type="xml">
+                <search string="Production Unit">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="description"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_res_production_unit" model="ir.actions.act_window">
+            <field name="name">Production Units</field>
+            <field name="res_model">res.production.unit</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="res_production_unit_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Click to set a new production unit</p>
+            </field>
+        </record>
+
+        <record id="res_production_unit_action_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="res_production_unit_form_view"/>
+            <field name="act_window_id" ref="action_res_production_unit"/>
+        </record>
+
+        <record id="res_production_unit_action_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="res_production_unit_tree_view"/>
+            <field name="act_window_id" ref="action_res_production_unit"/>
+        </record>
+        
+        <menuitem id="menu_res_production_unit" parent="hr.menu_human_resources_configuration" action="action_res_production_unit" sequence="6"/>
+        
+        <menuitem action="action_res_production_unit" id="menu_stock_res_production_unit" groups="base.group_no_one,stock.group_stock_multi_warehouses"
+            parent="stock.menu_warehouse_config" sequence="0"/>
+        
+        <record id="res_production_unit_division_form_view" model="ir.ui.view">
+            <field name="name">res.production.unit.division.form.view</field>
+            <field name="model">res.production.unit.division</field>
+            <field name="arch" type="xml">
+                <form string="Production Unit Division">
+                    <sheet>
+                        <group>
+                            <div class="oe_title">
+                                <label for="name" class="oe_edit_only"/>
+                                <h1>
+                                    <field name="name"/>
+                                </h1>
+                            </div>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <label for="description"/>
+                        <field name="description" placeholder="Write a description(If any)"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_production_unit_division_tree_view" model="ir.ui.view">
+            <field name="name">res.production.unit.division.tree.view</field>
+            <field name="model">res.production.unit.division</field>
+            <field name="arch" type="xml">
+                <tree string="Production Unit Division">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="res_production_unit_division_search_view" model="ir.ui.view">
+            <field name="name">res.production.unit.division.search.view</field>
+            <field name="model">res.production.unit.division</field>
+            <field name="arch" type="xml">
+                <search string="Production Unit Division">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="description"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_res_production_unit_division" model="ir.actions.act_window">
+            <field name="name">Production Division</field>
+            <field name="res_model">res.production.unit.division</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="res_production_unit_division_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Click to set a new production division</p>
+            </field>
+        </record>
+
+        <record id="res_production_unit_division_action_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="res_production_unit_division_form_view"/>
+            <field name="act_window_id" ref="action_res_production_unit_division"/>
+        </record>
+
+        <record id="res_production_unit_division_action_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="res_production_unit_division_tree_view"/>
+            <field name="act_window_id" ref="action_res_production_unit_division"/>
+        </record>
+
+        <menuitem id="menu_res_production_unit_division" parent="sale.menu_sales_config" action="action_res_production_unit_division" sequence="20" groups="base.group_no_one"/>
+        
+        <menuitem action="action_res_production_unit_division" id="menu_stock_res_production_unit_divisio" groups="base.group_no_one,stock.group_stock_multi_warehouses"
+            parent="stock.menu_warehouse_config" sequence="0"/>
+            
+        <record id="truck_driver_employee_form_view" model="ir.ui.view">
+            <field name="name">truck.driver.employee.form.view</field>
+            <field name="model">truck.driver.employee</field>
+            <field name="arch" type="xml">
+                <form string="Driver Master">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="driver_phone"/>
+                                <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company"/>
+                            </group>
+                            <group>
+                                <field name="driver_licence"/>
+                                <field name="driver_licence_type"/>
+                                <field name="driver_licence_place"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="truck_driver_employee_tree_view" model="ir.ui.view">
+            <field name="name">truck.driver.employee.tree.view</field>
+            <field name="model">truck.driver.employee</field>
+            <field name="arch" type="xml">
+                <tree string="Driver Master">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="driver_phone"/>
+                    <field name="driver_licence"/>
+                    <field name="driver_licence_type"/>
+                    <field name="driver_licence_place"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="truck_driver_employee_search_view" model="ir.ui.view">
+            <field name="name">truck.driver.employee.search.view</field>
+            <field name="model">truck.driver.employee</field>
+            <field name="arch" type="xml">
+                <search string="Driver Master">
+                    <field name="name"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="driver_phone"/>
+                    <field name="driver_licence"/>
+                    <field name="driver_licence_type"/>
+                    <field name="driver_licence_place"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_truck_driver_employee" model="ir.actions.act_window">
+            <field name="name">Driver Details</field>
+            <field name="res_model">truck.driver.employee</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="truck_driver_employee_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Click to create driver details</p>
+            </field>
+        </record>
+        
+        <menuitem action="action_truck_driver_employee" id="menu_stock_ruck_driver_employee" groups="base.group_no_one,stock.group_stock_multi_warehouses,stock.group_stock_manager"
+            parent="stock.menu_warehouse_config" sequence="8"/>
+
+
+</odoo>

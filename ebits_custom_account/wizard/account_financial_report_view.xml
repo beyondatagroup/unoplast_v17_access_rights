@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="accounting_report_output_view" model="ir.ui.view">
+        <field name="name">Excel Output</field>
+        <field name="model">accounting.report.output</field>
+        <field name="arch" type="xml">
+            <form string="Excel Output" version="7.0">
+                <group>
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_link" special="cancel" string="_Close"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="accounting_report_view" model="ir.ui.view">
+        <field name="name">Accounting Report</field>
+        <field name="model">accounting.report</field>
+        <field name="inherit_id" ref="account.accounting_report_view"/>
+        <field name="arch" type="xml">
+            <field name="account_report_id" position="replace">
+                <field name="hierarchy_type" readonly="1"/>
+                <field domain="[('parent_id','=',False),('hierarchy_type', '=', hierarchy_type)]" name="account_report_id" options="{'no_create': True, 'no_open': True}"/>
+                <field invisible="hierarchy_type == 'normal'" name="other_currency"/></field>
+            <xpath expr="/form/group/notebook/page[@name='comparison']/group[2]" position="replace">
+                <newline/>
+            </xpath>
+            <xpath expr="/form/group/notebook/page[@name='comparison']/group/field[@name='filter_cmp']" position="after">
+                <field name="date_from_cmp" required="filter_cmp == 'filter_date'"/>
+                <field name="date_to_cmp" required="filter_cmp == 'filter_date'"/>
+            </xpath>
+            <xpath expr="/form/footer/button[@name='check_report']" position="replace">
+                <button class="oe_highlight" default_focus="1" name="check_report" string="Print PDF" type="object"/>
+                or
+                <button class="oe_highlight" name="print_excel_report" string="Print Excel" type="object"/>
+                or
+            </xpath></field>
+    </record>
+    <menuitem action="account.action_account_report" id="account.menu_account_report" name="Financial Report" parent="account.menu_finance_legal_statement" sequence="10"/>
+</odoo>

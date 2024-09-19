@@ -1,0 +1,31 @@
+<odoo>
+        <record id="auto_scheduler_request_wizard_form" model="ir.ui.view">
+            <field name="name">Auto Scheduler Request for Branch</field>
+            <field name="model">auto.scheduler.request.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Auto Scheduler Request for Branch">
+                <group>
+
+                        <p>
+                            Are you sure want to generate internal request?
+                            <br/>
+                            <i>Note : This process cannot be reversed</i>
+                        </p>
+
+                </group>
+                    <footer>
+                        <button name="action_run" string="Run" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_auto_scheduler_request_wizard" model="ir.actions.act_window">
+            <field name="name">Run Auto Scheduler for Branch</field>
+             <field name="res_model">auto.scheduler.request.wizard</field>
+             <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+
+</odoo>

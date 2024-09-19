@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record model="ir.ui.view" id="account_update_lock_date_form_view">
+            <field name="name">account.update.lock_date.form (in account_lock_date_update)</field>
+            <field name="model">account.update.lock_date</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header/>
+                    <sheet>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="period_lock_date"/>
+                            <field name="fiscalyear_lock_date"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Update" name="execute" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="account_update_lock_date_act_window">
+            <field name="name">Update accounting lock dates</field>
+            <field name="res_model">account.update.lock_date</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    
+        <menuitem id="account_update_lock_date_act_window_menu" parent="account.account_account_menu" sequence="100" groups="account.group_account_manager" action="account_update_lock_date_act_window"/>
+
+</odoo>

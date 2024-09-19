@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="mrp_product_produce_form_inherited" model="ir.ui.view">
+            <field name="name">mrp.product.produce.form</field>
+            <field name="model">mrp.product.produce</field>
+            <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/group/field[@name='product_tracking']" position="before">
+                    <field name="shift_type"/>
+                    <field name="quantity_check" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>

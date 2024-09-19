@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="incoming_product_report_wizard_form" model="ir.ui.view">
+        <field name="name">Incoming Products Report</field>
+        <field name="model">incoming.product.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="warehouse_ids" options="{'no_open':True, 'no_create':True}"
+                               widget="many2many_tags"/>
+                        <field name="partner_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                    <group>
+<!--                        <field domain="[('type', '=', 'normal')]" name="category_ids"-->
+<!--                               options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>-->
+<!--                        <field domain="[('purchase_ok', '=', True), ('stock_warehouse_ids', 'in', warehouse_ids and warehouse_ids[0][2])]"-->
+<!--                               name="product_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/> -->
+                        <field  name="category_ids"
+                               options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                        <field name="product_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <group invisible="output == False">
+                    <field invisible="1" name="name"/>
+                    <h1>
+                        <field filename="name" name="output" nolabel="1"/>
+                    </h1>
+                </group>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_incoming_product_report_wizard" model="ir.actions.act_window">
+        <field name="name">Incoming Products Ageing Analysis</field>
+        <field name="res_model">incoming.product.report.wizard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="incoming_product_report_wizard_form"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem action="action_incoming_product_report_wizard"
+              id="sub_menu_incoming_product_report"
+              name="Incoming Products Ageing Analysis"
+              parent="purchase.purchase_report" sequence="100"/>
+</odoo>

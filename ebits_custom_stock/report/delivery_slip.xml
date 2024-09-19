@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+		<record id="report_deliveryslip_changes" model="ir.ui.view">
+			<field name="name">ebits_custom_stock.report_deliveryslip_changes</field>
+			<field name="inherit_id" ref="stock.report_delivery_document" />
+			<field eval="10" name="priority" />
+			<field name="type">qweb</field>
+			<field name="arch" type="xml">
+				<data>
+				    <xpath expr="//p[@t-if='o.backorder_id']" position="replace">
+				    </xpath>
+				    <xpath expr="//p/t[@t-if='backorder']" position="replace">
+				    </xpath>
+				    <xpath expr="//div/div[@class='col-xs-4 pull-right']" position="replace">
+				        <div class="col-xs-4 pull-center">
+                            <div>
+                                <span><strong>Delivery Slip</strong></span>
+                            </div>
+                        </div>
+				        <div class="col-xs-4 pull-right">
+                            <div>
+                                <span><strong>Customer Address:</strong></span>
+                            </div>
+                            <div t-if="o.partner_id" name="partner_header">
+                                <address t-field="o.partner_id"
+                                   t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True}'/>
+                            </div>
+        				    <span t-if="o.partner_id.vrn_no">VAT: <span t-field="o.partner_id.vrn_no"/></span>
+                        </div>
+				    </xpath>
+				    <xpath expr="//div/table[@class='table table-condensed']" position="after">
+		                <div class="row mt32 mb32">
+                            <div class="col-xs-2" t-if="o.vehicle_no">
+                                <strong>Vehicle No</strong>
+                                <p t-field="o.vehicle_no"/>
+                            </div>
+                            <div class="col-xs-2" t-if="o.vehicle_owner">
+                                <strong>Vehicle Owner</strong>
+                                <p t-field="o.vehicle_owner"/>
+                            </div>
+                            <div class="col-xs-2" t-if="o.vehicle_owner_address">
+                                <strong>Vehicle Owner Address</strong>
+                                <p t-field="o.vehicle_owner_address"/>
+                            </div>
+                            <div class="col-xs-2" t-if="o.agent_name">
+                                <strong>Agent Name</strong>
+                                <p t-field="o.agent_name"/>
+                            </div>
+                        </div>
+                        <div class="row mt32 mb32">
+                            <div class="col-xs-2" t-if="o.driver_name">
+                                <strong>Driver Name</strong>
+                                <p t-field="o.driver_name"/>
+                            </div>
+                            <div name="reference" class="col-xs-2" t-if="o.driver_licence">
+                                <strong>Driver Licence No</strong>
+                                <p t-field="o.driver_licence"/>
+                            </div>
+                            <div class="col-xs-2" t-if="o.driver_licence_type">
+                                <strong>Driver Licence Type</strong>
+                                <p t-field="o.driver_licence_type"/>
+                            </div>
+                            <div class="col-xs-2" t-if="o.driver_licence_place">
+                                <strong>Issued Licence Place</strong>
+                                <p t-field="o.driver_licence_place"/>
+                            </div>
+                            <div class="col-xs-2" t-if="o.driver_phone">
+                                <strong>Driver Contact No</strong>
+                                <p t-field="o.driver_phone"/>
+                            </div>
+                        </div>
+                    </xpath>
+				</data>
+			</field>
+		</record>
+
+</odoo>

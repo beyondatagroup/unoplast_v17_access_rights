@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_warehouse_purchase_kanban" model="ir.ui.view">
+        <field name="name">stock.warehouse.purchase.kanban</field>
+        <field name="model">stock.warehouse</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard o_stock_kanban" create="0">
+                <field name="color"/>
+                <field name="count_purchase_draft"/>
+                <field name="count_purchase_to_approve"/>
+                <field name="count_purchase_to_2nd_approve"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <!--                            <div t-attf-class="#{kanban_color(record.color.raw_value)}">-->
+                        <div>
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content o_visible">
+                                <div class="row">
+                                    <div class="col-xs-6 o_kanban_primary_left" name="link_to_create_sale">
+                                        <button class="btn btn-primary" name="%(purchase_rfq_draft_dashboard)d"
+                                                type="action" context="{'warehouse_id': context.get('active_id')}">Create Purchase
+                                            Order
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content o_visible">
+                                <div class="row">
+                                    <div class="col-xs-12 o_kanban_primary_right">
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <a name="%(purchase_rfq_draft_dashboard)d" type="action"
+                                                   context="{'warehouse_id': context.get('active_id')}">
+                                                    Draft Purchase Order
+                                                </a>
+                                            </div>
+                                            <!--                                                <div class="col-xs-3">-->
+                                            <!--                                                    <field name="count_purchase_draft"/>-->
+                                            <!--                                                </div>-->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <a name="%(ebits_custom_purchase.purchase_rfq_to_approve_dashboard)d" type="action"
+                                                   context="{'warehouse_id': context.get('active_id')}">
+                                                    Waiting For 1st Level Approval
+                                                </a>
+                                            </div>
+                                            <!--                                                <div class="col-xs-3">-->
+                                            <!--                                                    <field name="count_purchase_to_approve"/>-->
+                                            <!--                                                </div>-->
+                                        </div>
+                                        <div t-if="record.count_purchase_to_2nd_approve.raw_value > 0" class="row">
+                                            <div class="col-xs-9">
+                                                <a name="%(purchase_rfq_to_2nd_approve_dashboard)d" type="action"
+                                                   context="{'warehouse_id': context.get('active_id')}">
+                                                    Waiting For 2nd Level Approval
+                                                </a>
+                                            </div>
+                                            <!--                                                <div class="col-xs-3">-->
+                                            <!--                                                    <field name="count_purchase_to_approve"/>-->
+                                            <!--                                                </div>-->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <a name="%(purchase_order_form_dashboard)d" type="action"
+                                                   context="{'warehouse_id': context.get('active_id')}">
+                                                    Approved Order(s)
+                                                </a>
+                                            </div>
+                                            <!--                                                <div class="col-xs-3">-->
+                                            <!--                                                    <field name="count_purchase_to_approve"/>-->
+                                            <!--                                                </div>-->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-9">
+                                                <a name="%(purchase_order_all_form_dashboard)d" type="action"
+                                                   context="{'warehouse_id': context.get('active_id')}">
+                                                    All Order(s)
+                                                </a>
+                                            </div>
+                                            <!--                                                <div class="col-xs-3">-->
+                                            <!--                                                    <field name="count_purchase_to_approve"/>-->
+                                            <!--                                                </div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_warehouse_purchase_dashboard_form" model="ir.actions.act_window">
+        <field name="name">Purchase Dashboard</field>
+        <field name="res_model">stock.warehouse</field>
+        <field name="view_mode">kanban,form,tree</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Warehouse List based on the Company Division.
+            </p>
+        </field>
+    </record>
+
+    <!--        ###########Default Stock-->
+    <record id="action_warehouse_stock_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="stock.view_warehouse_tree"/>
+        <field name="act_window_id" ref="stock.action_warehouse_form"/>
+    </record>
+
+    <record id="action_warehouse_stock_view_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="stock.view_warehouse"/>
+        <field name="act_window_id" ref="stock.action_warehouse_form"/>
+    </record>
+
+    <!--        ########Purchase Dashboard-->
+    <record id="action_warehouse_purchase_dashboard_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_warehouse_purchase_kanban"/>
+        <field name="act_window_id" ref="action_warehouse_purchase_dashboard_form"/>
+    </record>
+
+    <record id="action_warehouse_purchase_dashboard_view_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="stock.view_warehouse"/>
+        <field name="act_window_id" ref="action_warehouse_purchase_dashboard_form"/>
+    </record>
+
+    <record id="action_warehouse_purchase_dashboard_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence">3</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="stock.view_warehouse_tree"/>
+        <field name="act_window_id" ref="action_warehouse_purchase_dashboard_form"/>
+    </record>
+
+    <menuitem action="action_warehouse_purchase_dashboard_form" id="menu_action_warehouse_purchase_dashboard_form"
+              sequence="0" parent="purchase.menu_purchase_root" groups="purchase.group_purchase_user"/>
+
+</odoo>

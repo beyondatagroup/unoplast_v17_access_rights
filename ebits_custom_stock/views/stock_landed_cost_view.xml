@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="stock_landed_costs.view_stock_landed_cost_tree" model="ir.ui.view">
+            <field name="name">stock.landed.cost.tree</field>
+            <field name="model">stock.landed.cost</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="state == 'cancel'" string="Landed Costs">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="lc_no_id"/>
+                    <field name="purchase_id"/>
+                    <field name="state"/>
+                </tree></field>
+        </record>
+        <record id="view_stock_landed_cost_search_inherit" model="ir.ui.view">
+            <field name="name">stock.landed.cost.search</field>
+            <field name="model">stock.landed.cost</field>
+            <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="lc_no_id"/>
+                    <field name="purchase_id"/> 
+                    <!-- ADD AFTER ### -->
+                    <!-- <group expand="0" string="Group By">
+                        <filter context="{'group_by': 'date'}" string="Month"/>
+                        <filter context="{'group_by': 'lc_no_id'}" string="LC"/>
+                        <filter context="{'group_by': 'purchase_id'}" string="Purchase Order"/>
+                        <filter context="{'group_by': 'state'}" string="Status"/>
+                    </group> -->
+                </xpath>
+            </field>
+        </record>
+        <record id="view_stock_landed_cost_form" model="ir.ui.view">
+            <field name="name">stock.landed.cost.form</field>
+            <field name="model">stock.landed.cost</field>
+            <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//field[@name='account_journal_id']" position="replace">
+                    <field name="account_journal_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath> -->
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="lc_no_id" options="{'no_open': True}" />
+                    <field domain="[('state', 'in', ['purchase','done'])]" name="purchase_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="//field[@name='picking_ids']" position="replace">
+                    <field domain="[('purchase_id', '=', purchase_id),('state', '=', 'done'),('picking_type_code', '=', 'incoming')]" name="picking_ids" options="{'no_create': True}" widget="many2many_tags" readonly="state != 'draft'"/>
+                    <button invisible="state != 'draft'" name="update_journal_item_data" string="Get Account Entries" type="object"/>
+                </xpath>
+                <xpath expr="//page[@name='additional_costs']/field[@name='cost_lines']/form/group/group/field[@name='product_id']" position="replace">
+                    <field context="{'default_landed_cost_ok': True, 'form_view_ref':'stock_landed_costs.view_stock_landed_cost_type_form'}" domain="[('landed_cost_ok', '=', True)]" name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="//page[@name='additional_costs']/field[@name='cost_lines']/tree/field[@name='product_id']" position="replace">
+                    <field context="{'default_landed_cost_ok': True, 'form_view_ref':'stock_landed_costs.view_stock_landed_cost_type_form'}" domain="[('landed_cost_ok', '=', True)]" name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="//page[@name='valuation_adjustments']/field[@name='valuation_adjustment_lines']/tree/field[@name='cost_line_id']" position="replace">
+                    <field column_invisible="True" name="cost_line_id" readonly="1"/>
+                    <field column_invisible="True" name="purchase_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                    <field column_invisible="True" name="name" readonly="1"/>
+                </xpath>
+                <xpath expr="//page[@name='additional_costs']/field[@name='cost_lines']/tree/field[@name='account_id']" position="replace">
+                    <!-- domain="[('internal_type', '!=', 'view')]" NOT AVAILABLE ### -->
+                    <field  name="account_id" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+                <xpath expr="//page[@name='valuation_adjustments']/field[@name='valuation_adjustment_lines']/tree/field[@name='product_id']" position="after">
+                    <field name="cost_product_id" readonly="1" required="1"/>
+                </xpath>
+                <xpath expr="//page[@name='additional_costs']/field[@name='cost_lines']/form/group/group/field[@name='split_method']" position="replace">
+                    <field invisible="1" name="split_method"/>
+                </xpath>
+                <xpath expr="//page[@name='additional_costs']/field[@name='cost_lines']/tree/field[@name='split_method']" position="replace">
+                    <field invisible="1" name="split_method"/>
+                </xpath>
+                <xpath expr="/form/sheet/group" position="after">
+                    <separator string="Journal Entry Lines"/>
+                    <field name="lc_journal_lines"><form string="Journal Entry Lines">
+                            <group>
+                                <group>
+                                    <field name="entry_id"/>
+                                    <field name="account_id"/>
+                                </group>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="debit"/>
+                                </group>
+                            </group>
+                        </form>
+                        <tree editable="bottom" string="Journal Entry Lines">
+                            <field name="entry_id"/>
+                            <field name="account_id"/>
+                            <field name="name"/>
+                            <field name="debit"/>
+                        </tree></field>
+                </xpath></field>
+        </record>
+    </data>
+</odoo>

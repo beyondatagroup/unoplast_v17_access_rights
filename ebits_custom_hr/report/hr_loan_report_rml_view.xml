@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="hr_loan_rml"
+            string="Loan Summary"
+            model="hr.loan" 
+            report_type="pdf"
+            rml="ebits_custom_hr/report/hr_loan_report_rml.rml" 
+            name="hr.loan.rml.report"/>
+            
+        <report 
+            id="hr_payroll_custom_rml"
+            string="Payslip"
+            model="hr.payroll.custom" 
+            report_type="pdf"
+            rml="ebits_custom_hr/report/hr_payroll_custom_report.rml" 
+            name="hr.payroll.custom.rml"/>
+            
+        <report 
+            id="hr_payroll_line_custom_rml"
+            string=" Employee Payslip"
+            model="hr.payroll.custom.line" 
+            report_type="pdf"
+            rml="ebits_custom_hr/report/hr_payroll_line_custom_report.rml" 
+            name="hr.payroll.line.custom.rml"/>
+</odoo>

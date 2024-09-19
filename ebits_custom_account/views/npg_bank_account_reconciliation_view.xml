@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_bank_account_rec_statement_tree" model="ir.ui.view">
+            <field name="name">bank.account.rec.statement.tree</field>
+            <field name="model">bank.account.rec.statement</field>
+            <field name="arch" type="xml">
+                <tree string="Bank Account Reconciliation Statements">
+                    <field name="name"/>
+                    <field name="ending_date"/>
+                    <field name="account_id"/>
+                    <field name="currency_id"/>
+                    <field name="verified_by_user_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_bank_account_rec_statement_form" model="ir.ui.view">
+            <field name="name">bank.account.rec.statement.form</field>
+            <field name="model">bank.account.rec.statement</field>
+            <field name="arch" type="xml">
+                <form string="Bank Account Reconciliation Statement">
+                    <header>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_review" string="Ready for Review" type="object"/>
+                        <button class="oe_highlight" invisible="state not in ['to_be_reviewed']" name="action_process" string="Process" type="object"/>
+                        <button invisible="state not in ['cancel']" name="action_cancel_draft" string="Set to Draft" type="object"/>
+                        <button invisible="state not in ['draft']" name="action_print_report" string="Print Report" type="object"/>
+                        <button invisible="state not in ['draft','to_be_reviewed']" name="action_cancel" string="Cancel" type="object"/>
+                        <button groups="ebits_custom_account.group_account_brs_cancel" invisible="state not in ['done']" name="action_cancel" string="Cancel" type="object"/>
+                        <field name="state" statusbar_visible="draft,to_be_reviewed,done" widget="statusbar"/>
+                    </header>
+                    <sheet>
+
+                        <group>
+                            <group>
+                                <field name="name" readonly="state not in ['draft']"/>
+<!--                                <field domain="[('user_type_id', '=', type_user_id), ('internal_type', '!=', 'view')]" name="account_id" options="{'no_open': True, 'no_create': True}"/>-->
+                                <field name="account_id" options="{'no_open': True, 'no_create': True}" readonly="state not in ['draft']"/>
+                                <field name="currency_id" options="{'no_open': True, 'no_create': True}" readonly="state not in ['draft']"/>
+                                <field name="ending_date" readonly="state not in ['draft']"/>
+                                <field invisible="1" name="company_id"/>
+                                <field invisible="1" name="company_currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field invisible="1" name="suppress_ending_date_filter"/>
+                            </group>
+                            <group string="Balance Area">
+                                <field name="cleared_balance"/>
+                                <field name="difference"/>
+                            </group>
+                        </group>
+                        <button class="oe_highlight" invisible="state not in ['draft']" name="action_recompute" string="Compute" type="object"/>
+                        <group>
+                            <group>
+                                <label for="ledger_balance"/>
+                                <div>
+                                    <field name="ledger_balance"/>
+                                    <br/>
+                                    <span color="yellow">
+                                        (*) This is company currency value.
+                                    </span>
+                                </div>
+                                <field invisible="1" name="ledger_currency"/>
+                                <field invisible="ledger_currency != True" name="ledger_balance_currency"/>
+                                <field name="starting_balance" readonly="state not in ['draft']"/>
+                                <field name="ending_balance" readonly="state not in ['draft']"/>
+<!--                                <field invisible="1" name="type_user_id"/>-->
+                            </group>
+                            <group>
+                                <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="date"/>
+                                <field name="verified_by_user_id" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="verified_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Journal Items">
+<!--                                <label for="account_label" string="Deposits, Credits, and Interest"/>-->
+                                <field name="debit_move_line_ids" widget="one2many_list" readonly="state not in ['draft']">
+                                    <form string="Deposits, Credits, and Interest">
+                                        <group>
+                                            <group>
+                                                <field name="date"/>
+                                                <field name="name"/>
+                                                <field name="reference"/>
+                                                <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="amount"/>
+                                                <field name="currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="amount_currency"/>
+                                                <field name="amount_currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                            </group>
+                                            <group>
+                                                <field name="cleared_bank_account"/>
+                                                <field name="clearing_date"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree create="0" delete="0" editable="bottom" string="Deposits, Credits, and Interest">
+                                        <field name="cleared_bank_account"/>
+                                        <field name="clearing_date" required="cleared_bank_account == True"/>
+                                        <field name="date"/>
+                                        <field name="name"/>
+                                        <field name="reference"/>
+                                        <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="amount"/>
+                                        <field name="currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="amount_currency"/>
+                                        <field name="amount_currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="move_line_id" options="{'no_open': True, 'no_create': True}"/>
+                                    </tree></field>
+<!--                                <label for="account_label2" string="Checks, Withdrawals, Debits, and Service Charges"/>-->
+                                <field name="credit_move_line_ids" widget="one2many_list" readonly="state not in ['draft']">
+                                    <form string="Checks, Withdrawals, Debits, and Service Charges">
+                                        <group>
+                                            <group>
+                                                <field name="date"/>
+                                                <field name="name"/>
+                                                <field name="reference"/>
+                                                <field name="partner_id"/>
+                                                <field name="amount"/>
+                                                <field name="currency_id"/>
+                                                <field name="amount_currency"/>
+                                                <field name="amount_currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                                <field name="cheque_no"/>
+                                                <field name="cheque_date"/>
+                                            </group>
+                                            <group>
+                                                <field name="cleared_bank_account"/>
+                                                <field name="clearing_date"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                    <tree create="0" delete="0" editable="bottom" string="Checks, Withdrawals, Debits, and Service Charges">
+                                        <field name="cleared_bank_account"/>
+                                        <field name="clearing_date" required="cleared_bank_account == True"/>
+                                        <field name="date"/>
+                                        <field name="name"/>
+                                        <field name="reference"/>
+                                        <field name="partner_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="amount"/>
+                                        <field name="currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="amount_currency"/>
+                                        <field name="amount_currency_id" options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="cheque_no"/>
+                                        <field name="cheque_date"/>
+                                        <field name="move_line_id" options="{'no_open': True, 'no_create': True}"/>
+                                    </tree></field>
+                                <newline/>
+                                <group string="Totals Area">
+                                    <separator col="1" colspan="3"/>
+                                    <field name="sum_of_debits"/>
+                                    <field name="sum_of_debits_lines"/>
+                                    <field name="sum_of_credits"/>
+                                    <field name="sum_of_credits_lines"/>
+                                    <field name="sum_of_credits_uncheck"/>
+                                    <field name="sum_of_debits_uncheck"/>
+                                </group>
+                            </page>
+                            <page string="Notes">
+                                <field name="notes" nolabel="1" placeholder="Enter Notes (if any)" readonly="state not in ['draft']"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form></field>
+        </record>
+<!--        <record id="view_bank_account_rec_statement_filter" model="ir.ui.view">-->
+<!--            <field name="name">bank.account.rec.statement.select</field>-->
+<!--            <field name="model">bank.account.rec.statement</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <search string="Search Bank Account Reconciliation Statements">-->
+<!--                    <field name="name"/>-->
+<!--                    <field name="ending_date" string="Ending Date"/>-->
+<!--                    <field name="account_id"/>-->
+<!--                    <field name="verified_by_user_id"/>-->
+
+<!--                    <filter domain="[('state', '=', 'draft')]"-->
+<!--                            help="Statements that haven't yet been confirmed" string="Draft"/>-->
+<!--                    <filter domain="[('state', '=', 'to_be_reviewed')]"-->
+<!--                            help="Statements that are ready for review" string="To be Reviewed"/>-->
+<!--                    <filter domain="[('state', '=', 'done')]"-->
+<!--                            help="Statements that have been processed" string="Done"/>-->
+<!--                    <group expand="0" string="Group By...">-->
+<!--&lt;!&ndash;                        <filter context="{'group_by': 'account_id'}" &ndash;&gt;-->
+<!--&lt;!&ndash;                                domain="[]" icon="terp-personal" string="Account"/>&ndash;&gt;-->
+<!--                        <filter context="{'group_by': 'account_id'}"-->
+<!--                                domain="[]" string="Account"/>-->
+<!--&lt;!&ndash;                        <filter context="{'group_by': 'state'}" &ndash;&gt;-->
+<!--&lt;!&ndash;                                domain="[]" icon="terp-stock_effects-object-colorize" string="State"/>&ndash;&gt;-->
+<!--                        <filter context="{'group_by': 'state'}"-->
+<!--                                domain="[]" string="State"/>-->
+<!--                    </group>-->
+<!--                </search>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="action_bank_account_rec_statement" model="ir.actions.act_window">
+            <field name="name">Reconcile Bank Account Statement</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bank.account.rec.statement</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+<!--            <field name="search_view_id" ref="view_bank_account_rec_statement_filter"/>-->
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click here to create a bank account reconciliation
+                </p></field>
+        </record>
+<!--        <menuitem groups="account.group_account_manager" id="npg_bank_account_rec_statement_menu"-->
+<!--                  name="Bank Reconciliation" parent="account.menu_finance" sequence="3"/>-->
+        <menuitem groups="account.group_account_manager" id="npg_bank_account_rec_statement_menu"
+                  name="Bank Reconciliation" parent="account_accountant.menu_accounting" sequence="3"/>
+        <menuitem action="action_bank_account_rec_statement" groups="account.group_account_manager"
+                  id="npg_bank_account_rec_statement_sub_menu" name="Bank Reconciliation" parent="npg_bank_account_rec_statement_menu" sequence="1"/>
+        <menuitem action="account.action_account_reconcile_model" groups="account.group_account_manager"
+                  id="npg_bank_account_rec_statement_model_menu" parent="npg_bank_account_rec_statement_menu" sequence="2"/>
+    </data>
+</odoo>
+
+<!--removed from sheet and group-->
+<!--                        <div class="oe_button_box" name="button_box">-->
+<!--                            <button class="oe_stat_button" context="{'currency_id': currency_id, 'default_currency_id': currency_id}" icon="fa-pencil-square-o" invisible="state not in ['draft']" name="%(action_bank_charges_reconciliation_wizard)d" string="Bank Charges" type="action"/>-->
+<!--                        </div>-->

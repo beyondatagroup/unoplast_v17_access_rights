@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="view_sale_order_cancel_wizard_form" model="ir.ui.view">
+            <field name="name">Quotation Cancel Wizard</field>
+            <field name="model">sale.order.cancel.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="order_id" options="{'no_open': True}"/>
+                    </group>
+                    <newline/>
+                    <label for="cancel_reason"/>
+                    <field name="cancel_reason"/>
+                    <footer>
+                        <button name="action_cancel" string="Cancel Quotation" type="object" class="btn-primary"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_sale_order_cancel_wizard_form" model="ir.actions.act_window">
+            <field name="name">Quotation Cancel Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.cancel.wizard</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sale_order_cancel_wizard_form"/>
+            <field name="context">{'default_order_id': context.get('active_id', False)}</field>
+            <field name="target">new</field>
+        </record>
+        
+        <record id="view_sale_order_revision_wizard_form" model="ir.ui.view">
+            <field name="name">Quotation Revise Wizard</field>
+            <field name="model">sale.order.revision.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="order_id" options="{'no_open': True}"/>
+                    </group>
+                    <newline/>
+                    <label for="revision_reason"/>
+                    <field name="revision_reason"/>
+                    <footer>
+                        <button name="action_revision" string="Revise" type="object" class="btn-primary"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_sale_order_revision_wizard_form" model="ir.actions.act_window">
+            <field name="name">Quotation Revise Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.revision.wizard</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sale_order_revision_wizard_form"/>
+            <field name="context">{'default_order_id': context.get('active_id', False)}</field>
+            <field name="target">new</field>
+        </record>
+        
+        <record id="view_sale_order_amendment_wizard_form" model="ir.ui.view">
+            <field name="name">Quotation Amendment Wizard</field>
+            <field name="model">sale.order.amendment.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="order_id" options="{'no_open': True}"/>
+                    </group>
+                    <newline/>
+                    <label for="amendment_reason"/>
+                    <field name="amendment_reason"/>
+                    <footer>
+                        <button name="action_amend" string="Amend Order" type="object" class="btn-primary"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_sale_order_amendment_wizard_form" model="ir.actions.act_window">
+            <field name="name">Quotation Amendment Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.amendment.wizard</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sale_order_amendment_wizard_form"/>
+            <field name="context">{'default_order_id': context.get('active_id', False)}</field>
+            <field name="target">new</field>
+        </record>
+        
+        <record id="view_sale_order_higher_approval_wizard_form" model="ir.ui.view">
+            <field name="name">Draft Sale Order Higher Approval Wizard</field>
+            <field name="model">sale.order.higher.approval.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="order_id" options="{'no_open': True}"/>
+                    </group>
+                    <newline/>
+                    <label for="higher_reason"/>
+                    <field name="higher_reason"/>
+                    <footer>
+                        <button name="action_request" string="Request" type="object" class="btn-primary"/>
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    
+        <record id="action_sale_order_higher_approval_wizard_form" model="ir.actions.act_window">
+            <field name="name">Draft Sale Order Higher Approval Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.higher.approval.wizard</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sale_order_higher_approval_wizard_form"/>
+            <field name="context">{'default_order_id': context.get('active_id', False)}</field>
+            <field name="target">new</field>
+        </record>
+    
+</odoo>

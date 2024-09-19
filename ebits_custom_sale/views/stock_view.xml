@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <record id="view_warehouse_sale_kanban" model="ir.ui.view">
+            <field name="name">stock.warehouse.sale.kanban</field>
+            <field name="model">stock.warehouse</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey o_kanban_dashboard o_stock_kanban" create="0">
+                    <field name="color"/>
+                    <field name="count_sale_draft"/>
+                    <field name="count_sale_waiting_approval"/>
+                    <field name="count_sale_to_invoice"/>
+                    <field name="count_sale_waiting_h_approval"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)}">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary"><field name="name"/></div>
+                                    </div>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <div class="row">
+                                        <div class="col-xs-6 o_kanban_primary_left" name="link_to_create_sale">
+                                            <button class="btn btn-primary" name="%(ebits_custom_base.action_new_sale_quotation_form)d" type="action" context="{'warehouse_id': context.get('active_id'), 'default_warehouse_id': context.get('active_id')}">Create Sale Order</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <div class="row">
+                                        <div class="col-xs-12 o_kanban_primary_left">
+                                            <div t-if="record.count_sale_draft.raw_value > 0" class="row">
+                                                <div class="col-xs-9">
+                                                    <a name="%(ebits_custom_base.action_quotations_sale_dashboard)d" type="action" context="{'warehouse_id': context.get('active_id'), 'default_warehouse_id': context.get('active_id')}">
+                                                        Draft Sales Order
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div t-if="record.count_sale_waiting_approval.raw_value > 0" class="row">
+                                                <div class="col-xs-9">
+                                                    <a name="%(ebits_custom_base.action_quotations_warehouse_ready)d" type="action" context="{'warehouse_id': context.get('active_id'), 'default_warehouse_id': context.get('active_id')}">
+                                                        Waiting For Approval
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_sale_waiting_h_approval.raw_value > 0" class="row" groups="sales_team.group_sale_manager">
+                                                <div class="col-xs-9">
+                                                    <a name="%(ebits_custom_base.action_quotations_warehouse_h_ready)d" type="action" context="{'warehouse_id': context.get('active_id'), 'default_warehouse_id': context.get('active_id')}">
+                                                        Waiting For Higher Approval
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row" groups="ebits_custom_sale.group_sale_higher_approval,sales_team.group_sale_manager">
+                                                <div class="col-xs-9">
+                                                    <a name="%(ebits_custom_base.action_confirmed_sale_dashboard)d" type="action" context="{'warehouse_id': context.get('active_id'), 'default_warehouse_id': context.get('active_id'), 'search_default_warehouse_id': context.get('active_id')}">
+                                                        All Orders
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        
+        <record id="action_warehouse_sale_dashboard_form" model="ir.actions.act_window">
+            <field name="name">Sales Dashboard</field>
+            <field name="res_model">stock.warehouse</field>
+            <field name="type">ir.actions.act_window</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">kanban,form,tree</field>
+            <field name="view_id" ref="stock.view_warehouse_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Warehouse List based on the Company Division.
+              </p>
+            </field>
+        </record>
+        
+        #########Sale Dashboard
+        <record id="action_warehouse_sale_dashboard_view_kanban" model="ir.actions.act_window.view">
+            <field name="sequence">1</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_warehouse_sale_kanban"/>
+            <field name="act_window_id" ref="action_warehouse_sale_dashboard_form"/>
+        </record>
+        
+        <record id="action_warehouse_sale_dashboard_view_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock.view_warehouse"/>
+            <field name="act_window_id" ref="action_warehouse_sale_dashboard_form"/>
+        </record>
+        
+        <record id="action_warehouse_sale_dashboard_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence">3</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="stock.view_warehouse_tree"/>
+            <field name="act_window_id" ref="action_warehouse_sale_dashboard_form"/>
+        </record>
+
+<!--added from the crm team of CRM module-->
+        <record id="sales_team.crm_team_action_sales" model="ir.actions.act_window">
+            <field name="name">Dashboard</field>
+        </record>
+
+        <menuitem action="sales_team.crm_team_action_sales"
+                  id="menu_action_crm_team_sale_dashboard_form"
+                  name="Dashboard"
+            sequence="1" parent="sale.sale_menu_root"/>
+        
+        <menuitem action="action_warehouse_sale_dashboard_form" id="menu_action_warehouse_sale_dashboard_form"
+            sequence="2" parent="sale.sale_menu_root"/>
+
+
+<!--    removed once stock is installed -->
+
+    <record id="view_warehouse_inherit" model="ir.ui.view">
+            <field name="name">stock.warehouse</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="/form/sheet/h1" position="after">-->
+<!--                    -->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <label for="address"/>-->
+<!--                            <field name="address" nolabel="1" required="1"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            <label for="factory_address"/>-->
+<!--                            <field name="factory_address" nolabel="1" required="1"/>-->
+<!--                            <newline/>-->
+<!--                            <label for="po_contact_info"/>-->
+<!--                            <field name="po_contact_info" nolabel="1" required="1"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                    <group string="Production Units &amp; Division">-->
+<!--                        <group>-->
+<!--                            <field name="production_unit_id" options="{'no_create': True, 'no_open': True}" required="1"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            <field name="production_division_id" options="{'no_create': True, 'no_open': True}" required="1"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </xpath>-->
+<!--                <field name='partner_id' position="after">-->
+<!--                    <field name='transit_location_id' options="{'no_open': True, 'no_create': True}"/>-->
+<!--                    <field name="transit_loss_location_id" domain="[('usage', '=', 'inventory')]" options="{'no_open': True, 'no_create': True}" required="1"/>-->
+<!--                </field>-->
+<!--                <xpath expr="/form/sheet/notebook/page[1]" position="attributes">-->
+<!--                    <attribute name="groups">base.group_no_one</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/sheet/notebook/page[1]/group" position="attributes">-->
+<!--                    <attribute name="groups">base.group_no_one</attribute>-->
+<!--                </xpath>-->
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="Additional Info">
+                        <group>
+                            <!-- <group string="Sale">
+                                <field name="sale_sequence_id" required="1"/>
+                                <field name="sale_journal_id" required="1"/>
+                               <field name="round_off_account_id" required="1" options="{'no_open': True, 'no_create': True}"/>
+                            </group> -->
+<!--                            <group string="Purchase">-->
+<!--                                <field name="po_requisition_sequence_id" required="1"/>-->
+<!--                                <field name="purchase_sequence_id" required="1"/>-->
+<!--                                <field name="purchase_journal_id" required="1"/>-->
+<!--                                <field name="po_notes"/>-->
+<!--                            </group>-->
+<!--                            <group string="Manufacturing">-->
+<!--                                <field name="sf_mo_sequence_id"/>-->
+<!--                                <field name="mo_sequence_id"/>-->
+<!--                                <field name="sf_mo_picking_type_id"  domain="[('code', '=', 'internal')]"/>-->
+<!--                            </group>-->
+<!--                            <group string="Analytic Account">-->
+<!--                                <field name="account_analytic_id" required="1"/>-->
+<!--                            </group>-->
+<!--                            <group string="Quality">-->
+<!--                                <field name="quality_sequence_id"/>-->
+<!--                                <field name="quality_location_id" required="1" options="{'no_open': True, 'no_create': True}"/>-->
+<!--                                <field name="accept_loc_id" options="{'no_open': True, 'no_create': True}" required="1"/>-->
+<!--                                <field name="reject_loc_id" options="{'no_open': True, 'no_create': True}" required="1"/>-->
+<!--                                <field name="rework_loc_id" options="{'no_open': True, 'no_create': True}" required="1"/>-->
+<!--                            </group>-->
+<!--                            <group string="Inventory">-->
+<!--                                <field name="raw_material_issue_sequence_id"/>-->
+<!--                                <field name="material_request_sequence_id"/>-->
+<!--                                <field name="material_issue_sequence_id"/>-->
+<!--                                <field name="material_return_sequence_id"/>-->
+<!--                                <field name="cloth_order_picking_type_id" domain="[('code', '=', 'internal')]"/>-->
+<!--                                <field name="material_request_picking_type_id" domain="[('code', '=', 'internal')]"/>-->
+<!--                                <field name="material_return_picking_type_id" domain="[('code', '=', 'internal')]"/>-->
+<!--                                <field name="job_work_sequence_id"/>-->
+<!--                            </group>-->
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+
+
+</odoo>

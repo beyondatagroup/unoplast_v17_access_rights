@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <record id="ir_sequence_form_inherited" model="ir.ui.view">
+  <field name="name">ir.sequence.form.inherited</field>
+  <field name="model">ir.sequence</field>
+  <field name="inherit_id" ref="base.sequence_view"/>
+  <field name="arch" type="xml">
+   <xpath expr="/form/sheet/notebook/page/group/group/field[@name='use_date_range']" position="after">
+    <button class="oe_highlight" context="{'active_id': 'active_id'}" invisible="use_date_range == False" name="%(action_ir_sequence_sub_sequence_wizard)d" string="Create Periodical Sequence" type="action"/>
+   </xpath></field>
+ </record>
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="action_receipt_picking_move" model="ir.actions.act_window">
+        <field name="name">Incoming Products</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain"
+               eval="[('picking_id.picking_type_id.code','=','incoming'), ('location_id.usage','!=','internal'), ('location_dest_id.usage', '=', 'internal')]"/>
+        <field name="context">{'product_receive': True, 'search_default_future': True}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to register a product receipt.
+            </p>
+            <p>
+                Here you can receive individual products, no matter what
+                purchase order or picking order they come from. You will find
+                the list of all products you are waiting for. Once you receive
+                an order, you can filter based on the name of the vendor or
+                the purchase order reference. Then you can confirm all products
+                received using the buttons on the right of each line.
+            </p>
+        </field>
+    </record>
+
+    <record id="stock.view_move_tree_receipt_picking" model="ir.ui.view">
+        <field name="name">stock.move.tree2</field>
+        <field name="model">stock.move</field>
+        <field name="priority" eval="6"/>
+        <field name="arch" type="xml">
+            <tree decoration-muted="state == 'cancel'" default_order='date, picking_id, sequence' string="Moves"
+                  create="1">
+                <field name="date" column_invisible="True"/>
+                <field name="date_deadline" optional="hide"/>
+                <field name="picking_id" string="Reference" column_invisible="True" readonly="state == 'done'"/>
+                <field name="sequence" column_invisible="True"/>
+                <field name="origin" optional="show"/>
+                <field name="product_id" readonly="state == 'done'"/>
+                <field name="product_uom_qty" readonly="state == 'done'"/>
+                <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure"
+                       groups="uom.group_uom"/>
+                <field name="location_id" options="{'no_create': True}" column_invisible="True"/>
+                <field name="location_dest_id" column_invisible="True"/>
+                <field name="state" optional="show"/>
+                <field name="company_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="stock_move_purchase_" model="ir.ui.view">
+        <field name="name">stock.move.form</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="picking_type_id" string="Picking Type"/>
+                <field name="priority"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="location_id"/>
+                <field name="picking_id" string="Transfer Reference"/>
+                <field name="create_date"/>
+
+            </xpath>
+
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='origin_grp']" position="after">
+                <group name="quants_grp" string="Reserved Quants" colspan="2" groups="base.group_no_one"
+                      >
+                    <field name="availability" string="Availability"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+    <menuitem action="product.product_supplierinfo_type_action"
+              id="menu_partner_registration_details_vendor_"
+              parent="purchase.menu_procurement_management"
+              sequence="100"/>
+
+    <menuitem action="action_warehouse_purchase_dashboard_form" id="menu_action_control"
+              name="Control"
+              sequence="25" parent="purchase.menu_purchase_root"
+              groups="purchase.group_purchase_user"/>
+
+    <menuitem
+            action="account.action_move_in_invoice_type"
+            id="vendor_bill_menu"
+            name="Vendor Bills"
+            parent="ebits_custom_purchase.menu_action_control"
+            sequence="2"/>
+
+    <menuitem
+            action="ebits_custom_purchase.action_receipt_picking_move"
+            id="incoming_products_menu"
+            parent="ebits_custom_purchase.menu_action_control"
+            sequence="1"/>
+</odoo>

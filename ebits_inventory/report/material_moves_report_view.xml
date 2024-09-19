@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="report_raw_material_issue_rml"
+            string="Raw Material Issue"
+            model="raw.material.issue" 
+            report_type="pdf"
+            rml="ebits_inventory/report/raw_material_issue_report_rml.rml" 
+            name="raw.material.issue.rml.report"
+            menu="True"
+        />
+        
+        <report 
+            id="report_material_request_rml"
+            string="Material Request"
+            model="material.request" 
+            report_type="pdf"
+            rml="ebits_inventory/report/material_request_report_rml.rml" 
+            name="material.request.rml.report"
+            menu="True"
+        />
+        
+        <report 
+            id="report_material_issue_rml"
+            string="Material Issue" 
+            model="material.issue" 
+            report_type="pdf"
+            rml="ebits_inventory/report/material_issue_report_rml.rml" 
+            name="material.issue.rml.report" 
+            menu="True"
+        />
+        
+        <report 
+            id="report_material_return_rml"
+            string="Material Return" 
+            model="material.return" 
+            report_type="pdf"
+            rml="ebits_inventory/report/material_return_report_rml.rml" 
+            name="material.return.rml.report" 
+            menu="True"
+        />
+        
+        <report 
+            id="report_internal_stock_request_rml"
+            string="Internal Stock Transfer Request"
+            model="internal.stock.transfer.request" 
+            report_type="pdf"
+            rml="ebits_inventory/report/internal_stock_request_report_rml.rml" 
+            name="internal.stock.request.rml.report"
+            menu="True"
+        />
+        
+        <report 
+            id="report_internal_stock_issue_rml"
+            string="Internal Stock Transfer Issue"
+            model="internal.stock.transfer.issue" 
+            report_type="pdf"
+            rml="ebits_inventory/report/internal_stock_issue_report_rml.rml" 
+            name="internal.stock.issue.rml.report"
+            menu="True"
+        />
+        
+        <report 
+            id="report_internal_stock_receipt_rml"
+            string="Internal Stock Transfer Receipt"
+            model="internal.stock.transfer.receipt" 
+            report_type="pdf"
+            rml="ebits_inventory/report/internal_stock_receipt_report_rml.rml" 
+            name="internal.stock.receipt.rml.report"
+            menu="True"
+        />
+        
+        <report 
+            id="report_stock_picking_goods_transfer_report_rml"
+            string="Goods Transfer Note"
+            model="stock.picking" 
+            report_type="pdf"
+            rml="ebits_inventory/report/stock_picking_goods_transfer_rml_report.rml" 
+            name="stock.picking.goods.transfer.rml.report" 
+        />
+        
+        <report 
+            id="report_inventory_adjustments_report_rml"
+            string="Inventory Adjustments Note"
+            model="stock.inventory" 
+            report_type="pdf"
+            rml="ebits_inventory/report/inventory_adjustments_report_rml.rml" 
+            name="inventory.adjustments.rml.report" 
+        />
+        
+        <report 
+            id="physical_stock_record_report_rml"
+            string="Physical Stock Record"
+            model="stock.inventory" 
+            report_type="pdf"
+            rml="ebits_inventory/report/physical_stock_record_rml.rml" 
+            name="physical.stock.record.report" 
+        />
+        
+<!--        <report-->
+<!--            string="Inventory Adjustment Note-Qweb" -->
+<!--            id="action_report_inventory_adjustments" -->
+<!--            model="stock.inventory" -->
+<!--            report_type="qweb-pdf"-->
+<!--            name="ebits_inventory.report_inventory_adjustments" -->
+<!--            file="ebits_inventory.report_inventory_adjustments"-->
+<!--        />-->
+
+<!--        <report -->
+<!--            string="Request for Quotation" -->
+<!--            id="purchase.report_purchase_quotation" -->
+<!--            model="purchase.order" -->
+<!--            report_type="qweb-pdf"-->
+<!--            name="purchase.report_purchasequotation" -->
+<!--            file="purchase.report_purchasequotation"-->
+<!--            menu="False"-->
+<!--        />        -->
+</odoo>

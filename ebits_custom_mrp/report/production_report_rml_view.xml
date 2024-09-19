@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="inter_process_production_rml"
+            string="Inter Process Production"
+            model="inter.process.production" 
+            report_type="pdf"
+            rml="ebits_custom_mrp/report/inter_process_production_report_rml.rml" 
+            name="inter.process.production.rml.report"
+        />
+        
+        <report 
+            id="sf_manufacturing_order_rml"
+            string="SF Manufacturing Order"
+            model="sf.manufacturing.order" 
+            report_type="pdf"
+            rml="ebits_custom_mrp/report/sf_manufacturing_order_report_rml.rml" 
+            name="sf.manufacturing.order.rml.report"
+        />
+        
+        <report 
+            id="manufacturing_order_rml"
+            string="Manufacturing Order"
+            model="mrp.production" 
+            report_type="pdf"
+            rml="ebits_custom_mrp/report/manufacturing_order_report_rml.rml" 
+            name="manufacturing.order.rml.report"
+        />
+        
+</odoo>

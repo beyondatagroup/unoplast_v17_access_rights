@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="header_layout_purchase_report">
+        <t t-foreach="docs" t-as="o">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+                <div class="row">
+                    <div class="col-12">
+<!--                        <img t-if="company.custom_header" t-att-src="image_data_uri(company.custom_header)"-->
+<!--                             style="max-height: 130px;"-->
+<!--                             alt="Logo"/>-->
+                    </div>
+                </div>
+            </div>
+            <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout {{  'o_layout_background' if company.layout_background in ['Geometric', 'Custom']  else  '' }}"
+                 t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
+                 t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <div>
+                    <!-- This div ensures that the address is not cropped by the header. -->
+                    <t t-call="web.address_layout"/>
+                </div>
+                <t t-out="0"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="footer_layout_purchase_report">
+        <div class="footer">
+            <div class="last-page" style="width:100%;float:left;font-size:22px;">
+                <strong>
+                    This is a Computer Generated Document no signature &amp; Stamp Required
+                </strong>
+            </div>
+            <strong style="text-align:center;width:100%;float:left;">
+                Page
+                <span class="page"/>
+                of
+                <span class="topage"/>
+            </strong>
+            <t t-foreach="docs" t-as="o">
+                <t t-if="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id"></t>
+                </t>
+                <t t-if="not o or not 'company_id' in o">
+                    <t t-set="company" t-value="res_company"></t>
+                </t>
+                <div style="width: 100%;float: left;">
+<!--                    <img t-if="company.custom_footer" t-att-src="image_data_uri(company.custom_footer)"-->
+<!--                         style="max-height: 200px;"-->
+<!--                         alt="Logo"/>-->
+                </div>
+            </t>
+        </div>
+    </template>
+
+    <template id="footer_layout_purchase_report_equipment_only">
+      <div class="footer">
+    <div class="authorized-signatory" style="font-family :Times New Roman;text-align:right;">
+        For <b><span t-field="doc.company_id"/></b>
+        <p>Authorized Signatory</p>
+        <p>______________________</p>
+    </div>
+
+    <div style="border-top: 1px solid black; padding: 5px">
+        <div width="100%"
+             style="font-family :Times New Roman;text-align:right; font-size:15px;">
+
+            Page:
+            <span class="page"/>
+            of
+            <span class="topage"/>
+
+        </div>
+    </div>
+</div>
+    </template>
+</odoo>

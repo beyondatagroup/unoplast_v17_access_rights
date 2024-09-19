@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <record id="view_warehouse_internal_transfer_kanban" model="ir.ui.view">
+            <field name="name">stock.warehouse.internal.transfer.kanban</field>
+            <field name="model">stock.warehouse</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey o_kanban_dashboard o_stock_kanban" create="0">
+<!--                    <field name="color"/>-->
+                    <field name="count_irequest_draft"/>
+                    <field name="count_irequest_waiting"/>
+                    <field name="count_irequest_done"/>
+                    <field name="count_irequest_cancel"/>
+                    <field name="count_iissue_draft"/>
+                    <field name="count_iissue_partial"/>
+                    <field name="count_iissue_done"/>
+                    <field name="count_ireceipt_draft"/>
+                    <field name="count_ireceipt_partial"/>
+                    <field name="count_ireceipt_done"/>
+                    <templates>
+                        <t t-name="kanban-box">
+<!--                            <div t-attf-class="#{kanban_color(record.color.raw_value)}">-->
+                            <div>
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary"><field name="name"/></div>
+                                    </div>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <div class="row">
+                                        <div class="col-xs-6 o_kanban_primary_left" name="link_to_create_request">
+                                            <button class="btn btn-primary" name="%(action_internal_stock_transfer_request_new)d" type="action" context="{'requesting_warehouse_id': context.get('active_id'), 'default_requesting_warehouse_id': context.get('active_id')}">Create Transfer Request</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <div class="row">
+                                        <div class="col-xs-6 o_kanban_primary_left">
+                                            <div class="o_kanban_card_manage_title">
+                                                <span>Request(s)</span>
+                                            </div>
+                                            <div t-if="record.count_irequest_draft.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_request_draft)d" type="action" context="{'requesting_warehouse_id': context.get('active_id'), 'default_requesting_warehouse_id': context.get('active_id')}">
+                                                        Draft
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_irequest_waiting.raw_value > 0" class="row">
+                                                <div class="col-xs-9">
+                                                    <a name="%(action_internal_stock_transfer_request_waiting)d" type="action" context="{'requesting_warehouse_id': context.get('active_id'), 'default_requesting_warehouse_id': context.get('active_id')}">
+                                                        Pending Approval
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_irequest_done.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_request_done)d" type="action" context="{'requesting_warehouse_id': context.get('active_id'), 'default_requesting_warehouse_id': context.get('active_id')}">
+                                                        Approved
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_irequest_cancel.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_request_cancel)d" type="action" context="{'requesting_warehouse_id': context.get('active_id'), 'default_requesting_warehouse_id': context.get('active_id'), 'search_default_warehouse_id': context.get('active_id')}">
+                                                        Rejected
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_request_all)d" type="action" context="{'requesting_warehouse_id': context.get('active_id'), 'default_requesting_warehouse_id': context.get('active_id'), 'search_default_warehouse_id': context.get('active_id')}">
+                                                        All
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="o_kanban_card_manage_title">
+                                                <span>Receipt(s)</span>
+                                            </div>
+                                            <div t-if="record.count_ireceipt_draft.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_receipts_draft)d" type="action" context="{'receiving_warehouse_id': context.get('active_id'), 'default_receiving_warehouse_id': context.get('active_id')}">
+                                                        Draft
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_ireceipt_partial.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_receipts_waiting)d" type="action" context="{'receiving_warehouse_id': context.get('active_id'), 'default_receiving_warehouse_id': context.get('active_id')}">
+                                                        Partial
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_ireceipt_done.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_receipts_done)d" type="action" context="{'receiving_warehouse_id': context.get('active_id'), 'default_receiving_warehouse_id': context.get('active_id')}">
+                                                        Completed
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_receipts_all)d" type="action" context="{'receiving_warehouse_id': context.get('active_id'), 'default_receiving_warehouse_id': context.get('active_id')}">
+                                                        All
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-6 o_kanban_primary_right">
+                                            <div class="o_kanban_card_manage_title">
+                                                <span>Issue(s)</span>
+                                            </div>
+                                            <div t-if="record.count_iissue_draft.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_issue_draft)d" type="action" context="{'issuing_warehouse_id': context.get('active_id'), 'default_issuing_warehouse_id': context.get('active_id')}">
+                                                        Draft
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_iissue_partial.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_issue_waiting)d" type="action" context="{'issuing_warehouse_id': context.get('active_id'), 'default_issuing_warehouse_id': context.get('active_id')}">
+                                                        Partial
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div t-if="record.count_iissue_done.raw_value > 0" class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_issue_done)d" type="action" context="{'issuing_warehouse_id': context.get('active_id'), 'default_issuing_warehouse_id': context.get('active_id')}">
+                                                        Completed
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <a name="%(action_internal_stock_transfer_issue_all)d" type="action" context="{'issuing_warehouse_id': context.get('active_id'), 'default_issuing_warehouse_id': context.get('active_id')}">
+                                                        All
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_warehouse_internal_transfer_dashboard_form" model="ir.actions.act_window">
+            <field name="name">Dashboard</field>
+            <field name="res_model">stock.warehouse</field>
+            <field name="view_mode">kanban,form,tree</field>
+            <field name="view_id" ref="stock.view_warehouse_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Warehouse List based on the Company Division.
+              </p>
+            </field>
+        </record>
+
+        <record id="action_warehouse_internal_transfer_dashboard_view_kanban" model="ir.actions.act_window.view">
+            <field name="sequence">1</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_warehouse_internal_transfer_kanban"/>
+            <field name="act_window_id" ref="action_warehouse_internal_transfer_dashboard_form"/>
+        </record>
+
+        <record id="action_warehouse_internal_transfer_dashboard_view_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock.view_warehouse"/>
+            <field name="act_window_id" ref="action_warehouse_internal_transfer_dashboard_form"/>
+        </record>
+
+        <record id="action_warehouse_sale_dashboard_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence">3</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="stock.view_warehouse_tree"/>
+            <field name="act_window_id" ref="action_warehouse_internal_transfer_dashboard_form"/>
+        </record>
+
+<!--        <menuitem  id="menu_action_warehouse_internal_transfer_dashboard_form"-->
+<!--            sequence="1" parent="menu_internal_stock_transfer"/>-->
+
+        <menuitem id="menu_internal_stock_transfer_dashboard"
+            action="action_warehouse_internal_transfer_dashboard_form"
+            name="Dashboard" sequence="1"
+            parent="material_move_root_menu"
+            groups="ebits_inventory.group_internal_stock_request_user,ebits_inventory.group_internal_stock_request_manager,ebits_inventory.group_internal_stock_issue_user"/>
+</odoo>

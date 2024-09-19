@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="branch_rol_report_wizard_form" model="ir.ui.view">
+        <field name="name">Branch Reordering Level Report</field>
+        <field name="model">branch.rol.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Report">
+                <group>
+                    <group>
+                        <field name="warehouse_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field invisible="1" name="view_location_ids" widget="many2many_tags"/>
+                        <field domain="[('usage', '=', 'internal')]" name="location_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                        <field name="product_ids" options="{'no_open':True, 'no_create':True}" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <field invisible="1" name="name"/>
+                <h1 invisible="output == False">
+                    <field filename="name" name="output" nolabel="1"/>
+                </h1>
+                <footer>
+                    <button class="oe_highlight" name="action_report" string="Generate Report" type="object"/>
+                    or
+                    <button class="oe_link" special="cancel" string="Cancel"/>
+                </footer>
+            </form></field>
+    </record>
+    <record id="action_branch_rol_report_wizard" model="ir.actions.act_window">
+        <field name="name">Branch Reordering Level Report</field>
+        <field name="res_model">branch.rol.report.wizard</field>
+        <field name="view_mode">form</field>
+        <!-- <field name="context">{}</field> -->
+        <field name="target">new</field>
+    </record>
+    <menuitem id="root_stock_report_menu" name="Reordering Level Report" parent="stock.menu_warehouse_report" sequence="250"/>
+    <menuitem action="action_branch_rol_report_wizard" id="menu_branch_rol_report_excel" name="Branch Reordering Level Excel" parent="root_stock_report_menu" sequence="2"/>
+</odoo>

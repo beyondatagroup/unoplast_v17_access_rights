@@ -1,0 +1,168 @@
+<odoo>
+        <record id="force_close_raw_issue_wizard" model="ir.ui.view">
+            <field name="name">Force Close Raw Issue Wizard</field>
+            <field name="model">force.close.raw.issue.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Force Close">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_close" string="Force Close" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="cancel_material_request_wizard" model="ir.ui.view">
+            <field name="name">Reject Material Request Wizard</field>
+            <field name="model">cancel.material.request</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Request">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_cancel" string="Reject" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="force_close_material_issue" model="ir.ui.view">
+            <field name="name">Force Close Wizard</field>
+            <field name="model">force.close.material.issue</field>
+            <field name="arch" type="xml">
+                <form string="Force Close">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_close" string="Force Close" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="force_close_material_return" model="ir.ui.view">
+            <field name="name">Force Close Wizard</field>
+            <field name="model">force.close.material.return</field>
+            <field name="arch" type="xml">
+                <form string="Force Close">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_close" string="Force Close" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="reject_stock_transfer_request" model="ir.ui.view">
+            <field name="name">Rejection Wizard</field>
+            <field name="model">reject.internal.stock.transfer.request</field>
+            <field name="arch" type="xml">
+                <form string="Reject">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_close" string="Confirm Rejection" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="force_close_internal_stock_transfer_issue" model="ir.ui.view">
+            <field name="name">Force Close Wizard</field>
+            <field name="model">force.close.internal.stock.transfer.issue</field>
+            <field name="arch" type="xml">
+                <form string="Force Close">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_close" string="Force Close" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="force_close_internal_stock_transfer_receipt" model="ir.ui.view">
+            <field name="name">Force Close</field>
+            <field name="model">force.close.internal.stock.transfer.receipt</field>
+            <field name="arch" type="xml">
+                <form string="Force Close">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button name="action_close" string="Force Close" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
+        
+        <record id="action_force_close_internal_stock_transfer_receipt" model="ir.actions.act_window">
+            <field name="name">Force Close</field>
+             <field name="res_model">force.close.internal.stock.transfer.receipt</field>
+              <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+        
+        <record id="action_force_close_internal_stock_transfer_issue" model="ir.actions.act_window">
+            <field name="name">Force Close</field>
+            <field name="res_model">force.close.internal.stock.transfer.issue</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+       </record>
+        
+        <record id="action_reject_stock_transfer_request" model="ir.actions.act_window">
+            <field name="name">Force Close</field>
+             <field name="res_model">reject.internal.stock.transfer.request</field>
+             <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+        
+        <record id="action_force_close_material_return" model="ir.actions.act_window">
+            <field name="name">Force Close</field>
+             <field name="res_model">force.close.material.return</field>
+             <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+        
+        <record id="action_force_close_material_issue" model="ir.actions.act_window">
+            <field name="name">Force Close</field>
+             <field name="res_model">force.close.material.issue</field>
+              <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+        
+        <record id="action_cancel_material_request_wizard" model="ir.actions.act_window">
+            <field name="name">Reject Material Request</field>
+             <field name="res_model">cancel.material.request</field>
+             <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+        
+        <record id="action_force_close_raw_issue_wizard" model="ir.actions.act_window">
+            <field name="name">Force Close</field>
+             <field name="res_model">force.close.raw.issue.wizard</field>
+             <field name="view_mode">form</field>
+             <field name="target">new</field>
+       </record>
+</odoo>
+

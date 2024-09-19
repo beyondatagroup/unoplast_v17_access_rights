@@ -1,0 +1,422 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="paperformat_ebits_custom_stock_1" model="report.paperformat">
+        <field name="name">Internal Stock Issue</field>
+        <field name="default" eval="False" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">93.00</field>
+        <field name="margin_bottom">40</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">91</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="ebits_custom_stock.report_internal_stock_issue_note" model="ir.actions.report">
+        <field name="name">Internal Stock Issue</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ebits_custom_stock.report_issue_note</field>
+        <field name="report_file">ebits_custom_stock.report_issue_note</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking" />
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="ebits_custom_stock.paperformat_ebits_custom_stock_1" />
+    </record>
+    <template id="report_issue_note">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="header">
+                        <center>
+                            <b>Internal Stock Transfer Issue</b>
+                        </center>
+                        <table width="100%" style="font-family: sans-serif;border:1px solid lightgrey; font-size:13px">
+                            <tr>
+                                <td width="55%" style="border:1px solid lightgrey;">
+                                    <div style="width: 35%; float: left;text-align:center;">
+                                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)"
+                                            style="max-height:90px; display: inline; vertical-align: middle;margin-top: 15px;"
+                                            alt="Logo" />
+                                    </div>
+                                    <!-- <div
+                                        style="width: 65%; float: right; text-align: left; font-size: 12px;padding:5px; position: relative;  height: 140px;">
+                                        <strong style="text-align:center; font-size:14px">
+                                            <t t-esc="o.company_id.name" />
+                                            <br />
+                                        </strong>
+                                        <t t-esc="o.company_id.street" style="margin-left:5px;" />
+                                        <br />
+                                        <t t-if="o.company_id.street2">
+                                            <t t-esc="o.company_id.street2" style="margin-left:5px;" />
+                                            <br />
+                                        </t>
+                                        <t t-if="o.company_id.city">
+                                            <t t-esc="o.company_id.city" style="margin-left:5px;" />
+                                        </t>
+                                        <t t-if="o.company_id.country_id">
+                                            <t t-esc="o.company_id.country_id.name" style="margin-left:5px;" />
+                                        </t>
+                                        <br />
+                                        <t t-if="o.company_id.email">
+                                            Email:
+                                            <span t-esc="o.company_id.email" />
+                                        </t>
+                                        <br />
+                                        <t t-if="o.company_id.mobile">
+                                            Mobile:
+                                            <span t-esc="o.company_id.mobile" style="margin-left:5px;" />
+                                        </t>
+                                        <br />
+                                        <t t-if="o.company_id.phone">
+                                            Phone:
+                                            <span t-esc="o.company_id.phone" style="margin-left:5px;" />
+                                        </t>
+                                        <br />
+                                        <t t-if="o.company_id.vat">
+                                            <span>TIN: </span>
+                                            <span t-esc="o.company_id.vat" />
+                                        </t>
+                                        <t t-if="o.company_id.vat">
+                                            VAT:
+                                            <span t-esc="o.company_id.partner_id.vrn_no" />
+                                        </t>
+                                    </div> -->
+                                    <div
+                                        style="width: 65%; float: right; text-align: left; font-size: 12px;padding:5px; position: relative;  height: 140px;">
+                                        <strong style="text-align:center; font-size:14px">
+                                            <t t-esc="o.company_id.name" />
+                                            <br />
+                                        </strong>
+                                        <!-- <t t-esc="o.picking_type_id.warehouse_id.address" style="margin-left:5px;" /> -->
+                                        <!-- <pre style="font-size: 12px; margin: 0;">
+                                            <t t-esc="o.picking_type_id.warehouse_id.address" />
+                                        </pre> -->
+                                        <t t-esc="o.picking_type_id.warehouse_id.address" style="margin-left:5px;"/>
+                                        <p>
+                                            <t t-if="o.company_id.vat">
+                                                TIN: <t t-esc="o.company_id.vat" /><br/>
+                                            </t>
+                                            <t t-if="o.company_id.partner_id.vrn_no">
+                                                VAT: <t t-esc="o.company_id.partner_id.vrn_no" />
+                                            </t>
+                                        </p>
+                                    </div>
+                                </td>
+                                <td width="45%" style="position:fixed;top:20;">
+                                    <div style="padding:10px;width: 100%;">
+                                        <div style="float:left;">
+                                            <p>
+                                                <b>issue no</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.name if o.internal_stock_transfer_issue_id.name else '-'" />
+                                            </p>
+                                            <p>
+                                                <b>Requested Date</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.date_requested.strftime('%d/%m/%Y') if o.internal_stock_transfer_issue_id.date_requested else '-'" />
+                                            </p>
+                                        </div>
+                                        <div style="float:right;margin-right:60px;">
+                                            <p>
+                                                <b>Request No</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.request_id.name if o.internal_stock_transfer_issue_id.request_id.name else '-'" />
+                                            </p>
+                                            <p>
+                                                <b>Approved By</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.approver_user_id.name if o.internal_stock_transfer_issue_id.approver_user_id.name else '-'" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <div style="padding:10px;">
+                                        <div style="float:left;">
+                                            <p>
+                                                <b>Requesting Warehouse </b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.warehouse_master_id.requesting_warehouse_id.name if o.internal_stock_transfer_issue_id.warehouse_master_id.requesting_warehouse_id.name else '-'" />
+                                            </p>
+                                        </div>
+                                        <div style="float:right;margin-right:60px;">
+                                            <p>
+                                                <b>Issuing Warehouse</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.picking_type_id.warehouse_id.name if o.picking_type_id.warehouse_id.name else '-'" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="border: 1px solid lightgray;vertical-align: top;">
+                                    <div style="padding: 5px;">
+                                        <!-- <div style="padding:5px;"> -->
+                                        <div style="float:left;">
+                                            <p>
+                                                <b>Approved Date</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.date_approved.strftime('%d/%m/%Y') if o.internal_stock_transfer_issue_id.date_approved else '-'" />
+                                            </p>
+                                            <p>
+                                                <b>Required Date</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.date_required.strftime('%d/%m/%Y') if o.internal_stock_transfer_issue_id.date_required else '-'" />
+                                            </p>
+                                        </div>
+                                        <div style="float:right;margin-right:60px;">
+                                            <p>
+                                                <b>Last Issued Date</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.date_last_issue.strftime('%d/%m/%Y') if o.internal_stock_transfer_issue_id.date_last_issue else '-'" />
+                                            </p>
+                                            <p>
+                                                <b>Requester</b>
+                                                <br />
+                                                <t
+                                                    t-esc="o.internal_stock_transfer_issue_id.requester if o.internal_stock_transfer_issue_id.requester else '-'" />
+                                            </p>
+                                        </div>
+                                        <!-- </div> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div>
+                            <style>
+                                .tab1 {
+                                    border-collapse: collapse;
+                                }
+
+                                .tab1 td {
+                                    border: 1px solid lightgray;
+                                    border-top: none;
+                                    text-align: left;
+                                    padding-left: 5px;
+                                }
+                            </style>
+                            <table width="100%" class="tab1">
+                                <tr style="font-size: 13px; ">
+                                    <td>
+                                        <p>
+                                            <b>Vehicle No </b>
+                                            <br />
+                                            <t t-esc="o.vehicle_no if o.vehicle_no else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Vehicle Owner</b>
+                                            <br />
+                                            <t t-esc="o.vehicle_owner if o.vehicle_owner else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Vehicle Owner Address</b>
+                                            <br />
+                                            <t t-esc="o.vehicle_owner_address if o.vehicle_owner_address else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Agent Name
+                                                <br />
+                                            </b>
+                                            <t t-esc="o.agent_name if o.agent_name else '-'" />
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table width="100%" class="tab1">
+                                <tr style="font-size: 13px; ">
+                                    <td>
+                                        <p>
+                                            <b>Driver Name </b>
+                                            <br />
+                                            <t t-esc="o.driver_name if o.driver_name else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Driver Licence No</b>
+                                            <br />
+                                            <t t-esc="o.driver_licence if o.driver_licence else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Driver Licence Type</b>
+                                            <br />
+                                            <t t-esc="o.driver_licence_type if o.driver_licence_type else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Issued Licence Place</b>
+                                            <br />
+                                            <t t-esc="o.driver_licence_place if o.driver_licence_place else '-'" />
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <b>Driver Contact No</b>
+                                            <br />
+                                            <t t-esc="o.driver_phone if o.driver_phone else '-'" />
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="padding: 11px;">
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer" style="border: 1px solid lightgray;border-top:none;">
+                        <div style=" padding: 15px">
+                            <table width="100%" style="font-size: 13px;">
+                                <tr style="border:hidden;">
+                                    <td style="text-align: left;">
+                                        <b>Remarks:</b>
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </td>
+                                </tr>
+                                <tr style="border:hidden;">
+                                    <td style="text-align: right;">
+                                        for
+                                        <b>Unoplast (T) Ltd</b>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        Authorised Signatory
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div width="100%"
+                                style="font-family :Times New Roman;text-align:right; font-size:14px;margin-right:15px;">
+                                Page:
+                                <span class="page"/>
+                                of
+                                <span class="topage"/>
+                        </div>
+                    </div>
+                    <div class="page" style="border: 1px solid lightgray;border-bottom: none;">
+                        <t t-if="(len(o.move_ids_without_package)+1) &gt; 20">
+                            <style>
+                                .relative {
+                                    page-break-inside: always;
+                                    position: relative;
+                                    width: 100%;
+                                    height: 1451px;
+                                }
+                            </style>
+                        </t>
+                        <t t-else="">
+                            <style>
+                                .relative {
+                                    position: relative;
+                                    width: 100%;
+                                    height: 725px;
+                                }
+                            </style>
+                        </t>
+                        <div class="relative">
+                            <style>
+                                .tab2 td,
+                                th {
+                                    border: 1px solid lightgray;
+                                    border-top: none;
+                                    text-align: left;
+                                    font-size: 13px;
+                                }
+                            </style>
+                            <table width="100%" class="tab2">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px;">S.No</th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px;">Particulars</th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px;">Issued Qty</th>
+                                        <th class="text-center" style="padding: 8px;font-size: 15px;">UOM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="s_no" t-value="1" />
+                                    <t t-foreach="o.move_ids_without_package" t-as="line">
+                                        <tr>
+                                            <td class="text-center" style="padding: 10px;">
+                                                <t t-esc="s_no" />
+                                            </td>
+                                            <t t-set="s_no" t-value="s_no + 1" />
+                                            <td class="description-column" style="padding: 10px;">
+                                                <b>
+                                                    <t t-esc="line.product_id.display_name" />
+                                                </b>
+                                            </td>
+                                            <td class="text-center" style="padding: 10px;">
+                                                <t t-esc="line.quantity" />
+                                            </td>
+                                            <td class="text-center" style="padding: 10px;">
+                                                <t t-esc="line.product_uom.name" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tr style="border:hidden;" >
+                                    <td colspan="4" style="border-bottom: none;border:hidden;">  
+                                        <div style="padding:10px;">
+                                            <b>Total Quantity:</b><br/>
+                                            <t t-set="qty_by_uom_dict" t-value="{}" />
+                                            <t t-foreach="o.move_ids_without_package" t-as="line">
+                                                <t t-set="uom_name" t-value="line.product_uom.name" />
+                                                <t t-set="uom_qty" t-value="line.quantity" />
+                                                <t t-if="uom_name in qty_by_uom_dict">
+                                                    <t t-set="qty_by_uom_dict"
+                                                        t-value="dict(qty_by_uom_dict, **{uom_name: qty_by_uom_dict[uom_name] + uom_qty})" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-set="qty_by_uom_dict"
+                                                        t-value="dict(qty_by_uom_dict, **{uom_name: uom_qty})" />
+                                                </t>
+                                            </t>
+                                            <t t-set="qty_by_uom_list"
+                                                t-value="[(k, v) for k, v in qty_by_uom_dict.items()]" />
+                                            <t t-set="s" t-value="1" />
+                                            <t t-foreach="qty_by_uom_list" t-as="item">
+                                                <t t-if="s != 1">,</t>
+                                                <span t-esc="item[0]" />
+                                                :
+                                                <span t-esc="item[1]" />
+                                            </t>
+                                        </div>
+                                    </td>
+                                </tr>
+                        </table>
+
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

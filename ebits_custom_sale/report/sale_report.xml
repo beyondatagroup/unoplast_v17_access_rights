@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            id="sale.report_sale_order_custom"
+            string="Sale Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="ebits_custom_sale.report_saleorder_custom" 
+            name="ebits_custom_sale.report_saleorder_custom" 
+            menu="False"
+        />
+        
+        <report 
+            id="report_sale_order_rml"
+            string="Sale Order"
+            model="sale.order" 
+            report_type="pdf"
+            file="ebits_custom_sale/report/sale_order_rml_report.rml"
+            name="sale.order.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="report_sale_order_cash_rml"
+            string="Sale Order"
+            model="sale.order" 
+            report_type="pdf"
+            file="ebits_custom_sale/report/sale_order_cash_rml_report.rml"
+            name="sale.order.cash.rml.report"
+            menu="False"
+        />
+        
+        <report 
+            id="sale.report_sale_order"
+            string="Quotation / Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="sale.report_saleorder" 
+            name="sale.report_saleorder"
+            menu="False" 
+        />
+    </data>
+</odoo>

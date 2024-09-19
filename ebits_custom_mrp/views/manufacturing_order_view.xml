@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sf_manufacturing_order_tree" model="ir.ui.view">
+        <field name="name">SF Manufacturing Orders</field>
+        <field name="model">sf.manufacturing.order</field>
+        <field name="arch" type="xml">
+            <tree string="SF Manufacturing Order(s)">
+                <field name="type"/>
+                <field name="date"/>
+                <field name="name" string="MO NO."/>
+                <field name="warehouse_id"/>
+                <field name="dest_location_id"/>
+                <field name="shift_type"/>
+                <field name="product_category"/>
+                <field name="product_id"/>
+                <field name="uom_id"/>
+                <field name="state"/>
+                <field name="product_qty"/>
+                <field name="user_id" optional="hide"/>
+                <field name="picking_type_id" optional="hide"/>
+                <field optional="hide" name="order_type"/>
+                <field optional="hide" name="unbuild_order"/>
+                <field name="materials_line" widget="one2many_list">
+                    <tree editable="bottom">
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+<!--                        <field name="available_stock"/>-->
+<!--                        <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--                        <field name="source_location_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--                        <field invisible="1" name="dest_location_id" options="{'no_create': True, 'no_open': True}"/>-->
+<!--                        <field invisible="1" name="state"/>-->
+<!--                        <field invisible="1" name="warehouse_id" options="{'no_create': True, 'no_open': True}"/>-->
+                    </tree>
+                </field>
+            </tree>
+        </field>
+    </record>
+    <record id="view_picking_withweight_internal_move_form_" model="ir.ui.view">
+        <field name="name">stock.picking_withweight.internal.move.form.view.</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_dest_id']" position="after">
+                <field name="date_expected" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="sf_manufacturing_order_form" model="ir.ui.view">
+        <field name="name">SF Manufacturing Orders</field>
+        <field name="model">sf.manufacturing.order</field>
+        <field name="arch" type="xml">
+            <form string="SF Manufacturing Order">
+                <header>
+                    <button class="oe_highlight" invisible="state not in ['draft']" name="move_to_start" string="Start"
+                            type="object"/>
+                    <button class="oe_highlight" invisible="state not in ['inprogress']" name="move_to_complete"
+                            string="Produce" type="object"/>
+                    <button class="oe_highlight" invisible="unbuild_order == True or state in ('draft', 'inprogress')"
+                            name="action_move_to_unbuild_order" string="Unbuild" type="object"/>
+                    <!--                        <button name="action_update_cost_price" string="Costing update" type="object" class="oe_highlight"/>-->
+                    <field name="state" statusbar_visible="draft,inprogress,completed" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field domain="[('type', '=', 'product'), ('route_ids.name', 'in', ('Manufacture', 'Make To Order'))]"
+                                   name="product_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state not in ['draft']"/>
+                            <field name="uom_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state not in ['draft']"/>
+                            <field name="product_qty" readonly="state not in ['draft']"/>
+                            <field name="batch_number" readonly="state not in ['draft']"/>
+                            <field name="shift_type" readonly="state not in ['draft']"/>
+                            <label for="available_stock"/>
+                            <div>
+                                <field name="available_stock" readonly="1"/>
+                                <button class="oe_highlight" invisible="state not in ['draft','inprogress']"
+                                        name="action_check_stock" string="Check Stock" type="object"/>
+                            </div>
+                            <field invisible="1" name="company_id" options="{'no_create': True, 'no_open': True}"/>
+                            <!--                            DOMAIN NOT AVAILABLE IN 17-->
+                            <!--                            <field domain="[('state', '=', 'done'),('warehouse_id', '=', warehouse_id )]" name="material_issue_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>-->
+                            <field name="material_issue_ids" readonly="state not in ['draft']"
+                                   options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+                            <label for="action_add_product"/>
+                            <div>
+                                <button class="oe_highlight" invisible="state not in ['draft']"
+                                        name="action_add_product" string="Add Products" type="object"/>
+                            </div>
+                            <label for="unbuild_order_id"
+                                   invisible="unbuild_order == False or state in ('draft', 'inprogress')"/>
+                            <div>
+                                <field invisible="unbuild_order == False or state in ('draft', 'inprogress')"
+                                       name="unbuild_order_id" options="{'no_create': True, 'no_open': True}"/>
+                                <button class="oe_highlight"
+                                        invisible="unbuild_order == False or state in ('draft', 'inprogress')"
+                                        name="action_open_unbuid_order_link" string="Open" type="object"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="completed_user_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="date_done"/>
+                            <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state not in ['draft']"/>
+                            <field domain="[('warehouse_id', '=', warehouse_id), ('code', '=', 'internal')]"
+                                   name="picking_type_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state not in ['draft']"/>
+                            <field name="source_location_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state not in ['draft']"/>
+                            <field name="dest_location_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state not in ['draft']"/>
+                            <field invisible="1" name="unbuild_order"/>
+                            <field invisible="1" name="order_type"/>
+                            <button class="oe_highlight" invisible="state not in ['draft']" name="action_remove_line"
+                                    string="Remove Products" type="object"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Raw Materials">
+                            <field name="materials_line" widget="one2many_list" readonly="state not in ['draft']">
+                                <tree editable="bottom">
+                                    <field domain="[('purchase_ok', '=', True)]" name="product_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="quantity"/>
+                                    <field name="available_stock"/>
+                                    <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="source_location_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="dest_location_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="state"/>
+                                    <field invisible="1" name="warehouse_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="By Products">
+                            <field context="{'default_source_location_id': source_location_id}" name="scrap_line"
+                                   widget="one2many_list" readonly="state not in ['draft']">
+                                <tree editable="bottom">
+                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="source_location_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="dest_location_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="state"/>
+                                    <field invisible="1" name="warehouse_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Stock Moves">
+                            <field name="move_lines" readonly="1" widget="one2many_list">
+                                <tree create="0" delete="0" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="picking_id" string="Reference"/>
+                                    <field name="origin"/>
+                                    <field invisible="1" name="picking_type_id"/>
+                                    <field invisible="1" name="create_date"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="date"/>
+                                    <field name="date_expected"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Remarks">
+                        <field name="remarks" readonly="state not in ['draft']"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sf_manufacturing_order_search" model="ir.ui.view">
+        <field name="name">SF Manufacturing Orders Search</field>
+        <field name="model">sf.manufacturing.order</field>
+        <field name="arch" type="xml">
+            <search string="SF Manufacturing Orders Search View">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="uom_id"/>
+                <field name="picking_type_id"/>
+                <field name="warehouse_id"/>
+                <field name="source_location_id"/>
+                <field name="order_type"/>
+                <field name="dest_location_id"/>
+                <field name="state"/>
+                <group expand="0" string="Group By">
+                    <filter name="product_id" context="{'group_by':'product_id'}" domain="[]" string="Product"/>
+                    <filter name="picking_type_id" context="{'group_by':'picking_type_id'}" domain="[]"
+                            string="Picking Type"/>
+                    <filter name="warehouse_id" context="{'group_by':'warehouse_id'}" domain="[]"
+                            string="Warehouse/Branch"/>
+                    <filter name="source_location_id" context="{'group_by':'source_location_id'}" domain="[]"
+                            string="Source Location"/>
+                    <filter name="dest_location_id" context="{'group_by':'dest_location_id'}" domain="[]"
+                            string="Destination Location"/>
+                    <filter name="state" context="{'group_by':'state'}" domain="[]" string="Status"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="sf_manufacturing_order_unbuild_tree" model="ir.ui.view">
+        <field name="name">SF Manufacturing Orders</field>
+        <field name="model">sf.manufacturing.order</field>
+        <field name="arch" type="xml">
+            <tree create="0" string="SF Manufacturing Unbuild Order(s)">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="uom_id"/>
+                <field name="picking_type_id"/>
+                <field name="warehouse_id"/>
+                <field invisible="1" name="order_type"/>
+                <field name="source_doc"/>
+                <field name="dest_location_id"/>
+                <field name="product_qty"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="sf_manufacturing_order_unbuild_form" model="ir.ui.view">
+        <field name="name">SF Manufacturing Orders</field>
+        <field name="model">sf.manufacturing.order</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" string="SF Manufacturing Unbuild Order">
+                <header>
+                    <button class="oe_highlight" invisible="state not in ['draft']" name="move_to_start" string="Start"
+                            type="object"/>
+                    <button class="oe_highlight" invisible="state not in ['inprogress']" name="move_to_complete"
+                            string="Complete" type="object"/>
+                    <!--                        <button name="action_move_to_unbuild_order" string="Unbuild" type="object" states="completed" class="oe_highlight"/>-->
+                    <field name="state" statusbar_visible="draft,inprogress,completed" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field domain="[('type', '=', 'product'), ('route_ids.name', 'in', ('Manufacture', 'Make To Order'))]"
+                                   name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="product_qty"/>
+                            <field name="batch_number"/>
+                            <field name="shift_type"/>
+                            <field name="source_doc"/>
+                            <label for="available_stock" invisible="1"/>
+                            <div>
+                                <field invisible="1" name="available_stock"/>
+                                <button class="oe_highlight" invisible="1" name="action_check_stock"
+                                        string="Check Stock" type="object"/>
+                            </div>
+                            <field invisible="1" name="company_id" options="{'no_create': True, 'no_open': True}"/>
+                            <!--                            ####domain not available in 17-->
+                            <!--                            <field domain="[('state', '=', 'done'),('warehouse_id', '=', warehouse_id )]" invisible="1" name="material_issue_ids" options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>-->
+                            <field invisible="1" name="material_issue_ids"
+                                   options="{'no_create': True, 'no_open': True}" widget="many2many_tags"/>
+                            <label for="action_add_product"/>
+                            <div>
+                                <button class="oe_highlight" invisible="1" name="action_add_product"
+                                        string="Add Products" type="object"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="completed_user_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="date_done"/>
+                            <field name="warehouse_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field domain="[('warehouse_id', '=', warehouse_id), ('code', '=', 'internal')]"
+                                   name="picking_type_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field invisible="1" name="source_location_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="dest_location_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field invisible="1" name="order_type"/>
+                            <button class="oe_highlight" invisible="1" name="action_remove_line"
+                                    string="Remove Products" type="object"/>
+                        </group>
+                    </group>
+                    <newline/>
+                    <notebook>
+                        <page string="Raw Materials">
+                            <field name="materials_line" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field domain="[('purchase_ok', '=', True)]" name="product_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="quantity"/>
+                                    <field invisible="1" name="available_stock"/>
+                                    <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="source_location_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="dest_location_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="state"/>
+                                    <field invisible="1" name="warehouse_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="By Products">
+                            <field context="{'default_source_location_id': source_location_id}" name="scrap_line"
+                                   widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="source_location_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="dest_location_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field invisible="1" name="state"/>
+                                    <field invisible="1" name="warehouse_id"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Stock Moves">
+                            <field name="move_lines" readonly="1" widget="one2many_list">
+                                <tree create="0" delete="0" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="picking_id" string="Reference"/>
+                                    <field name="origin"/>
+                                    <field invisible="1" name="picking_type_id"/>
+                                    <field invisible="1" name="create_date"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="date"/>
+                                    <!--                                    not available in 17-->
+
+
+                                    <!--                                    <field name="date_expected"/>-->
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Remarks">
+                        <field name="remarks"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_sf_manufacturing_order" model="ir.actions.act_window">
+        <field name="name">SF Manufacturing Order</field>
+        <field name="res_model">sf.manufacturing.order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--        <field name="view_type">form</field>-->
+        <field name="domain">[('order_type', '=', 'normal')]</field>
+        <field name="context">{'default_order_type': 'normal', 'order_type': 'normal'}</field>
+        <field name="search_view_id" ref="sf_manufacturing_order_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                WELCOME!.. Click here to create
+            </p>
+        </field>
+    </record>
+    <record id="action_sf_manufacturing_order_tree_view" model="ir.actions.act_window.view">
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="sf_manufacturing_order_tree"/>
+        <field name="act_window_id" ref="action_sf_manufacturing_order"/>
+    </record>
+    <record id="action_sf_manufacturing_order_form_view" model="ir.actions.act_window.view">
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sf_manufacturing_order_form"/>
+        <field name="act_window_id" ref="action_sf_manufacturing_order"/>
+    </record>
+    <record id="action_sf_manufacturing_order_unbuild" model="ir.actions.act_window">
+        <field name="name">SF Manufacturing Unbuild Order</field>
+        <field name="res_model">sf.manufacturing.order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <!--        not available in 17-->
+
+        <!--        <field name="view_type">form</field>-->
+        <field name="domain">[('order_type', '=', 'unbuild_order')]</field>
+        <field name="context">{'default_order_type':'unbuild_order', 'order_type': 'unbuild_order'}</field>
+        <field name="search_view_id" ref="sf_manufacturing_order_search"/>
+    </record>
+    <record id="action_sf_manufacturing_order_unbuild_tree_view" model="ir.actions.act_window.view">
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="sf_manufacturing_order_unbuild_tree"/>
+        <field name="act_window_id" ref="action_sf_manufacturing_order_unbuild"/>
+    </record>
+    <record id="action_sf_manufacturing_order_unbuild_form_view" model="ir.actions.act_window.view">
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sf_manufacturing_order_unbuild_form"/>
+        <field name="act_window_id" ref="action_sf_manufacturing_order_unbuild"/>
+    </record>
+    <menuitem id="sf_manufacturing_order_main_menu" name="Semi Finished Order" parent="mrp.menu_mrp_root"
+              sequence="11"/>
+    <menuitem action="action_sf_manufacturing_order" id="sf_manufacturing_order_menu" name="SF Manufacturing Order"
+              parent="sf_manufacturing_order_main_menu" sequence="1"/>
+    <menuitem action="action_sf_manufacturing_order_unbuild" id="sf_manufacturing_unbuild_order_menu"
+              name="SF Unbuild Order" parent="sf_manufacturing_order_main_menu" sequence="2"/>
+    <menuitem action="action_sf_manufacturing_order_report_wizard" id="sub_menu_sf_manufacturing_order"
+              name="SF Manufacturing Order Report" parent="mrp.menu_mrp_reporting" sequence="29"/>
+    <menuitem action="action_manufacturing_order_report_wizard" id="sub_menu_manufacturing_order"
+              name="Manufacturing Order Report" parent="mrp.menu_mrp_reporting" sequence="28"/>
+</odoo>
