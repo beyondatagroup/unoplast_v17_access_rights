@@ -26,6 +26,7 @@
         # "report/pos_sale_report.xml",
         #        "report/pos_sale_report_templates.xml",
     ],
+    'license': 'LGPL-3',
 
     "assets": {
         "point_of_sale._assets_pos": [
